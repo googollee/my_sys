@@ -1,5 +1,5 @@
 syntax enable "打开语法高亮
-set cursorline ”当前行高亮
+set cursorline "当前行高亮
 set ignorecase smartcase "搜索时忽略大小写
 set so=5 "距离5行开始翻页
 
@@ -55,6 +55,9 @@ set autoindent
 set smarttab
 set expandtab
 set foldmethod=syntax
+autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4
+autocmd FileType ruby map <F5> :!ruby %<CR>
+autocmd FileType python map <F5> :!python %<CR>
 
 " Visual
 set showmatch  " Show matching brackets.
@@ -68,3 +71,4 @@ autocmd BufEnter *
   \ if exists("b:rails_root") |
   \   let g:base_dir = b:rails_root |
   \ endif |
+

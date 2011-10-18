@@ -1,0 +1,27 @@
+[user]
+	name = Googol Lee
+	email = googollee@gmail.com
+[color]
+	ui = true
+	diff = auto
+	status = auto
+	branch = auto
+[core]
+	excludesfile = ~/.gitignore
+	safecrlf = true
+	whitespace = trailing-space,space-before-tab,indent-with-non-tab
+	autocrlf = input
+[pager]
+	diff =
+[alias]
+	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+	st = status
+	co = checkout
+	dt = difftool
+[github]
+	user = googollee
+	token = 39c10771cd110b8929f8240535d2e1e7
+[merge]
+	tool = vimdiff
+[diff]
+	tool = vimdiff
