@@ -3,7 +3,7 @@ alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
 
-export PATH=/usr/local/bin:$PATH:~/Library/bin
+export PATH=/usr/local/bin:/usr/local/sbin::$PATH:~/Library/bin
 export PYTHONPATH=~/Library/python/2.6
 export PS1='\u:\W \$ '
 

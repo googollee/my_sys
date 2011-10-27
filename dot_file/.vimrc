@@ -55,9 +55,11 @@ set autoindent
 set smarttab
 set expandtab
 set foldmethod=syntax
-autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType ruby map <F5> :!ruby %<CR>
+autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :!python %<CR>
+autocmd FileType php setlocal shiftwidth=4 tabstop=4 softtabstop=4
+autocmd FileType php map <F5> :!php %<CR>
 
 " Visual
 set showmatch  " Show matching brackets.
