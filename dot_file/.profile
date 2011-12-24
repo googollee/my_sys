@@ -2,6 +2,7 @@ alias ls='ls -G'
 alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
+alias sshnas='ssh admin@googol.dyndns.info'
 
 export PATH=/usr/local/bin:/usr/local/sbin::$PATH:~/Library/bin
 export PYTHONPATH=~/Library/python/2.6
