@@ -1,3 +1,5 @@
+set rtp+=~/Code/go/misc/vim
+
 syntax enable "打开语法高亮
 set cursorline "当前行高亮
 set ignorecase smartcase "搜索时忽略大小写
@@ -55,6 +57,8 @@ set autoindent
 set smarttab
 set expandtab
 set foldmethod=syntax
+autocmd FileType go setlocal shiftwidth=2 tabstop=2 softtabstop=2 noexpandtab
+autocmd FileType go map <F5> :!6g -o __temp.6 % && 6l -o __temp.run __temp.6 && ./__temp.run && rm __temp.*<CR>
 autocmd FileType ruby map <F5> :!ruby %<CR>
 autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :!python %<CR>
