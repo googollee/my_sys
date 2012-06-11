@@ -1,4 +1,4 @@
-set rtp+=~/Code/go/misc/vim
+set rtp+=/usr/local/Cellar/go/1.0.1/misc/vim
 
 syntax enable "打开语法高亮
 set cursorline "当前行高亮
@@ -58,7 +58,7 @@ set smarttab
 set expandtab
 set foldmethod=syntax
 autocmd FileType go setlocal shiftwidth=2 tabstop=2 softtabstop=2 noexpandtab
-autocmd FileType go map <F5> :!go build -o __temp__ % && ./__temp__ && rm __temp__<CR>
+autocmd FileType go map <F5> :!go run %<CR>
 autocmd FileType ruby map <F5> :!ruby %<CR>
 autocmd FileType python setlocal shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :!python %<CR>

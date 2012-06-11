@@ -8,9 +8,7 @@
 	branch = auto
 [core]
 	excludesfile = ~/.gitignore
-	safecrlf = true
 	whitespace = trailing-space,space-before-tab,indent-with-non-tab
-	autocrlf = input
 [pager]
 	diff =
 [alias]
@@ -18,6 +16,7 @@
 	st = status
 	co = checkout
 	dt = difftool
+	sl = shortlog -sn
 [github]
 	user = googollee
 	token = 39c10771cd110b8929f8240535d2e1e7

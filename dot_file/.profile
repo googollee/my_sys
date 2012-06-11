@@ -4,12 +4,9 @@ alias la='ls -a'
 alias grep='grep --color'
 alias sshnas='ssh admin@googol.dyndns.info'
 
-export GOPATH=~/Code/go
-export GOROOT=~/Code/go
-export GOARCH=amd64
-export GOOS=darwin
+export GOPATH=/Users/googol/Library/go_3rd/
 
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH:~/Library/bin:$GOROOT/bin
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH:~/Library/bin:~/Code/go/bin
 export PYTHONPATH=~/Library/python/2.6
 export PS1='\u:\W \$ '
 
