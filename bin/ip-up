@@ -7,8 +7,8 @@ else
   PWD=$(pwd)/$(dirname $0)
 fi
 
-OLDGW=`netstat -nr | grep ^106\.187\.46\.239 | awk '{ print $2 }'`
 OLDGW=`netstat -nr | grep ^50\.116\.19\.193 | awk '{ print $2 }'`
+OLDGW=`netstat -nr | grep ^106\.187\.46\.239 | awk '{ print $2 }'`
 
 if [ ! -e /tmp/ovpn_oldgw ]; then
   echo "${OLDGW}" > /tmp/ovpn_oldgw

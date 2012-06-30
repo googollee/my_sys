@@ -1,4 +1,4 @@
-set rtp+=/usr/local/Cellar/go/1.0.1/misc/vim
+set rtp+=/usr/local/Cellar/go/1.0.2/misc/vim
 
 syntax enable "打开语法高亮
 set cursorline "当前行高亮

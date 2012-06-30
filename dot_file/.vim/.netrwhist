@@ -1,5 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_cnt =4
 let g:netrw_dirhist_1='/etc/lighttpd/conf-enabled'
 let g:netrw_dirhist_2='/Volumes/MacData/Users/googol/Code/go/src/pkg/net/http'
 let g:netrw_dirhist_3='/Volumes/MacData/Users/googol/Code/exfebus/src/oauth'
+let g:netrw_dirhist_4='/Volumes/MacData/Users/googol/Library/bin'

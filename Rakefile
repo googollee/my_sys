@@ -8,6 +8,7 @@ task :default => [:convert]
 EXT  = ENV['ext'] || 'rmvb'
 SRC  = FileList["*.#{EXT}"]
 MP4  = SRC.ext('mp4')
+NOSUB  = ENV['nosub']
 SUBEXT = ENV['subext']
 
 task :convert => MP4
@@ -26,12 +27,16 @@ X264_FFMPEG_OPT = "#{X264_OPTS[X264_OPT_STR.to_sym][:ffmpeg]}"
 X264_MENCODER_OPT = "-x264encopts #{X264_OPTS[X264_OPT_STR.to_sym][:mencoder]}"
 
 rule '.mp4' => ".#{EXT}" do |t|
-  if SUBEXT
+  if !NOSUB && SUBEXT != "none"
     r = Regexp.new("#{EXT}$", "i")
     sub = t.source.gsub(r, "#{SUBEXT}")
     subopt = %{-font "Kai" -subcp utf-8 -sub "#{sub}"}
   else
-    subopt = ""
+    if !NOSUB
+      subopt = %{-font "Kai" -subcp utf-8}
+    else
+      subopt = ""
+    end
   end
   sh %{mencoder "#{t.source}" #{subopt} -ovc x264 #{X264_MENCODER_OPT} -oac faac -faacopts mpeg=4:object=2 -o temp.avi #{ENV['extopts']} -vf harddup}
   sh %{ffmpeg -i temp.avi -vcodec copy -acodec copy -absf aac_adtstoasc -y "#{t.name}"}
