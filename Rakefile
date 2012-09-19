@@ -30,7 +30,7 @@ rule '.mp4' => ".#{EXT}" do |t|
   if !NOSUB && SUBEXT != "none"
     r = Regexp.new("#{EXT}$", "i")
     sub = t.source.gsub(r, "#{SUBEXT}")
-    subopt = %{-font "Kai" -subcp utf-8 -sub "#{sub}"}
+    subopt = %{-font "Hei" -subcp utf-8 -sub "#{sub}"}
   else
     if !NOSUB
       subopt = %{-font "Kai" -subcp utf-8}
