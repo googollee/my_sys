@@ -4,6 +4,8 @@ alias la='ls -a'
 alias grep='grep --color'
 alias sshnas='ssh admin@googol.dyndns.info'
 
+defaults write -g ApplePressAndHoldEnabled -bool false
+
 export GOPATH=/Users/googol/Library/go_3rd/
 
 export PATH=~/Library/bin:/usr/local/bin:/usr/local/sbin:$PATH
