@@ -24,3 +24,5 @@
 	tool = vimdiff
 [diff]
 	tool = vimdiff
+[push]
+	default = matching
