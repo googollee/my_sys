@@ -12,10 +12,10 @@
 # create links: update-rc.d -f ss-server defaults
 # remove links: update-rc.d -f ss-server remove
 
-user=""
+user="user:group"
 cmd=""
-
 name=`basename $0`
+
 pid_file="/var/run/www/${name}.pid"
 stdout_log="/var/log/${name}.log"
 stderr_log="/var/log/${name}.err"
@@ -41,15 +41,19 @@ case "$1" in
 	;;
 	stop)
 	if is_running; then
-		    echo "Stopping $name"
-		    ${daemon_ctl} --stop
+		echo "Stopping $name"
+		${daemon_ctl} --stop
 	else
-		    echo "Not running"
+		echo "Not running"
 	fi
 	;;
 	restart)
-	$0 stop
-	$0 start
+	if is_running; then
+		echo "Restart $name"
+		${daemon_ctl} --restart
+	else
+		$0 start
+	fi
 	;;
 	status)
 	if is_running; then
