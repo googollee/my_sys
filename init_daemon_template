@@ -16,9 +16,9 @@ user="user:group"
 cmd=""
 name=`basename $0`
 
-pid_file="/var/run/www/${name}.pid"
+pid_file="/var/run/${name}.pid"
 stdout_log="/var/log/${name}.log"
-stderr_log="/var/log/${name}.err"
+stderr_log="/var/log/${name}.error.log"
 
 daemon_ctl="daemon -n ${name} -F ${pid_file}"
 
