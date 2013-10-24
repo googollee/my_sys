@@ -1,0 +1,56 @@
+#!/usr/bin/env coffee
+
+fs = require 'fs'
+glob = require 'glob'
+path = require 'path'
+
+argv = process.argv.slice 2
+tune = "animation" # "film"
+vbit = "700k"
+abit = "50k"
+
+if ! (argv?.length > 0)
+	console.log 'need give file name to convert'
+	return
+
+files = []
+argv.forEach (p) ->
+	files = files.concat glob.sync p
+
+getName = (input) ->
+	ext = path.extname input
+	dir = path.dirname input
+	base = path.basename input, ext
+	ext = if ext == ".mp4" then ".m4v" else ".mp4"
+	{input: input, base: "#{base}", main: "#{dir}/#{base}", output: "#{dir}/#{base}#{ext}"}
+
+getAssParameter = (name) ->
+	ass = "#{name.main}.ass"
+	ass = "#{name.main}.utf.ass" unless fs.existsSync ass		
+	return "" unless fs.existsSync ass
+	"-vf \"ass=#{ass}\""
+
+getPassParameter = (name, pass) ->
+	return "\"#{name.output}\"" unless pass?
+	p = "-pass #{pass} -passlogfile /tmp/ffmpegpass-#{name.base}"
+	return "#{p} -an -f mp4 /dev/null" if pass == 1
+	"#{p} \"#{name.output}\""
+
+getVideoParameter = ->
+	"-c:v libx264 -b:v #{vbit} -preset:v fast -profile:v main -bf 0 -tune:v #{tune}"
+
+getAudioParameter = ->
+	"-c:a libfdk_aac -b:a #{abit} -profile:a aac_he"
+
+getInputParameter = (name)->
+	"-i \"#{name.input}\""
+
+getFFmpegCmd = (input, pass) ->
+	name = getName input
+	p = [getAssParameter(name), getVideoParameter(), getAudioParameter(), getInputParameter(name), getPassParameter(name, pass)]
+	"ffmpeg #{p.join " "}"
+
+files.forEach (f) ->
+	console.log "echo processing #{f}..."
+	console.log getFFmpegCmd f, 1
+	console.log getFFmpegCmd f, 2
