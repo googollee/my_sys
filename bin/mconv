@@ -32,8 +32,8 @@ getAssParameter = (name) ->
 
 getPassParameter = (name, pass) ->
 	return "\"#{name.output}\"" unless pass?
-	p = "-pass #{pass} -passlogfile /tmp/ffmpegpass-#{name.base}"
-	return "#{p} -an -f mp4 /dev/null" if pass == 1
+	p = "-pass #{pass} -passlogfile /tmp/ffmpegpass"
+	return "#{p} -an -f mp4 -y /dev/null" if pass == 1
 	"#{p} \"#{name.output}\""
 
 getVideoParameter = ->
@@ -47,7 +47,7 @@ getInputParameter = (name)->
 
 getFFmpegCmd = (input, pass) ->
 	name = getName input
-	p = [getAssParameter(name), getVideoParameter(), getAudioParameter(), getInputParameter(name), getPassParameter(name, pass)]
+	p = [getInputParameter(name), getAssParameter(name), getVideoParameter(), getAudioParameter(), getPassParameter(name, pass)]
 	"ffmpeg #{p.join " "}"
 
 files.forEach (f) ->
