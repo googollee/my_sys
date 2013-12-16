@@ -1,0 +1,17 @@
+{
+	"GoSublime":
+	{
+		"env":
+		{
+			"GOPATH": "$HOME/Library/go_3rd"
+		}
+	},
+	"auto_complete": false,
+	"color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
+	"font_face": "Menlo",
+	"font_size": 14.0,
+	"ignored_packages":
+	[
+	],
+	"vintage_start_in_command_mode": true
+}

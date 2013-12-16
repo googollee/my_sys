@@ -1,0 +1,15 @@
+{
+	"auto_upgrade_last_run": null,
+	"installed_packages":
+	[
+		"Better CoffeeScript",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DashDoc",
+		"GoSublime",
+		"Package Control",
+		"Pretty JSON",
+		"SublimeCodeIntel",
+		"Sublimerge",
+		"Tomorrow Color Schemes"
+	]
+}

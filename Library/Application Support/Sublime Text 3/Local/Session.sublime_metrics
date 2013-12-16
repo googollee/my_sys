@@ -1,0 +1,15 @@
+{
+	"licensed": false,
+	"packages":
+	[
+		"Better CoffeeScript",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DashDoc",
+		"Pretty JSON",
+		"SublimeCodeIntel",
+		"Sublimerge",
+		"Tomorrow Color Schemes"
+	],
+	"startup_sec": 0.521807,
+	"time": 1387157289
+}
