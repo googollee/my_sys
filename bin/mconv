@@ -5,8 +5,8 @@ glob = require 'glob'
 path = require 'path'
 
 argv = process.argv.slice 2
-tune = "animation" # "film"
-vbit = "700k"
+tune = "film" # "animation" # "film"
+vbit = "1000k"
 abit = "50k"
 
 if ! (argv?.length > 0)

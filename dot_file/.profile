@@ -4,7 +4,7 @@ alias la='ls -a'
 alias grep='grep --color'
 alias pc='proxychains4'
 
-alias nas='ssh admin@10.2.33.108'
+alias nas='ssh admin@192.168.1.233'
 alias exfe='ssh lzh@exfe.com'
 alias shuady='ssh lzh@shuady.cn'
 
@@ -19,3 +19,8 @@ export PS1='@\t [\w] \[\033[32m\]`git branch 2>/dev/null | grep ^* | sed "s/^\* 
 if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
+
+cover () {
+    t="/tmp/go-cover.$$.tmp"
+    go test -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
+}
