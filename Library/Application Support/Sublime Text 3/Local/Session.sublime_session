@@ -2339,25 +2339,25 @@
 						"buffer_size": 587267,
 						"line_ending": "Unix"
 					}
-				},
-				{
-					"file": "etl-common/src/main/resources/Log_Record.proto",
-					"settings":
-					{
-						"buffer_size": 10476,
-						"line_ending": "Unix"
-					}
 				}
 			],
 			"build_system": "Packages/Elixir/elixir.sublime-build",
 			"command_palette":
 			{
-				"height": 187.0,
+				"height": 127.0,
 				"selected_items":
 				[
 					[
+						"javas",
+						"Set Syntax: JavaScript"
+					],
+					[
 						"insta",
 						"Package Control: Install Package"
+					],
+					[
+						"proto",
+						"Set Syntax: Protocol Buffer"
 					],
 					[
 						"eli",
@@ -2998,7 +2998,7 @@
 			"groups":
 			[
 				{
-					"selected": 1,
+					"selected": 0,
 					"sheets":
 					[
 						{
@@ -3025,36 +3025,7 @@
 									"translate_tabs_to_spaces": true
 								},
 								"translation.x": 0.0,
-								"translation.y": 0.0,
-								"zoom_level": 1.0
-							},
-							"stack_index": 1,
-							"type": "text"
-						},
-						{
-							"buffer": 1,
-							"file": "etl-common/src/main/resources/Log_Record.proto",
-							"semi_transient": true,
-							"settings":
-							{
-								"buffer_size": 10476,
-								"regions":
-								{
-								},
-								"selection":
-								[
-									[
-										0,
-										0
-									]
-								],
-								"settings":
-								{
-									"syntax": "Packages/Text/Plain text.tmLanguage",
-									"translate_tabs_to_spaces": false
-								},
-								"translation.x": 0.0,
-								"translation.y": 0.0,
+								"translation.y": 2.0,
 								"zoom_level": 1.0
 							},
 							"stack_index": 0,
