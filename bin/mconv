@@ -6,7 +6,7 @@ path = require 'path'
 
 argv = process.argv.slice 2
 tune = "film" # "animation" # "film"
-vbit = "1000k"
+vbit = "3000k"
 abit = "50k"
 
 if ! (argv?.length > 0)

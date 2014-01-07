@@ -1,7 +1,37 @@
 {
+	"licensed": false,
+	"packages":
+	[
+		"Better CoffeeScript",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DashDoc",
+		"Elixir",
+		"Pretty JSON",
+		"SublimeCodeIntel",
+		"Sublimerge",
+		"Tomorrow Color Schemes",
+		"Better CoffeeScript",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DashDoc",
+		"Elixir",
+		"Pretty JSON",
+		"SublimeCodeIntel",
+		"Sublimerge",
+		"Tomorrow Color Schemes",
+		"Better CoffeeScript",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DashDoc",
+		"Elixir",
+		"Pretty JSON",
+		"SublimeCodeIntel",
+		"Sublimerge",
+		"Tomorrow Color Schemes"
+	],
+	"startup_sec": 0.490592,
 	"syntax":
 	{
-		"Markdown": 22
+		"Elixir": 10,
+		"Plain text": 3
 	},
-	"time": 1388458112
+	"time": 1389057357
 }
