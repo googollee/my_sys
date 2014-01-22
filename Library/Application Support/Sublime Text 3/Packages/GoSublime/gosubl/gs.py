@@ -6,6 +6,7 @@ from subprocess import Popen, PIPE
 import copy
 import datetime
 import json
+import locale
 import os
 import re
 import string
@@ -23,6 +24,16 @@ except ImportError:
 	import queue
 
 PY3K = (sys.version_info[0] == 3)
+
+penc = locale.getpreferredencoding()
+try_encodings = ['utf-8']
+if penc.lower() not in try_encodings:
+	try_encodings.append(penc)
+
+if PY3K:
+	str_decode = lambda s, enc, errs: str(s, enc, errors=errs)
+else:
+	str_decode = lambda s, enc, errs: str(s).decode(enc, errs)
 
 try:
 	STARTUP_INFO = subprocess.STARTUPINFO()
@@ -54,11 +65,12 @@ _default_settings = {
 	"fmt_enabled": False,
 	"fmt_tab_indent": True,
 	"fmt_tab_width": 8,
+	"fmt_cmd": [],
 	"gslint_enabled": False,
 	"comp_lint_enabled": False,
 	"comp_lint_commands": [],
 	"gslint_timeout": 0,
-	"autocomplete_live_hint": False,
+	"calltips": True,
 	"autocomplete_snippets": False,
 	"autocomplete_tests": False,
 	"autocomplete_closures": False,
@@ -66,7 +78,6 @@ _default_settings = {
 	"autocomplete_suggest_imports": False,
 	"on_save": [],
 	"shell": [],
-	"shell_pathsep": "",
 	"default_snippets": [],
 	"snippets": [],
 	"fn_exclude_prefixes": [".", "_"],
@@ -77,6 +88,7 @@ _default_settings = {
 	"linters": [],
 	"9o_instance": "",
 	"9o_color_scheme": "",
+	"9o_settings": {},
 	"9o_aliases": {},
 	"9o_show_end": False,
 	"gohtml_extensions": [],
@@ -608,8 +620,14 @@ def cancel_task(tid):
 def show_quick_panel(items, cb=None):
 	def f():
 		win = sublime.active_window()
-		if win:
-			win.show_quick_panel(items, (lambda i: cb(i, win)) if cb else (lambda i: None))
+		if win is not None:
+			if callable(cb):
+				f = lambda i: cb(i, win)
+			else:
+				f = lambda i: None
+
+			win.show_quick_panel(items, f, sublime.MONOSPACE_FONT)
+
 	sublime.set_timeout(f, 0)
 
 def go_env_goroot():
@@ -659,9 +677,13 @@ def ustr(s):
 	if maybe_unicode_str(s):
 		return s
 
-	if PY3K:
-		return str(s, 'utf-8')
-	return str(s).decode('utf-8')
+	for e in try_encodings:
+		try:
+			return str_decode(s, e, 'strict')
+		except UnicodeDecodeError:
+			continue
+
+	return str_decode(s, 'utf-8', 'replace')
 
 def astr(s):
 	if maybe_unicode_str(s):

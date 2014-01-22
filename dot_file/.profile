@@ -7,10 +7,12 @@ alias pc='proxychains4'
 alias nas='ssh admin@192.168.1.233'
 alias exfe='ssh lzh@exfe.com'
 alias shuady='ssh lzh@shuady.cn'
+alias dev='ssh zli@nycdev01.fwmrm.net'
+alias googol='ssh googol.im'
 
 defaults write -g ApplePressAndHoldEnabled -bool false
 
-export PATH=/usr/local/bin:/usr/local/sbin:~/Library/bin:~/Library/go_3rd/bin:/usr/local/share/npm/bin:$PATH
+export PATH=~/Library/bin:~/Library/go_3rd/bin:/usr/local/share/npm/bin:$PATH
 export GOPATH=~/Library/go_3rd:$GOPATH
 export NODE_PATH=/usr/local/share/npm/lib/node_modules:$NODE_PATH
 
@@ -24,3 +26,20 @@ cover () {
     t="/tmp/go-cover.$$.tmp"
     go test -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
 }
+
+go () {
+	if [ "$1" == "-g" ]; then
+		shift
+		command go $*
+		return
+	fi
+	local PWD=`pwd`
+	if [ "$1" == "cover" ]; then
+		shift
+		local t="/tmp/go-cover.$$.tmp"
+		GOPATH=$PWD:$GOPATH command go test -coverprofile=$t $* && command go tool cover -html=$t && rm $t
+	fi
+	GOPATH=$PWD:$GOPATH command go $*
+	return
+}
+

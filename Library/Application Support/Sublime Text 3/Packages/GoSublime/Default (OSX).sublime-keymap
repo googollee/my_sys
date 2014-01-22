@@ -24,22 +24,6 @@
 		"args": { "file": "${packages}/User/GoSublime.sublime-settings" }
 	},
 	{
-		"keys": ["super+s"],
-		"command": "gs_fmt_save",
-		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
-	},
-	{
-		"keys": ["super+shift+s"],
-		"command": "gs_fmt_prompt_save_as",
-		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
-	},
-	{
-		"keys": ["super+space"],
-		"command": "auto_complete",
-		"args": {"disable_auto_insert": true, "api_completions_only": true, "next_completion_if_showing": false},
-		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
-	},
-	{
 		"keys": ["super+.", "super+p"],
 		"command": "gs_palette",
 		"args": {"palette": "imports", "direct": true},
@@ -77,7 +61,7 @@
 	{
 		"keys": ["super+.", "super+r"],
 		"command": "gs9o_open",
-		"args": {"run": ["replay"]},
+		"args": {"run": ["replay"], "focus_view": false},
 		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
 	},
 	{
@@ -135,7 +119,7 @@
 		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
 	},
 	{
-		"keys": ["super+.", "super+space"],
+		"keys": ["super+.", "shift+space"],
 		"command": "gs_show_call_tip",
 		"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
 	},
@@ -144,7 +128,7 @@
 		"command": "gs9o_open"
 	},
 	{
-		"keys": ["super+space"],
+		"keys": ["shift+space"],
 		"command": "auto_complete",
 		"args": {"disable_auto_insert": true, "api_completions_only": true, "next_completion_if_showing": false},
 		"context": [{ "key": "selector", "operator": "equal", "operand": "text.9o" }]

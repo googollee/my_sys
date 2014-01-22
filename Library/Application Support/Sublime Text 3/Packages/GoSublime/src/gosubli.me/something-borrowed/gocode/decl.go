@@ -145,7 +145,7 @@ func ast_decl_convertable(d ast.Decl) bool {
 	return false
 }
 
-func ast_field_list_to_decls(f *ast.FieldList, class decl_class, flags decl_flags, scope *scope) map[string]*decl {
+func ast_field_list_to_decls(f *ast.FieldList, class decl_class, flags decl_flags, scope *scope, add_anonymous bool) map[string]*decl {
 	count := 0
 	for _, field := range f.List {
 		count += len(field.Names)
@@ -169,7 +169,7 @@ func ast_field_list_to_decls(f *ast.FieldList, class decl_class, flags decl_flag
 		}
 
 		// add anonymous field as a child (type embedding)
-		if class == decl_var && field.Names == nil {
+		if class == decl_var && field.Names == nil && add_anonymous {
 			tp := get_type_path(field.Type)
 			if flags&decl_foreign != 0 && !ast.IsExported(tp.name) {
 				continue
@@ -225,9 +225,9 @@ func ast_type_to_embedded(ty ast.Expr) []ast.Expr {
 func ast_type_to_children(ty ast.Expr, flags decl_flags, scope *scope) map[string]*decl {
 	switch t := ty.(type) {
 	case *ast.StructType:
-		return ast_field_list_to_decls(t.Fields, decl_var, flags, scope)
+		return ast_field_list_to_decls(t.Fields, decl_var, flags, scope, true)
 	case *ast.InterfaceType:
-		return ast_field_list_to_decls(t.Methods, decl_func, flags, scope)
+		return ast_field_list_to_decls(t.Methods, decl_func, flags, scope, false)
 	}
 	return nil
 }
@@ -582,37 +582,36 @@ func advance_to_type(pred type_predicate, v ast.Expr, scope *scope) (ast.Expr, *
 		return v, scope
 	}
 
-	for {
-		decl := type_to_decl(v, scope)
-		if decl == nil {
-			return nil, nil
-		}
-
-		v = decl.typ
-		scope = decl.scope
-		if pred(v) {
-			break
-		}
+	decl := type_to_decl(v, scope)
+	if decl == nil {
+		return nil, nil
 	}
-	return v, scope
+
+	if decl.flags&decl_visited != 0 {
+		return nil, nil
+	}
+	decl.flags |= decl_visited
+	defer decl.clear_visited()
+
+	return advance_to_type(pred, decl.typ, decl.scope)
 }
 
 func advance_to_struct_or_interface(decl *decl) *decl {
+	if decl.flags&decl_visited != 0 {
+		return nil
+	}
+	decl.flags |= decl_visited
+	defer decl.clear_visited()
+
 	if struct_interface_predicate(decl.typ) {
 		return decl
 	}
 
-	for {
-		decl = type_to_decl(decl.typ, decl.scope)
-		if decl == nil {
-			return nil
-		}
-
-		if struct_interface_predicate(decl.typ) {
-			break
-		}
+	decl = type_to_decl(decl.typ, decl.scope)
+	if decl == nil {
+		return nil
 	}
-	return decl
+	return advance_to_struct_or_interface(decl)
 }
 
 func struct_interface_predicate(v ast.Expr) bool {
@@ -1053,6 +1052,8 @@ func pretty_print_type_expr(out io.Writer, e ast.Expr) {
 				// it's always true
 				fmt.Fprintf(out, "interface{}")
 			}
+		} else if strings.HasPrefix(t.Name, "#") {
+			fmt.Fprintf(out, t.Name[1:])
 		} else {
 			fmt.Fprintf(out, t.Name)
 		}
@@ -1329,7 +1330,6 @@ func init() {
 	add_type("uint16")
 	add_type("uint32")
 	add_type("uint64")
-	add_type("float")
 	add_type("int")
 	add_type("uint")
 	add_type("uintptr")

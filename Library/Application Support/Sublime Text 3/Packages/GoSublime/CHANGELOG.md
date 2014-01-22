@@ -2,8 +2,63 @@ GoSublime Changes
 -----------------
 
 
+** Please be aware that go1 is no longer supported. The minimum supported version is go1.1.2 **
+
 
 Note: you may need to restart Sublime Text after GoSublime updates
+
+## 13.12.26-1
+	* when the key binding `ctrl+dot`,`ctrl+r` is pressed, 9o no longer gains focus
+
+## 13.12.21-2
+	* setting `autocomplete_live_hint` was renamed to `calltips` and enabled by default.
+		this setting make functions signatures appear in the status bar when you place the
+		cursor in a function call
+	* the completion_options command was dropped from margo and therefore mg9.completion_options was removed
+	* the shell_pathsep setting was removed
+
+## 13.12.21-1
+	* make GoSublime's quick panels use a monospace font
+	* add a prefix to the declarations panels:
+		`+` indicates exported identifiers
+		`-` indicates non-exported identifiers
+	* in the declarations panels, init functions are now suffixed with ` (filename)`
+	* in the declarations panels, const declarations are now suffixed with ` (value)` e.g. `const StatusTeapot (418)`
+	* add syntax definitions for the template builtin functions
+
+## 13.12.19-1
+	* the OS X key bindings have been removed
+
+	* a copy has been provided below. you may change the "keys" as you wish and place it inside
+	    your user key bindings (menu Preferences > Key bindings - User) to restore the functionality
+
+		{
+			"keys": ["shift+space"],
+			"command": "auto_complete",
+			"args": {"disable_auto_insert": true, "api_completions_only": true, "next_completion_if_showing": false},
+			"context": [{ "key": "selector", "operator": "equal", "operand": "source.go" }]
+		}
+
+
+## 13.12.17-1
+	* give string decoding priority to utf-8 over the system's preferred encoding
+
+## 13.12.15-1
+	* remove the ctrl+s, etc. key bindings and fmt the file during the save event.
+
+## 13.12.14-2
+	* the autocompletion key bindings on OS X have been changed to shift+space
+
+## 13.12.14-1
+	* added new setting `fmt_cmd` to allow replacing margo's fmt with an external gofmt compatible command like like https://github.com/bradfitz/goimports. see the default config for documentation
+	* as a last resort, GoSublime will now try to ignore (by replacement) any bytes that cannot be decoded as utf-8 in places that handle strings (like printing to the console)
+	* fix the missing `Run {Test,Example,Benchmark}s` entries in the .t palette
+
+## 13.10.05-1
+	* sync gocode
+
+## 13.09.07-1
+	* remove error syntax highlighting of lone percentage signs in strings
 
 ## 13.07.29-1
 	* the .p method of finding packages was reverted. as a result `use_named_imports` has no effect

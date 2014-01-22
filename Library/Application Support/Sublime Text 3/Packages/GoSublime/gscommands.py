@@ -13,10 +13,20 @@ class GsCommentForwardCommand(sublime_plugin.TextCommand):
 		self.view.run_command("toggle_comment", {"block": False})
 		self.view.run_command("move", {"by": "lines", "forward": True})
 
+class GsStartNextLineCommentCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		self.view.run_command("run_macro_file", {"file": "Packages/Default/Add Line.sublime-macro"})
+		self.view.run_command("toggle_comment", {"block": False})
 
 class GsFmtCommand(sublime_plugin.TextCommand):
 	def is_enabled(self):
-		return gs.setting('fmt_enabled', False) is True and gs.is_go_source_view(self.view)
+		fn = self.view.file_name()
+		if fn:
+			scope_ok = fn.lower().endswith('.go')
+		else:
+			scope_ok = gs.is_go_source_view(self.view)
+
+		return scope_ok and gs.setting('fmt_enabled') is True
 
 	def run(self, edit):
 		vsize = self.view.size()
@@ -125,10 +135,10 @@ class GsShowTasksCommand(sublime_plugin.WindowCommand):
 		except:
 			ents = [['', 'Failed to gather active tasks']]
 
-		def cb(i):
+		def cb(i, _):
 			gs.cancel_task(m.get(i, ''))
 
-		self.window.show_quick_panel(ents, cb)
+		gs.show_quick_panel(ents, cb)
 
 class GsOpenHomePathCommand(sublime_plugin.WindowCommand):
 	def run(self, fn):

@@ -159,6 +159,7 @@ def install(aso_install_vesion, force_install):
 		cmd = sh.Command(['go', 'build', '-v', '-x', '-o', INSTALL_EXE, 'gosubli.me/margo'])
 		cmd.wd = gs.home_dir_path('bin')
 		cmd.env = {
+			'CGO_ENABLED': '0',
 			'GOBIN': '',
 			'GOPATH': gs.dist_path(),
 		}
@@ -260,11 +261,6 @@ def install(aso_install_vesion, force_install):
 		except Exception:
 			report_x()
 
-def completion_options(m={}):
-	res, err = bcall('gocode_options', {})
-	res = gs.dval(res.get('options'), {})
-	return res, err
-
 def calltip(fn, src, pos, quiet, f):
 	tid = ''
 	if not quiet:
@@ -274,40 +270,53 @@ def calltip(fn, src, pos, quiet, f):
 		if tid:
 			gs.end(tid)
 
-		res = gs.dval(res.get('calltips'), [])
+		res = gs.dval(res.get('Candidates'), [])
 		f(res, err)
 
-	return acall('gocode_calltip', _complete_opts(fn, src, pos), cb)
-
-
+	return acall('gocode_calltip', _complete_opts(fn, src, pos, True), cb)
 
 def complete(fn, src, pos):
-	res, err = bcall('gocode_complete', _complete_opts(fn, src, pos))
-	res = gs.dval(res.get('completions'), [])
+	builtins = (gs.setting('autocomplete_builtins') is True or gs.setting('complete_builtins') is True)
+	res, err = bcall('gocode_complete', _complete_opts(fn, src, pos, builtins))
+	res = gs.dval(res.get('Candidates'), [])
 	return res, err
 
-def _complete_opts(fn, src, pos):
-	home = gs.home_path()
-	builtins = (gs.setting('autocomplete_builtins') is True or gs.setting('complete_builtins') is True)
+def _complete_opts(fn, src, pos, builtins):
+	nv = sh.env()
 	return {
 		'Dir': gs.basedir_or_cwd(fn),
 		'Builtins': builtins,
 		'Fn':  fn or '',
 		'Src': src or '',
 		'Pos': pos or 0,
-		'Home': home,
+		'Home': sh.vdir(),
 		'Autoinst': gs.setting('autoinst'),
-		'Env': sh.env({
-			'XDG_CONFIG_HOME': home,
-		}),
+		'Env': {
+			'GOROOT': nv.get('GOROOT', ''),
+			'GOPATH': nv.get('GOPATH', ''),
+		},
+		'InstallSuffix': gs.setting('installsuffix'),
 	}
 
 def fmt(fn, src):
+	st = gs.settings_dict()
+	x = st.get('fmt_cmd')
+	if x:
+		res, err = bcall('sh', {
+			'Env': sh.env(),
+			'Cmd': {
+					'Name': x[0],
+					'Args': x[1:],
+					'Input': src or '',
+			},
+		})
+		return res.get('out', ''), (err or res.get('err', ''))
+
 	res, err = bcall('fmt', {
-		'fn': fn or '',
-		'src': src or '',
-		'tabIndent': gs.setting('fmt_tab_indent'),
-		'tabWidth': gs.setting('fmt_tab_width'),
+		'Fn': fn or '',
+		'Src': src or '',
+		'TabIndent': st.get('fmt_tab_indent'),
+		'TabWidth': st.get('fmt_tab_width'),
 	})
 	return res.get('src', ''), err
 

@@ -91,7 +91,10 @@ class EV(sublime_plugin.EventListener):
 		cl.update((k, k+' ') for k in builtins())
 		cl.update(DEFAULT_CL)
 
-		return ([e for e in sorted(cl)], AC_OPTS)
+		return ([cl_esc(e) for e in sorted(cl)], AC_OPTS)
+
+def cl_esc(e):
+	return (e[0], e[1].replace('$', '\\$'))
 
 class Gs9oBuildCommand(sublime_plugin.WindowCommand):
 	def is_enabled(self):
@@ -166,7 +169,7 @@ class Gs9oInitCommand(sublime_plugin.TextCommand):
 			wd = vs.get('9o.wd', active_wd(win=v.window()))
 
 		was_empty = v.size() == 0
-		s = '[ %s ] # \n' % gs.simple_fn(wd)
+		s = '[ %s ] # \n' % gs.simple_fn(wd).replace('#', '~')
 
 		if was_empty:
 			v.insert(edit, 0, 'GoSublime %s 9o: type `help` for help and command documentation\n\n' % about.VERSION)
@@ -179,26 +182,35 @@ class Gs9oInitCommand(sublime_plugin.TextCommand):
 		v.sel().clear()
 		n = v.size()-1
 		v.sel().add(sublime.Region(n, n))
+
+		opts = {
+			"rulers": [],
+			"fold_buttons": True,
+			"fade_fold_buttons": False,
+			"gutter": True,
+			"margin": 0,
+			# pad mostly so the completion menu shows on the first line
+			"line_padding_top": 1,
+			"line_padding_bottom": 1,
+			"tab_size": 2,
+			"word_wrap": True,
+			"indent_subsequent_lines": True,
+			"line_numbers": False,
+			"auto_complete": True,
+			"auto_complete_selector": "text",
+			"highlight_line": True,
+			"draw_indent_guides": True,
+			"scroll_past_end": True,
+			"indent_guide_options": ["draw_normal", "draw_active"],
+			"word_separators": "./\\()\"'-:,.;<>~!@#$%&*|+=[]{}`~?",
+		}
+		opts.update(gs.setting('9o_settings'))
+
+		for opt in opts:
+			vs.set(opt, opts[opt])
+
+		vs.set("9o", True)
 		vs.set("9o.wd", wd)
-		vs.set("rulers", [])
-		vs.set("fold_buttons", True)
-		vs.set("fade_fold_buttons", False)
-		vs.set("gutter", True)
-		vs.set("margin", 0)
-		# pad mostly so the completion menu shows on the first line
-		vs.set("line_padding_top", 1)
-		vs.set("line_padding_bottom", 1)
-		vs.set("tab_size", 2)
-		vs.set("word_wrap", True)
-		vs.set("indent_subsequent_lines", True)
-		vs.set("line_numbers", False)
-		vs.set("auto_complete", True)
-		vs.set("auto_complete_selector", "text")
-		vs.set("highlight_line", True)
-		vs.set("draw_indent_guides", True)
-		vs.set("scroll_past_end", True)
-		vs.set("indent_guide_options", ["draw_normal", "draw_active"])
-		vs.set("word_separators", "./\\()\"'-:,.;<>~!@#$%&*|+=[]{}`~?")
 
 		color_scheme = gs.setting("9o_color_scheme", "")
 		if color_scheme:
@@ -218,13 +230,18 @@ class Gs9oInitCommand(sublime_plugin.TextCommand):
 
 		os.chdir(wd)
 
-class Gs9oOpenV(sublime_plugin.TextCommand):
-	def run(self, edit, wd=None, run=[], save_hist=False, focus_view=True):
-		self.view.run_command('gs9o_open', {'wd': wd, 'run': run, 'save_hist': save_hist, 'focus_view': focus_view})
-
 class Gs9oOpenCommand(sublime_plugin.TextCommand):
 	def run(self, edit, wd=None, run=[], save_hist=False, focus_view=True):
-		win = self.view.window()
+		self.view.window().run_command('gs9o_win_open', {
+			'wd': wd,
+			'run': run,
+			'save_hist': save_hist,
+			'focus_view': focus_view,
+		})
+
+class Gs9oWinOpenCommand(sublime_plugin.WindowCommand):
+	def run(self, wd=None, run=[], save_hist=False, focus_view=True):
+		win = self.window
 		wid = win.id()
 		if not wd:
 			wd = active_wd(win=win)
@@ -244,11 +261,15 @@ class Gs9oOpenCommand(sublime_plugin.TextCommand):
 		v.run_command('gs9o_init', {'wd': wd})
 
 		if run:
-			cmd = ' '.join(run)
-			v.insert(edit, v.line(v.size()-1).end(), cmd)
-			v.sel().clear()
-			v.sel().add(v.line(v.size()-1).end())
-			v.run_command('gs9o_exec', {'save_hist': save_hist})
+			v.run_command('gs9o_paste_exec', {'cmd': ' '.join(run), 'save_hist': save_hist})
+
+class Gs9oPasteExecCommand(sublime_plugin.TextCommand):
+	def run(self, edit, cmd, save_hist=False):
+		view = self.view
+		view.insert(edit, view.line(view.size()-1).end(), cmd)
+		view.sel().clear()
+		view.sel().add(view.line(view.size()-1).end())
+		view.run_command('gs9o_exec', {'save_hist': save_hist})
 
 class Gs9oOpenSelectionCommand(sublime_plugin.TextCommand):
 	def is_enabled(self):
@@ -452,6 +473,15 @@ class Gs9oPushOutput(sublime_plugin.TextCommand):
 		else:
 			view.show(r.begin())
 
+class Gs9oRunManyCommand(sublime_plugin.TextCommand):
+	def run(self, edit, wd=None, commands=[], save_hist=False, focus_view=False):
+		for run in commands:
+			self.view.run_command("gs9o_open", {
+				'run': run,
+				'wd': wd,
+				'save_hist': save_hist,
+				'focus_view': focus_view,
+			})
 
 def aliases():
 	return gs.setting('9o_aliases', {}).copy()
@@ -462,7 +492,7 @@ def builtins():
 	g = globals()
 	for k, v in g.items():
 		if k.startswith('cmd_'):
-			k = k[4:]
+			k = k[4:].replace('_', '-')
 			if k and k not in m:
 				m[k] = v
 
@@ -592,6 +622,22 @@ def cmd_go(view, edit, args, wd, rkey):
 		}
 	}
 	sublime.set_timeout(lambda: mg9.acall('sh', a, cb), 0)
+
+def cmd_cancel_replay(view, edit, args, wd, rkey):
+	cid = ''
+	av = None
+	win = view.window()
+	if win is not None:
+		av = win.active_view()
+
+		if av is not None and not av.file_name():
+			cid = '9replayv-%s' % av.id()
+
+	if not cid:
+		cid = '9replay-%s' % wd
+
+	mg9.acall('kill', {'cid': cid}, None)
+	push_output(view, rkey, '')
 
 def cmd_sh(view, edit, args, wd, rkey):
 	cid, cb = _9_begin_call('sh', view, edit, args, wd, rkey, '')

@@ -3,13 +3,13 @@ package gocode
 import (
 	"bytes"
 	"errors"
-	"strings"
 	"fmt"
 	"go/ast"
 	"go/token"
 	"io"
 	"os"
 	"strconv"
+	"strings"
 	"text/scanner"
 )
 
@@ -133,7 +133,7 @@ func (m *package_file_cache) process_package_data(data []byte) {
 	})
 
 	// hack, add ourselves to the package scope
-	m.add_package_to_scope(m.defalias, m.name)
+	m.add_package_to_scope("#"+m.defalias, m.name)
 
 	// WTF is that? :D
 	for key, value := range m.scope.entities {
@@ -302,9 +302,14 @@ func (p *gc_parser) expect_special(what string) {
 	}
 }
 
-// dotIdentifier = ( ident | '·' ) { ident | int | '·' } .
+// dotIdentifier = "?" | ( ident | '·' ) { ident | int | '·' } .
 // we're doing lexer job here, kind of
 func (p *gc_parser) parse_dot_ident() string {
+	if p.tok == '?' {
+		p.next()
+		return "?"
+	}
+
 	ident := ""
 	sep := 'x'
 	i, j := 0, -1
@@ -347,7 +352,7 @@ func (p *gc_parser) parse_exported_name() *ast.SelectorExpr {
 	pkg := p.parse_package()
 	if p.beautify {
 		if pkg.Name == "" {
-			pkg.Name = p.pfc.defalias
+			pkg.Name = "#" + p.pfc.defalias
 		} else {
 			pkg.Name = p.path_to_alias[pkg.Name]
 		}
@@ -875,7 +880,7 @@ func new_package_cache() package_cache {
 
 // Function fills 'ps' set with packages from 'packages' import information.
 // In case if package is not in the cache, it creates one and adds one to the cache.
-func (c package_cache) append_packages(ps map[string]*package_file_cache, pkgs package_imports) {
+func (c package_cache) append_packages(ps map[string]*package_file_cache, pkgs []package_import) {
 	for _, m := range pkgs {
 		if _, ok := ps[m.path]; ok {
 			continue
@@ -909,8 +914,7 @@ $$
 `)
 
 func (c package_cache) add_builtin_unsafe_package() {
-	name, _ := find_global_file("unsafe")
-	pkg := new_package_file_cache_forever(name, "unsafe")
+	pkg := new_package_file_cache_forever("unsafe", "unsafe")
 	pkg.process_package_data(g_builtin_unsafe_package)
-	c[name] = pkg
+	c["unsafe"] = pkg
 }

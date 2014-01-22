@@ -24,11 +24,6 @@
 	// the special entry "$CMD" is replaced by the actual command
 	"shell": [],
 
-	// the shell env $PATH separator. This is only useful when your shell doesn't use the native pathsep.
-	// Windows(cmd.exe) uses semi-colon(;) and Linux and OS X use colon(:)
-	// you may need to set this if you use bash(cygwin, msys) on Windows as it stilll uses colon(:)
-	"shell_pathsep": "",
-
 	// whether or not pkg files should be automatically saved when necessary (e.g. when running 9o `replay` or `go test` commands)
 	"autosave": true,
 
@@ -44,6 +39,13 @@
 	// the assumed width of the tab character (or number of spaces to indent with)
 	"fmt_tab_width": 8,
 
+	// by default fmt'ing is done by margo using `fmt_tab_intent` and `fmt_tab_width` (above)
+	// you may use a command of your choosing by setting `fmt_cmd`
+	// e.g. ["goimports"]
+	// the command will be passed, to its stdin, the contents of the file
+	// it must output the new file contents
+	"fmt_cmd": [],
+
 	// Whether or not gslint is enabled
 	"gslint_enabled": true,
 
@@ -55,6 +57,7 @@
 	// gs.types - do a typecheck using the go/types package(like the old gotype)
 	//            disabled by default until it's ready(copied from tip)
 	"lint_filter": [
+		"gs.flag.parse",
 		"gs.types"
 	],
 
@@ -166,9 +169,9 @@
 	// note: this feature only comes into effect when autocomplete was triggered after a dot, e.g. `fmt.|`
 	"autocomplete_suggest_imports": false,
 
-	// whether or not to show function call tip in the status bar as you type
+	// whether or not to show function call tip in the status bar
 	// the same can be achieved ctrl+dot,ctrl+space using an output panel
-	"autocomplete_live_hint": false,
+	"calltips": true,
 
 	// whether or not to use named imports when the basename of the import path doesn't match the pkg name
 	// e.g. gosubli.me/go-foo would be imported as:
