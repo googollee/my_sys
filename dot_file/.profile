@@ -22,24 +22,19 @@ if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
 
-cover () {
-    t="/tmp/go-cover.$$.tmp"
-    go test -coverprofile=$t $@ && go tool cover -html=$t && unlink $t
-}
-
 go () {
-	if [ "$1" == "-g" ]; then
-		shift
-		command go $*
-		return
-	fi
-	local PWD=`pwd`
-	if [ "$1" == "cover" ]; then
-		shift
-		local t="/tmp/go-cover.$$.tmp"
-		GOPATH=$PWD:$GOPATH command go test -coverprofile=$t $* && command go tool cover -html=$t && rm $t
-	fi
-	GOPATH=$PWD:$GOPATH command go $*
-	return
+  if [ "$1" == "-g" ]; then
+    shift
+    command go $*
+    return
+  fi
+  local PWD=`pwd`
+  if [ "$1" == "cover" ]; then
+    shift
+    local t="/tmp/go-cover.$$.tmp"
+    GOPATH=$PWD:$GOPATH command go test -coverprofile=$t $* && GOPATH=$PWD:$GOPATH command go tool cover -html=$t && rm $t
+    return
+  fi
+  GOPATH=$PWD:$GOPATH command go $*
+  return
 }
-
