@@ -25,10 +25,13 @@ getName = (input) ->
 	{input: input, base: "#{base}", main: "#{dir}/#{base}", output: "#{dir}/#{base}#{ext}"}
 
 getAssParameter = (name) ->
-	ass = "#{name.main}.ass"
-	ass = "#{name.main}.utf.ass" unless fs.existsSync ass		
-	return "" unless fs.existsSync ass
-	"-vf \"ass=#{ass}\""
+	ass = "#{name.main}.utf.ass"
+	ass = "#{name.main}.ass" unless fs.existsSync ass		
+	return "-vf \"ass=#{ass}\"" if fs.existsSync ass
+	srt = "#{name.main}.utf.srt"
+	srt = "#{name.main}.srt" unless fs.existsSync srt
+	return "-vf \"subtitles=#{srt}\"" if fs.existsSync srt
+	""
 
 getPassParameter = (name, pass) ->
 	return "\"#{name.output}\"" unless pass?

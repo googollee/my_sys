@@ -3,7 +3,7 @@
 	{
 		"env":
 		{
-			"GOPATH": "$HOME/Library/go_3rd"
+			"GOPATH": "$PWD:$HOME/Library/go_3rd"
 		}
 	},
 	"auto_complete": false,
