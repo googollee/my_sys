@@ -11,7 +11,7 @@ export GOPATH=~/Library/go_3rd:/usr/local/Cellar/go/1.4.2/libexec
 export NODE_PATH=/usr/local/lib/node_modules
 eval "$(boot2docker shellinit 2>/dev/null)"
 
-export PS1=' `if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\033[01;31m\]✗"; fi`\[\033[m\] @\t [\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[31m\]\n\[\033[m\]\u@\h\$ '
+export PS1='`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓✓✓✓"; else echo "\[\033[01;31m\]✗✗✗✗"; fi`\[\033[m\] @\t [\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[31m\]\n\[\033[m\]\u@\h\$ '
 
 if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
