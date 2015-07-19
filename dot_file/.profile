@@ -2,41 +2,17 @@ alias ls='ls -G'
 alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
-alias pc='proxychains4'
-
-alias nas='ssh admin@192.168.1.233'
-alias exfe='ssh lzh@exfe.com'
-alias shuady='ssh lzh@shuady.cn'
-alias nycdev='ssh zli@nycdev01.fwmrm.net'
-alias pekdev='ssh zli@pekdev201.dev.fwmrm.net'
-alias googol='ssh googol.im'
+alias qssh='ssh -p 18022 lizhaohai@10.8.0.1'
 
 defaults write -g ApplePressAndHoldEnabled -bool false
 
-export PATH=~/Library/bin:~/Library/go_3rd/bin:~/.gem/ruby/2.0.0/bin:/usr/local/share/npm/bin:$PATH
-export GOPATH=~/Library/go_3rd:$GOPATH
-export DOCKER_HOST=tcp://
+export PATH=~/Library/bin:~/Library/go_3rd/bin:/usr/local/share/npm/bin:~/.rvm/bin:/usr/local/sbin:/usr/local/bin:$PATH
+export GOPATH=~/Library/go_3rd:/usr/local/Cellar/go/1.4.2/libexec
 export NODE_PATH=/usr/local/lib/node_modules
+eval "$(boot2docker shellinit 2>/dev/null)"
 
-export PS1='@\t [\w] \[\033[32m\]`git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/on branch \1/g"`\[\033[31m\]\n\n\[\033[m\]`if [ $? == 0 ]; then echo 😃; else echo 😓; fi` \u@\h`if [ "$(id -u)" = "0" ]; then echo "# "; else echo "$ "; fi`'
+export PS1='\n`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\033[01;31m\]✗"; fi`\[\033[m\] @\t [\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[31m\]\n\[\033[m\]\u@\h\$ '
 
 if [ -f `brew --prefix`/etc/bash_completion ]; then
   . `brew --prefix`/etc/bash_completion
 fi
-
-go () {
-  if [ "$1" == "-g" ]; then
-    shift
-    command go $*
-    return
-  fi
-  local PWD=`pwd`
-  if [ "$1" == "cover" ]; then
-    shift
-    local t="/tmp/go-cover.$$.tmp"
-    GOPATH=$PWD:$GOPATH command go test -coverprofile=$t $* && GOPATH=$PWD:$GOPATH command go tool cover -html=$t && rm $t
-    return
-  fi
-  GOPATH=$PWD:$GOPATH command go $*
-  return
-}

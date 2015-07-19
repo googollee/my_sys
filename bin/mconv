@@ -6,7 +6,7 @@ path = require 'path'
 
 argv = process.argv.slice 2
 tune = "film" # "animation" # "film"
-vbit = "3000k"
+vbit = "800k"
 abit = "50k"
 
 if ! (argv?.length > 0)
@@ -40,7 +40,7 @@ getPassParameter = (name, pass) ->
 	"#{p} \"#{name.output}\""
 
 getVideoParameter = ->
-	"-c:v libx264 -b:v #{vbit} -preset:v fast -profile:v main -bf 0 -tune:v #{tune}"
+	"-c:v libx264 -b:v #{vbit} -preset:v fast -profile:v high -level:v 4.1 -bf 0 -tune:v #{tune}"
 
 getAudioParameter = ->
 	"-c:a libfdk_aac -b:a #{abit} -profile:a aac_he"
