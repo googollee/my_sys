@@ -3,11 +3,14 @@ alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
 
-defaults write -g ApplePressAndHoldEnabled -bool false
+defaults write -g ApplePressAndHoldEnabled -bool true
 
 export PATH=~/Library/bin:~/Library/go_3rd/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export GOPATH=~/Library/go_3rd
-export HOMEBREW_BOTTLE_DOMAIN=http://7xkcej.dl1.z0.glb.clouddn.com
+if test “${PS1+set}”
+then
+  export CDPATH=.:~:$GOPATH/src/github.com/googollee
+fi
 export NODE_PATH=/usr/local/lib/node_modules
 eval "$(docker-machine env dev)"
 
