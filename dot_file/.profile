@@ -3,13 +3,9 @@ alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
 
-defaults write -g ApplePressAndHoldEnabled -bool false
-
-export PATH=~/Library/bin:~/Library/go_3rd/bin:/usr/local/sbin:/usr/local/bin:$PATH
-export GOPATH=~/Library/go_3rd
-export HOMEBREW_BOTTLE_DOMAIN=http://7xkcej.dl1.z0.glb.clouddn.com
+export PATH=~/Library/local/bin:/usr/local/sbin:/usr/local/bin:$PATH
+export GOPATH=~/Library/local
 export NODE_PATH=/usr/local/lib/node_modules
-eval "$(docker-machine env dev)"
 
 export PS1='`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\033[01;31m\]✗"; fi`\t\[\033[m\] [`if [ "$(id -u)" = "0" ]; then echo "\[\033[01;31m\]"; fi`\u\[\033[m\]@\h:\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[m\]\n\$ '
 
