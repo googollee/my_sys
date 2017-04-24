@@ -1,5 +1,2 @@
-Library/Application Support/Sublime Text 3/Cache/
-Library/Application Support/Sublime Text 3/Index/
-Library/Application Support/Sublime Text 3/Local/
-Library/Application Support/Sublime Text 3/Packages/User/Package Control.cache/
-Library/Application Support/Sublime Text 3/Packages/User/Package Control.last-run
+vim/bundle/*
+!vim/bundle/Vundle.vim
