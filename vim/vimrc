@@ -18,6 +18,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'vim-syntastic/syntastic'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'Chiel92/vim-autoformat'
@@ -82,14 +83,14 @@ nnoremap <silent> <C-.> :tabnext<CR>
 nnoremap <silent> <C-w> :tabclose<CR>
 nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
 
-autocmd Filetype go nnoremap <leader>d :GoDef<CR>
-
 " General
 color Tomorrow-Night
+let g:airline_theme='lucius'
 syntax on
 set number
-autocmd BufNewFile,BufRead * setlocal noexpandtab tabstop=4 shiftwidth=4
+set cursorline
 set foldlevelstart=20
+autocmd BufNewFile,BufRead * setlocal noexpandtab tabstop=4 shiftwidth=4
 
 " YouCompleteMe
 let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -106,12 +107,10 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-" Autoformat
-
 " Go
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
 autocmd BufWrite *.go :Autoformat
-let g:syntastic_go_checkers = ['golint', 'gofmt', 'govet', 'go']
+let g:syntastic_go_checkers = ['golint', 'gofmt', 'govet', 'go', 'errcheck']
 let g:go_metalinter_enabled = []
 let g:go_auto_sameids = 1
 let g:go_highlight_types = 1
@@ -120,6 +119,7 @@ let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_generate_tags = 1
 let g:go_metalinter_autosave = 0
+autocmd Filetype go nnoremap <leader>d :GoDef<CR>
 
 " Typescript
 autocmd BufNewFile,BufRead *.ts setlocal noexpandtab tabstop=4 shiftwidth=4
