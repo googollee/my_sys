@@ -1,3 +1,12 @@
+OS=`uname`
+case ${OS} in
+  Darwin)
+    alias ls='ls -G'
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+    ;;
+esac
+
 alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'

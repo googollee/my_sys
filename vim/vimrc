@@ -77,10 +77,10 @@ nnoremap <silent> <C-h> :wincmd h<cr>
 nnoremap <silent> <C-j> :wincmd j<cr>
 nnoremap <silent> <C-k> :wincmd k<cr>
 nnoremap <silent> <C-l> :wincmd l<cr>
-nnoremap <silent> <C-n> :tabnew<CR>
-nnoremap <silent> <C-,> :tabprev<CR>
-nnoremap <silent> <C-.> :tabnext<CR>
-nnoremap <silent> <C-w> :tabclose<CR>
+nnoremap <silent> <C-A-w> :echo "ok"<cr>
+nnoremap <silent> <C-w> :tabnew<CR>
+nnoremap <silent> <C-n> :tabprev<CR>
+nnoremap <silent> <C-m> :tabnext<CR>
 nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
 
 " General
