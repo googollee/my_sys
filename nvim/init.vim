@@ -18,6 +18,7 @@ Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'Chiel92/vim-autoformat'
 Plug 'Valloric/YouCompleteMe'
+Plug 'scrooloose/nerdcommenter'
 
 Plug 'fatih/vim-go', {'for': 'go'}
 
@@ -101,6 +102,9 @@ function! ToggleNERDTreeAndTagbar()
 		NERDTree
 	endif
 endfunction
+
+" NerdCommenter
+let g:NERDSpaceDelims=1
 
 " YouCompleteMe
 let g:ycm_autoclose_preview_window_after_insertion = 1
