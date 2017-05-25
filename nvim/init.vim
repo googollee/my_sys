@@ -1,39 +1,33 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+call plug#begin('~/.config/nvim/plugged')
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+Plug 'junegunn/vim-plug'
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+Plug 'tpope/vim-sensible'
+Plug 'chriskempson/vim-tomorrow-theme'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'kien/ctrlp.vim'
+Plug 'majutsushi/tagbar'
+Plug 'scrooloose/nerdtree'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-syntastic/syntastic'
+Plug 'jiangmiao/auto-pairs'
+Plug 'Chiel92/vim-autoformat'
+Plug 'Valloric/YouCompleteMe'
 
-Plugin 'tpope/vim-sensible'
-Plugin 'chriskempson/vim-tomorrow-theme'
-Plugin 'tpope/vim-fugitive'
-Plugin 'junegunn/gv.vim'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'kien/ctrlp.vim'
-Plugin 'majutsushi/tagbar'
-Plugin 'scrooloose/nerdtree'
-Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'Chiel92/vim-autoformat'
-Plugin 'Valloric/YouCompleteMe'
+Plug 'fatih/vim-go', {'for': 'go'}
 
-Plugin 'fatih/vim-go'
+Plug 'leafgarland/typescript-vim', {'for': 'ts'}
+Plug 'Quramy/tsuquyomi', {'for': 'ts'}
 
-Plugin 'leafgarland/typescript-vim'
-Plugin 'Quramy/tsuquyomi'
+Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
+Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
+call plug#end()
 
 filetype plugin indent on    " required
 
