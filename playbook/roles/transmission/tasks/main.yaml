@@ -1,0 +1,20 @@
+---
+
+- name: pull googollee/transmission image
+  docker_image:
+    name: googollee/transmission
+    force: yes
+
+- name: register transmission.service
+  template:
+    src: transmission.service.j2
+    dest: /usr/lib/systemd/system/transmission.service
+  become: yes
+
+- name: launch transmission
+  systemd:
+    daemon_reload: yes
+    name: transmission.service
+    enabled: yes
+    state: restarted
+  become: yes

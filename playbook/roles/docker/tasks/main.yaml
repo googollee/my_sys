@@ -1,0 +1,50 @@
+---
+
+- name: be sure Docker is installed
+  apt:
+    name: docker-ce
+    update_cache: yes
+    state: latest
+  become: yes
+
+- name: pull dnsdock
+  docker_image:
+    name: googollee/dnsdock
+    force: yes
+
+- name: pull nginx
+  docker_image:
+    name: googollee/nginx
+    force: yes
+
+- name: mkdir /usr/lib/systemd/system
+  file: path=/usr/lib/systemd/system state=directory
+  become: yes
+
+- name: register dnsdock service
+  copy:
+    src: dnsdock.service
+    dest: /usr/lib/systemd/system/
+  become: yes
+
+- name: register nginx service
+  copy:
+    src: nginx.service
+    dest: /usr/lib/systemd/system/
+  become: yes
+
+- name: launch dnsdock
+  systemd:
+    daemon_reload: yes
+    name: dnsdock.service
+    enabled: yes
+    state: restarted
+  become: yes
+
+- name: launch nginx
+  systemd:
+    daemon_reload: yes
+    name: nginx.service
+    enabled: yes
+    state: restarted
+  become: yes

@@ -1,0 +1,6 @@
+---
+- hosts: webservers
+  roles:
+    - docker
+    - transmission
+    - clean

@@ -1,0 +1,13 @@
+[Unit]
+Description=Webserver frontend nginx
+After=docker.service, dnsdock.service
+Requires=docker.service, dnsdock.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/docker run --dns 172.17.0.1 --rm --name transmission --env RPC_PASSWORD="{{ lookup('env', 'TRANSMISSION_KEY') }}" -v /home/googol/transmission:/var/lib/transmission -p 51413:51413 googollee/transmission
+ExecStop=/usr/bin/docker stop transmission
+
+[Install]
+WantedBy=multi-user.target
