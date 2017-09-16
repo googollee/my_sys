@@ -5,7 +5,7 @@ alias grep='grep --color'
 alias vi='nvim'
 alias vim='nvim'
 
-export PATH=~/local/bin:$PATH
+export PATH=~/local/bin:~/Code/my_sys/bin:$PATH
 export GOPATH=~/local
 
 export PS1='`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\033[01;31m\]✗"; fi`\t\[\033[m\] [`if [ "$(id -u)" = "0" ]; then echo "\[\033[01;31m\]"; fi`\u\[\033[m\]@\h:\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[m\]\n\$ '
