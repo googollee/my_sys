@@ -1,0 +1,24 @@
+---
+
+- name: pull nginx
+  docker_image:
+    name: googollee/nginx
+    force: yes
+
+- name: mkdir /usr/lib/systemd/system
+  file: path=/usr/lib/systemd/system state=directory
+  become: yes
+
+- name: register nginx service
+  copy:
+    src: nginx.service
+    dest: /usr/lib/systemd/system/
+  become: yes
+
+- name: launch nginx
+  systemd:
+    daemon_reload: yes
+    name: nginx.service
+    enabled: yes
+    state: restarted
+  become: yes

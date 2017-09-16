@@ -1,2 +1,7 @@
-[webservers]
+[transmission]
 googol.im
+
+[etcd.global]
+etcd1.global.zhaohai.li
+etcd2.global.zhaohai.li
+etcd3.global.zhaohai.li

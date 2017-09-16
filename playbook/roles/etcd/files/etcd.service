@@ -1,0 +1,13 @@
+[Unit]
+Description=etcd for docker
+After=docker.service, network.target
+Requires=docker.service, network.target
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/docker run --rm --name etcd -p 2379:2379 -p 2380:2380 -v /etc/etcd:/etc/etcd -v /var/etcd:/var/run/etcd quay.io/coreos/etcd:v3.2 etcd --config-file /etc/etcd/etcd.conf.yaml
+ExecStop=/usr/bin/docker stop etcd
+
+[Install]
+WantedBy=multi-user.target

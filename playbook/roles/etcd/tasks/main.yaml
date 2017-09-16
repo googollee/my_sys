@@ -1,0 +1,70 @@
+---
+- name: pull image
+  docker_image:
+    name: quay.io/coreos/etcd:v3.2
+
+- name: configure directory
+  file: 
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0600
+  become: yes
+  with_items:
+    - /etc/etcd
+    - /usr/lib/systemd/system
+
+- name: copy keys
+  copy:
+    src: "{{ vars.etcd_kind }}/{{ item }}"
+    dest: "/etc/etcd/{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+  become: yes
+  with_items: 
+    - "api-ca.crt"
+    - "peer-ca.crt"
+    - "server.key"
+    - "server.crt"
+    - "{{ vars.inventory_hostname_short }}.key"
+    - "{{ vars.inventory_hostname_short }}.crt"
+  register: keys
+
+- name: copy conf
+  template:
+    src: etcd.conf.yaml.j2
+    dest: /etc/etcd/etcd.conf.yaml
+    owner: root
+    group: root
+    mode: 0600
+  become: yes
+  register: conf
+
+- name: copy systemd service
+  copy:
+    src: etcd.service
+    dest: /usr/lib/systemd/system
+    owner: root
+    group: root
+    mode: 0600
+  become: yes
+  register: service
+
+- name: reload etcd
+  systemd:
+    daemon_reload: yes
+    name: etcd.service
+    enabled: yes
+    state: restarted
+  become: yes
+  when: 
+    keys.changed or conf.changed or service.changed
+
+- name: launch etcd
+  systemd:
+    name: etcd.service
+    enabled: yes
+    state: started
+  become: yes

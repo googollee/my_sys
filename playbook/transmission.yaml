@@ -1,6 +1,8 @@
 ---
-- hosts: webservers
+- hosts: transmission
   roles:
     - docker
+    - dnsdock
+    - frontend
     - transmission
     - clean

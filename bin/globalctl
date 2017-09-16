@@ -1,0 +1,3 @@
+#!/bin/sh
+
+etcdctl --ca-file ~/Dropbox/keys/etcd.global/api-ca.crt --cert-file ~/Dropbox/keys/etcd.global/client.crt --key-file ~/Dropbox/keys/etcd.global/client.key --endpoint "https://etcd.global.zhaohai.li:2379" $*
