@@ -4,10 +4,10 @@
 name: '{{ vars.inventory_hostname_short }}'
 
 # Path to the data directory.
-data-dir: /var/run/etcd/data
+data-dir: /var/etcd/data
 
 # Path to the dedicated wal directory.
-wal-dir: /var/run/etcd/wal
+wal-dir: /var/etcd/wal
 
 # Number of committed transactions to trigger a snapshot to disk.
 snapshot-count: 10000
@@ -43,7 +43,7 @@ initial-advertise-peer-urls: https://{{ vars.inventory_hostname_short }}.global.
 
 # List of this member's client URLs to advertise to the public.
 # The URLs needed to be a comma-separated list.
-advertise-client-urls: https://etcd.global.zhaohai.li:2379
+advertise-client-urls: https://{{ vars.inventory_hostname_short }}.global.zhaohai.li:2379
 
 # Discovery URL used to bootstrap the cluster.
 discovery:
@@ -58,7 +58,7 @@ discovery-proxy:
 discovery-srv:
 
 # Initial cluster configuration for bootstrapping.
-initial-cluster: etcd1=https://etcd1.global.zhaohai.li:2380,etcd2=https://etcd2.global.zhaohai.li:2380,etcd3=https://etcd3.global.zhaohai.li:2380
+initial-cluster: master1=https://master1.global.zhaohai.li:2380,master2=https://master2.global.zhaohai.li:2380,master3=https://master3.global.zhaohai.li:2380
 
 # Initial cluster token for the etcd cluster during bootstrap.
 initial-cluster-token: '{{ lookup("env", "ETCD_GLOBAL_KEY") }}'
@@ -99,13 +99,13 @@ client-transport-security:
 
   # Client TLS using generated certificates
   # Path to the client server TLS trusted CA key file.
-  trusted-ca-file: /etc/etcd/api-ca.crt
+  trusted-ca-file: /etc/etcd/ca.pem
 
   # Path to the client server TLS cert file.
-  cert-file: /etc/etcd/server.crt
+  cert-file: /etc/etcd/api.pem
 
   # Path to the client server TLS key file.
-  key-file: /etc/etcd/server.key
+  key-file: /etc/etcd/api-key.pem
 
   auto-tls: false
 
@@ -114,13 +114,13 @@ peer-transport-security:
   client-cert-auth: true
 
   # Path to the peer server TLS trusted CA key file.
-  trusted-ca-file: /etc/etcd/peer-ca.crt
+  trusted-ca-file: /etc/etcd/ca.pem
 
   # Path to the peer server TLS cert file.
-  cert-file: /etc/etcd/{{ vars.inventory_hostname_short }}.crt
+  cert-file: /etc/etcd/peer.pem
 
   # Path to the peer server TLS key file.
-  key-file: /etc/etcd/{{ vars.inventory_hostname_short }}.key
+  key-file: /etc/etcd/peer-key.pem
 
   # Peer TLS using generated certificates.
   auto-tls: false

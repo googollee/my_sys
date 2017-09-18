@@ -1,8 +1,10 @@
 ---
 
-- name: check has docker-ce repo
-  shell: dpkg-query -l 'docker-ce'
-  ignore_errors: yes
+- name: be sure Docker is installed
+  apt:
+    name: docker-ce
+    state: latest
+  become: yes
   register: docker_exist
 
 - name: let apt support https
@@ -46,6 +48,12 @@
     groups: docker
     append: yes
   become: yes
+  register: add_group
+  when: docker_exist | failed
+
+- name: reset ssh connection to allow user changes to affect 'current login user'
+  meta: reset_connection
+  when: add_group | failed
 
 - name: be sure Docker is installed
   apt:
@@ -53,6 +61,4 @@
     update_cache: yes
     state: latest
   become: yes
-
-- name: reset ssh connection to allow user changes to affect 'current login user'
-  meta: reset_connection
+  when: docker_exist | failed

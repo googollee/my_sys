@@ -1,5 +1,6 @@
 ---
-- hosts: etcd.global
+- hosts: master.global
   roles:
+    - common
     - docker
     - etcd

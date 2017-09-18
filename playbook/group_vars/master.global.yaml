@@ -1,0 +1,2 @@
+etcd_kind: k8s.global
+etcd_version: v3.2.7

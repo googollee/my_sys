@@ -1,70 +1,101 @@
 ---
-- name: pull image
-  docker_image:
-    name: quay.io/coreos/etcd:v3.2
+- name: check etcd
+  shell: "[ `etcd --version | grep 'etcd Version' | sed 's/etcd Version: */v/'` = '{{ vars.etcd_version }}' ]"
+  register: etcd
+  ignore_errors: yes
+  failed_when: etcd | failed or etcd.rc != 0
+  changed_when: etcd | failed or etcd.rc != 0
 
-- name: configure directory
-  file: 
-    path: "{{ item }}"
-    state: directory
+- name: remove old etcd
+  shell: rm -rf /usr/local/bin/etcd*
+  become: yes
+  when: etcd | failed
+
+- name: download etcd
+  get_url:
+    url: https://github.com/coreos/etcd/releases/download/{{ vars.etcd_version }}/etcd-{{ vars.etcd_version }}-linux-amd64.tar.gz
+    dest: /tmp/etcd.tar.gz
+    mode: 0644
+  when: etcd.rc != 0
+
+- name: untar etcd
+  unarchive:
+    src: /tmp/etcd.tar.gz
+    remote_src: yes
+    dest: /tmp/
+  when: etcd | failed
+
+- name: copy etcd to bin
+  copy:
+    src: "/tmp/etcd-{{ vars.etcd_version }}-linux-amd64/{{ item }}"
+    remote_src: yes
+    dest: "/usr/local/bin/{{ item }}"
     owner: root
     group: root
-    mode: 0600
+    mode: 0755
   become: yes
-  with_items:
-    - /etc/etcd
-    - /usr/lib/systemd/system
+  with_items: 
+    - etcd
+    - etcdctl
+  when: etcd | failed
+
+- name: create config dir
+  file:
+    path: /etc/etcd
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  become: yes
+  when: etcd | failed
 
 - name: copy keys
   copy:
-    src: "{{ vars.etcd_kind }}/{{ item }}"
-    dest: "/etc/etcd/{{ item }}"
+    src: "{{ item }}"
+    dest: "/etc/etcd/{{ item | basename }}"
+    mode: 0644
     owner: root
     group: root
-    mode: 0600
   become: yes
-  with_items: 
-    - "api-ca.crt"
-    - "peer-ca.crt"
-    - "server.key"
-    - "server.crt"
-    - "{{ vars.inventory_hostname_short }}.key"
-    - "{{ vars.inventory_hostname_short }}.crt"
-  register: keys
+  with_items:
+    - "{{ vars.etcd_kind }}/root/ca.pem"
+    - "{{ vars.etcd_kind }}/etcd/api.pem"
+    - "{{ vars.etcd_kind }}/etcd/api-key.pem"
+    - "{{ vars.etcd_kind }}/etcd/peer.pem"
+    - "{{ vars.etcd_kind }}/etcd/peer-key.pem"
+  register: etcd_keys
 
 - name: copy conf
   template:
     src: etcd.conf.yaml.j2
     dest: /etc/etcd/etcd.conf.yaml
+    mode: 0644
     owner: root
     group: root
-    mode: 0600
   become: yes
-  register: conf
+  register: etcd_conf
 
-- name: copy systemd service
+- name: copy service
   copy:
     src: etcd.service
-    dest: /usr/lib/systemd/system
+    dest: /usr/lib/systemd/system/etcd.service
+    mode: 0644
     owner: root
     group: root
-    mode: 0600
   become: yes
-  register: service
+  register: etcd_service
 
-- name: reload etcd
+- name: launch
   systemd:
-    daemon_reload: yes
     name: etcd.service
+    daemon_reload: yes
     enabled: yes
     state: restarted
   become: yes
-  when: 
-    keys.changed or conf.changed or service.changed
+  when: etcd_keys.changed or etcd_conf.changed or etcd_service.changed
 
-- name: launch etcd
+- name: etcd check
   systemd:
     name: etcd.service
-    enabled: yes
     state: started
   become: yes
