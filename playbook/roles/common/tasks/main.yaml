@@ -5,6 +5,7 @@
     mode: 0755
     owner: root
     group: root
+    state: directory
   become: yes
 
 - name: add to system journal
@@ -12,4 +13,15 @@
     name: googol
     groups: sudo, systemd-journal
     append: yes
+  become: yes
+
+- name: set timezone to berlin
+  timezone:
+    name: Europe/Berlin
+  become: yes
+
+- name: install ntp
+  apt:
+    name: ntp
+    state: latest
   become: yes

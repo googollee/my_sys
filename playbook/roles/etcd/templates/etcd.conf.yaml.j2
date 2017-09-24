@@ -1,7 +1,7 @@
 # This is the configuration file for the etcd server.
 
 # Human-readable name for this member.
-name: '{{ vars.inventory_hostname_short }}'
+name: {{ vars.inventory_hostname_short }}
 
 # Path to the data directory.
 data-dir: /var/etcd/data
@@ -13,10 +13,10 @@ wal-dir: /var/etcd/wal
 snapshot-count: 10000
 
 # Time (in milliseconds) of a heartbeat interval.
-heartbeat-interval: 100
+heartbeat-interval: 1000
 
 # Time (in milliseconds) for an election to timeout.
-election-timeout: 1000
+election-timeout: 5000
 
 # Raise alarms when backend size exceeds the given quota. 0 means use the
 # default quota.

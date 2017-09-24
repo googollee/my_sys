@@ -5,6 +5,7 @@
     name: docker-ce
     state: latest
   become: yes
+  ignore_errors: yes
   register: docker_exist
 
 - name: let apt support https
@@ -42,6 +43,14 @@
   become: yes
   when: docker_exist | failed
 
+- name: be sure Docker is installed
+  apt:
+    name: docker-ce
+    update_cache: yes
+    state: latest
+  become: yes
+  when: docker_exist | failed
+
 - name: add googol to docker group
   user:
     name: googol
@@ -53,12 +62,3 @@
 
 - name: reset ssh connection to allow user changes to affect 'current login user'
   meta: reset_connection
-  when: add_group | failed
-
-- name: be sure Docker is installed
-  apt:
-    name: docker-ce
-    update_cache: yes
-    state: latest
-  become: yes
-  when: docker_exist | failed

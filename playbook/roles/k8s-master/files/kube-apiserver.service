@@ -1,0 +1,37 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=network.target
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/kube-apiserver \
+  --allow-privileged=true \
+  --apiserver-count=3 \
+  --client-ca-file=/etc/k8s/root/ca.pem \
+  --enable-swagger-ui=true \
+  --etcd-cafile=/etc/k8s/root/ca.pem \
+  --etcd-certfile=/etc/k8s/etcd/api.pem \
+  --etcd-keyfile=/etc/k8s/etcd/api-key.pem \
+  --etcd-servers=https://master1.global.zhaohai.li:2379,https://master2.global.zhaohai.li:2379,https://master3.global.zhaohai.li:2379 \
+  --event-ttl=1h \
+  --kubelet-https=true \
+  --service-account-key-file=/etc/k8s/root/ca-key.pem \
+  --service-cluster-ip-range=10.254.0.0/16 \
+  --service-node-port-range=30000-40000 \
+  --tls-cert-file=/etc/k8s/k8s/master.pem \
+  --tls-private-key-file=/etc/k8s/k8s/master-key.pem \
+  --experimental-bootstrap-token-auth \
+  --token-auth-file=/etc/k8s/k8s/master-token.csv \
+  --bind-address=0.0.0.0 \
+  --secure-port=6443
+  --insecure-bind-address=127.0.0.1
+  --insecure-port=8080
+  --v=2
+Restart=on-failure
+RestartSec=5
+Type=notify
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
