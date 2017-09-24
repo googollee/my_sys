@@ -15,6 +15,8 @@
     group: root
   items:
     - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
     - kubectl
     - kubelet
   become: yes
@@ -54,26 +56,38 @@
 
 - name: register service
   copy:
-    src: kube-apiserver.service
-    dest: /usr/lib/systemd/system/kube-apiserver.service
+    src: "{{ item }}"
+    dest: "/usr/lib/systemd/system/{{ item }}"
     mode: 0644
     owner: root
     group: root
+  items:
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
   become: yes
   register: conf
 
 - name: launch systemd
   systemd:
-    name: kube-apiserver.service
+    name: "{{ item }}"
     state: started
+  items:
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
   become: yes
   register: systemd
 
 - name: relaunch systemd
   systemd:
-    name: kube-apiserver.service
+    name: "{{ item }}"
     state: restarted
     enabled: yes
     daemon_reload: yes
+  items:
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
   become: yes
   when: bin.changed or keys.changed or conf.changed or systemd|failed
