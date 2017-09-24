@@ -1,6 +1,5 @@
 ---
 - hosts: master.global
   roles:
-    # - docker
     - etcd
     - k8s-master
