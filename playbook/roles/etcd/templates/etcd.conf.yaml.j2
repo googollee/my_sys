@@ -64,7 +64,7 @@ initial-cluster: master1=https://master1.global.zhaohai.li:2380,master2=https://
 initial-cluster-token: '{{ lookup("env", "ETCD_GLOBAL_KEY") }}'
 
 # Initial cluster state ('new' or 'existing').
-initial-cluster-state: 'new'
+initial-cluster-state: 'existing'
 
 # Reject reconfiguration requests that would cause quorum loss.
 strict-reconfig-check: false
