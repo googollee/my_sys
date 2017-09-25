@@ -91,3 +91,17 @@
     - kube-scheduler.service
   become: yes
   when: bin.changed or keys.changed or conf.changed or systemd|failed
+
+- name: check kubectl configure
+  shell: kubectl config get-contexts | grep k8s-global
+  ignore_errors: yes
+  changed_when: false
+  register: kubectl
+
+- name: configure kubectl
+  shell: |
+    kubectl config set-cluster k8s-global --server=http://127.0.0.1:8080
+    kubectl config set-credentials admin
+    kubectl config set-context k8s-global --cluster=k8s-global --user=admin
+    kubectl config use-context k8s-global
+  when: kubectl.rc != 0
