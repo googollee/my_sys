@@ -2,6 +2,7 @@
 Description=Kubernetes Controller Manager
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 After=kube-apiserver.target
+Requires=kube-apiserver.target
 
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \

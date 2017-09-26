@@ -2,6 +2,7 @@
 Description=Kubernetes API Server
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 After=network.target
+Requires=network.target
 
 [Service]
 User=root
@@ -29,7 +30,7 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --insecure-port=8080 \
   --v=2
 Restart=on-failure
-RestartSec=5
+RestartSec=30
 Type=notify
 LimitNOFILE=65536
 

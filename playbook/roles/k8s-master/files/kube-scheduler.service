@@ -2,6 +2,7 @@
 Description=Kubernetes Scheduler
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 After=kube-apiserver.service
+Requires=kube-apiserver.service
 
 [Service]
 ExecStart=/usr/local/bin/kube-scheduler \
