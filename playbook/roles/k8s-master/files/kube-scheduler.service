@@ -12,6 +12,7 @@ ExecStart=/usr/local/bin/kube-scheduler \
   --v=2
 Restart=on-failure
 RestartSec=5
+TimeoutSec=10
 
 [Install]
 WantedBy=multi-user.target

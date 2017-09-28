@@ -39,11 +39,11 @@ cors:
 
 # List of this member's peer URLs to advertise to the rest of the cluster.
 # The URLs needed to be a comma-separated list.
-initial-advertise-peer-urls: https://{{ vars.inventory_hostname_short }}.global.zhaohai.li:2380
+initial-advertise-peer-urls: https://{{ vars.inventory_hostname }}:2380
 
 # List of this member's client URLs to advertise to the public.
 # The URLs needed to be a comma-separated list.
-advertise-client-urls: https://{{ vars.inventory_hostname_short }}.global.zhaohai.li:2379
+advertise-client-urls: https://{{ vars.inventory_hostname }}:2379
 
 # Discovery URL used to bootstrap the cluster.
 discovery:

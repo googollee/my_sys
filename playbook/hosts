@@ -5,3 +5,8 @@ googol.im
 master1.global.zhaohai.li
 master2.global.zhaohai.li
 master3.global.zhaohai.li
+
+[node.global]
+master1.global.zhaohai.li
+master2.global.zhaohai.li
+master3.global.zhaohai.li

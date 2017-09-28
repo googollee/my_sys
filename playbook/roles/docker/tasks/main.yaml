@@ -59,6 +59,3 @@
   become: yes
   register: add_group
   when: docker_exist | failed
-
-- name: reset ssh connection to allow user changes to affect 'current login user'
-  meta: reset_connection

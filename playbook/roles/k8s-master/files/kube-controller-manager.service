@@ -1,8 +1,8 @@
 [Unit]
 Description=Kubernetes Controller Manager
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
-After=kube-apiserver.target
-Requires=kube-apiserver.target
+After=kube-apiserver.service
+Requires=kube-apiserver.service
 
 [Service]
 ExecStart=/usr/local/bin/kube-controller-manager \
@@ -20,6 +20,7 @@ ExecStart=/usr/local/bin/kube-controller-manager \
   --v=2
 Restart=on-failure
 RestartSec=5
+TimeoutSec=10
 
 [Install]
 WantedBy=multi-user.target

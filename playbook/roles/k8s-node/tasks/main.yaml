@@ -1,6 +1,6 @@
 ---
 - name: check bin
-  shell: "[ `kube-apiserver --version | sed 's/Kubernetes *//'` = '{{ vars.k8s_version }}' ]"
+  shell: "[ `kubelet --version | sed 's/Kubernetes *//'` = '{{ vars.k8s_version }}' ]"
   register: kube
   ignore_errors: yes
   failed_when: kube|failed or kube.rc != 0
@@ -14,10 +14,8 @@
     owner: root
     group: root
   items:
-    - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
     - kubectl
+    - kubelet
   become: yes
   when: kube|failed
   register: bin
@@ -31,8 +29,7 @@
     group: root
   items:
     - /etc/k8s/root
-    - /etc/k8s/etcd
-    - /etc/k8s/k8s
+    - /etc/k8s/node
   become: yes
 
 - name: copy key
@@ -44,26 +41,19 @@
     group: root
   items:
     - k8s.global/root/ca.pem
-    - k8s.global/root/ca-key.pem
-    - k8s.global/etcd/api.pem
-    - k8s.global/etcd/api-key.pem
-    - k8s.global/k8s/master.pem
-    - k8s.global/k8s/master-key.pem
-    - k8s.global/k8s/master-token.csv
+    - k8s.global/bootstrap.kubeconfig
   become: yes
   register: keys
 
 - name: register service
-  copy:
-    src: "{{ item }}"
+  template:
+    src: "{{ item }}.j2"
     dest: "/usr/lib/systemd/system/{{ item }}"
     mode: 0644
     owner: root
     group: root
   items:
-    - kube-apiserver.service
-    - kube-controller-manager.service
-    - kube-scheduler.service
+    - kubelet.service
   become: yes
   register: conf
 
@@ -74,9 +64,7 @@
     enabled: yes
     daemon_reload: yes
   items:
-    - kube-apiserver.service
-    - kube-controller-manager.service
-    - kube-scheduler.service
+    - kubelet.service
   become: yes
   when: bin.changed or keys.changed or conf.changed
 
@@ -85,21 +73,5 @@
     name: "{{ item }}"
     state: started
   items:
-    - kube-apiserver.service
-    - kube-controller-manager.service
-    - kube-scheduler.service
+    - kubelet.service
   become: yes
-
-- name: check kubectl configure
-  shell: kubectl config get-contexts | grep k8s-global
-  ignore_errors: yes
-  changed_when: false
-  register: kubectl
-
-- name: configure kubectl
-  shell: |
-    kubectl config set-cluster k8s-global --server=http://127.0.0.1:8080
-    kubectl config set-credentials admin
-    kubectl config set-context k8s-global --cluster=k8s-global --user=admin
-    kubectl config use-context k8s-global
-  when: kubectl.rc != 0

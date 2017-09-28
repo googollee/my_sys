@@ -1,7 +1,7 @@
 [Unit]
 Description=Webserver frontend nginx
-After=docker.service, dnsdock.service
-Requires=docker.service, dnsdock.service
+After=docker.service dnsdock.service
+Requires=docker.service dnsdock.service
 
 [Service]
 TimeoutStartSec=0

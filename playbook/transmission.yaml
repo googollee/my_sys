@@ -1,7 +1,6 @@
 ---
 - hosts: transmission
   roles:
-    - docker
     - dnsdock
     - frontend
     - transmission

@@ -30,7 +30,9 @@ ExecStart=/usr/local/bin/kube-apiserver \
   --insecure-port=8080 \
   --v=2
 Restart=on-failure
-RestartSec=30
+RestartSec=5
+TimeoutStartSec=300
+TimeoutStopSec=10
 Type=notify
 LimitNOFILE=65536
 
