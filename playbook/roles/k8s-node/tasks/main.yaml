@@ -16,6 +16,7 @@
   items:
     - kubectl
     - kubelet
+    - kube-proxy
   become: yes
   when: kube|failed
   register: bin
@@ -30,6 +31,8 @@
   items:
     - /etc/k8s/root
     - /etc/k8s/node
+    - /var/lib/kube-proxy
+    - /var/lib/kubelet
   become: yes
 
 - name: copy key
@@ -42,6 +45,7 @@
   items:
     - k8s.global/root/ca.pem
     - k8s.global/bootstrap.kubeconfig
+    - k8s.global/kube-proxy.kubeconfig
   become: yes
   register: keys
 
@@ -54,6 +58,7 @@
     group: root
   items:
     - kubelet.service
+    - kube-proxy.service
   become: yes
   register: conf
 
@@ -65,6 +70,7 @@
     daemon_reload: yes
   items:
     - kubelet.service
+    - kube-proxy.service
   become: yes
   when: bin.changed or keys.changed or conf.changed
 
@@ -74,4 +80,5 @@
     state: started
   items:
     - kubelet.service
+    - kube-proxy.service
   become: yes
