@@ -1,4 +1,4 @@
 ---
-- hosts: node.global
+- hosts: k8s.global.node
   roles:
     - k8s-node

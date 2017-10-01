@@ -1,12 +1,12 @@
 [transmission]
 googol.im
 
-[master.global]
-master1.global.zhaohai.li
-master2.global.zhaohai.li
-master3.global.zhaohai.li
+[k8s.global:children]
+k8s.global.master
+k8s.global.node
 
-[node.global]
-master1.global.zhaohai.li
-master2.global.zhaohai.li
-master3.global.zhaohai.li
+[k8s.global.master]
+master[1:3].global.zhaohai.li
+
+[k8s.global.node]
+master[1:3].global.zhaohai.li
