@@ -54,8 +54,8 @@
   register: keys
 
 - name: register service
-  copy:
-    src: "{{ item }}"
+  template:
+    src: "{{ item }}.j2"
     dest: "/usr/lib/systemd/system/{{ item }}"
     mode: 0644
     owner: root

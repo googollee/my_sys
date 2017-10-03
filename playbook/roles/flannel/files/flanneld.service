@@ -1,0 +1,12 @@
+[Unit]
+Description=flanneld for k8s
+After=network.target
+Requires=network.target
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/local/bin/flanneld --etcd-cafile /etc/flanneld/ca.pem --etcd-certfile /etc/flanneld/api.pem --etcd-keyfile /etc/flanneld/api-key.pem --etcd-endpoints "https://master1.global.zhaohai.li:2379,https://master2.global.zhaohai.li:2379,https://master3.global.zhaohai.li:2379"
+
+[Install]
+WantedBy=multi-user.target

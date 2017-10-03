@@ -1,0 +1,69 @@
+---
+- name: check bin
+  shell: "[ `flanneld --version 2>&1` = '{{ vars.flannel_version }}' ]"
+  register: bin
+  ignore_errors: yes
+  failed_when: bin|failed or bin.rc!=0
+  changed_when: bin|failed or bin.rc!=0
+
+- name: remove old bin
+  shell: rm -rf /usr/local/bin/flanneld
+  become: yes
+  when: bin|failed
+
+- name: download bin
+  get_url:
+    url: https://github.com/coreos/flannel/releases/download/{{ vars.flannel_version }}/flanneld-amd64
+    dest: /usr/local/bin/flanneld
+    mode: 0755
+  become: yes
+  when: bin|failed
+
+- name: conf dir
+  file:
+    path: /etc/flanneld
+    mode: 0755
+    owner: root
+    group: root
+    state: directory
+  become: yes
+  when: bin|failed
+
+- name: copy keys
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/flanneld/{{ item | basename }}"
+    mode: 0644
+    owner: root
+    group: root
+  become: yes
+  with_items:
+    - "{{ vars.etcd_kind }}/root/ca.pem"
+    - "{{ vars.etcd_kind }}/etcd/api.pem"
+    - "{{ vars.etcd_kind }}/etcd/api-key.pem"
+  register: keys
+
+- name: copy service
+  copy:
+    src: flanneld.service
+    dest: /usr/lib/systemd/system/flanneld.service
+    mode: 0644
+    owner: root
+    group: root
+  become: yes
+  register: service
+
+- name: launch service
+  systemd:
+    name: flanneld.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+  become: yes
+  when: keys.changed or service.changed
+
+- name: check service
+  systemd:
+    name: flanneld.service
+    state: started
+  become: yes
