@@ -17,8 +17,12 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'Chiel92/vim-autoformat'
-Plug 'Valloric/YouCompleteMe'
+Plug 'roxma/nvim-completion-manager'
 Plug 'scrooloose/nerdcommenter'
+
+Plug 'rust-lang/rust.vim', {'for': 'rust'}
+Plug 'racer-rust/vim-racer', {'for': 'rust'}
+Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
 
 Plug 'fatih/vim-go', {'for': 'go'}
 
@@ -62,9 +66,10 @@ set incsearch                                           " incremental search
 set lazyredraw                                          " Don't redraw while executing macros (good performance config)
 set magic                                               " For regular expressions turn magic on
 set autochdir                                           " 打开文件时，自动 cd 到文件所在目录
+set smarttab
+set expandtab
 set shiftwidth=2
 set softtabstop=2
-set smarttab
 set noswapfile
 
 " Key binding
@@ -84,23 +89,31 @@ nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
 " Tagbar
 let g:tagbar_left = 1
 function! ToggleNERDTreeAndTagbar()
-	" Detect which plugins are open
-	if exists('t:NERDTreeBufName')
-		let nerdtree_open = bufwinnr(t:NERDTreeBufName) != -1
-	else
-		let nerdtree_open = 0
-	endif
-	let tagbar_open = bufwinnr('__Tagbar__') != -1
+  let current_buf_name = bufname("")
+  if stridx(current_buf_name, 'NERD_tree') >= 0
+    NERDTreeClose
+    TagbarOpen fj
+  elseif stridx(current_buf_name, 'Tagbar') >= 0
+    TagbarClose
+    NERDTree
+  else
+    let open = 1
+    if exists('t:NERDTreeBufName')
+      if bufwinnr(t:NERDTreeBufName) != -1
+        let open = 0
+      endif
+    endif
+    if bufwinnr('__Tagbar__') != -1
+      let open = 0
+    endif
 
-	" Perform the appropriate action
-	if nerdtree_open
-		NERDTreeClose
-		TagbarOpen fj
-	elseif tagbar_open
-		TagbarClose
-	else
-		NERDTree
-	endif
+    if open
+      NERDTree
+    else
+      NERDTreeClose
+      TagbarClose
+    endif
+  endif
 endfunction
 
 " NerdCommenter
