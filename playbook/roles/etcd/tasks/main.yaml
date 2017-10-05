@@ -7,20 +7,20 @@
   changed_when: etcd | failed or etcd.rc != 0
 
 - name: remove old etcd
-  shell: rm -rf /usr/local/bin/etcd*
+  shell: rm -rf /usr/local/bin/etcd* /tmp/etcd*
   become: yes
   when: etcd | failed
 
 - name: download etcd
   get_url:
     url: https://github.com/coreos/etcd/releases/download/{{ vars.etcd_version }}/etcd-{{ vars.etcd_version }}-linux-amd64.tar.gz
-    dest: /tmp/etcd.tar.gz
+    dest: /tmp/etcd-{{ vars.etcd_version }}.tar.gz
     mode: 0644
   when: etcd.rc != 0
 
 - name: untar etcd
   unarchive:
-    src: /tmp/etcd.tar.gz
+    src: /tmp/etcd-{{ vars.etcd_version }}.tar.gz
     remote_src: yes
     dest: /tmp/
   when: etcd | failed
