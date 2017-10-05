@@ -85,6 +85,8 @@ nnoremap <silent> <C-w> :tabnew<CR>
 nnoremap <silent> <C-n> :tabprev<CR>
 nnoremap <silent> <C-m> :tabnext<CR>
 nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Tagbar
 let g:tagbar_left = 1
