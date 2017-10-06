@@ -5,9 +5,11 @@
     name: googollee/nginx
     force: yes
 
-- name: mkdir /usr/lib/systemd/system
-  file: path=/usr/lib/systemd/system state=directory
-  become: yes
+- name: create dl
+  file:
+    path: ~/dl
+    mode: 0755
+    state: directory
 
 - name: register nginx service
   copy:
