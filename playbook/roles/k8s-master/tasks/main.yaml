@@ -78,7 +78,7 @@
     - kube-controller-manager.service
     - kube-scheduler.service
   become: yes
-  when: bin.changed or keys.changed or conf.changed
+  when: inventory_hostname_short != 'master3' and bin.changed or keys.changed or conf.changed
 
 - name: launch systemd
   systemd:
@@ -89,6 +89,7 @@
     - kube-controller-manager.service
     - kube-scheduler.service
   become: yes
+  when: inventory_hostname_short != 'master3'
 
 - name: check kubectl configure
   shell: kubectl config get-contexts | grep k8s-global
