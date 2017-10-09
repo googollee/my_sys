@@ -1,5 +1,4 @@
 ---
 - hosts: k8s.global.node
   roles:
-    - flannel
     - k8s-node
