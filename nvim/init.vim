@@ -1,12 +1,19 @@
-call plug#begin('~/.config/nvim/plugged')
+let confdir = '~/.vim'
+if has('nvim')
+  let confdir = '~/.config/nvim'
+endif
 
-Plug 'junegunn/vim-plug'
+" Specify a directory for plugins
+call plug#begin(confdir.'/plugged')
+" Make sure you use single quotes
 
-Plug 'tpope/vim-sensible'
+Plug 'junegunn/vim-plug', { 'dir': confdir.'/autoload/vim-plug' }
+
 Plug 'chriskempson/vim-tomorrow-theme'
-Plug 'tpope/vim-fugitive'
-Plug 'junegunn/gv.vim'
-Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-fugitive' " git
+Plug 'junegunn/gv.vim' " git log
+Plug 'airblade/vim-gitgutter' " git diff
 Plug 'kien/ctrlp.vim'
 Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree'
@@ -16,22 +23,18 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
-Plug 'Chiel92/vim-autoformat'
-Plug 'roxma/nvim-completion-manager'
 Plug 'scrooloose/nerdcommenter'
-
-Plug 'rust-lang/rust.vim', {'for': 'rust'}
-Plug 'racer-rust/vim-racer', {'for': 'rust'}
-Plug 'roxma/nvim-cm-racer', {'for': 'rust'}
+Plug 'maralla/completor.vim'
 
 Plug 'fatih/vim-go', {'for': 'go'}
 
-Plug 'leafgarland/typescript-vim', {'for': 'ts'}
-Plug 'Quramy/tsuquyomi', {'for': 'ts'}
+Plug 'rust-lang/rust.vim', {'for': 'rust'}
+Plug 'racer-rust/vim-racer', {'for': 'rust'}
 
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
+" Initialize plugin system
 call plug#end()
 
 " UI设置
@@ -121,9 +124,6 @@ endfunction
 " NerdCommenter
 let g:NERDSpaceDelims=1
 
-" YouCompleteMe
-let g:ycm_autoclose_preview_window_after_insertion = 1
-
 " Syntastic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -137,30 +137,23 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
 " Go
+" :GoInstallBinaries
+let g:completor_gocode_binary = $HOME.'/local/bin/gocode'
+let g:syntastic_go_checkers = ['go']
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-autocmd BufWrite *.go :Autoformat
-let g:syntastic_go_checkers = ['golint', 'gofmt', 'govet', 'go', 'errcheck']
-let g:go_metalinter_enabled = []
+let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
+let g:go_metalinter_autosave_enabled = ['vet', 'errcheck']
+let g:go_metalinter_autosave =1 
 let g:go_auto_sameids = 1
-let g:go_highlight_types = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_generate_tags = 1
-let g:go_metalinter_autosave = 0
 autocmd Filetype go nnoremap <leader>d :GoDef<CR>
 
-" Typescript
-autocmd BufNewFile,BufRead *.ts setlocal noexpandtab tabstop=2 shiftwidth=2
-autocmd BufWrite *.ts :Autoformat
-let g:syntastic_typescript_checkers = ['tsuquyomi']
-if !exists("g:ycm_semantic_triggers")
-	let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers['typescript'] = ['.']
-let g:tsuquyomi_completion_detail = 1
-let g:tsuquyomi_shortest_import_path = 1
-let g:tsuquyomi_disable_quickfix = 1
+" Rust
+" rustup install racer rustfmt
+" rustup component add rust-src
+set hidden
+let g:racer_cmd = $HOME.'/.cargo/bin/racer'
+let g:completor_racer_binary = $HOME.'/.cargo/bin/racer'
+let g:rustfmt_autosave = 1
 
 " Markdown
 set conceallevel=1
@@ -168,3 +161,4 @@ let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_toml_frontmatter = 1
 let g:vim_markdown_json_frontmatter = 1
 let g:vim_markdown_new_list_item_indent = 2
+let g:vim_markdown_folding_level = 3
