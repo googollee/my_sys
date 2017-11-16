@@ -24,12 +24,20 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
-Plug 'maralla/completor.vim'
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 
 Plug 'fatih/vim-go', {'for': 'go'}
+Plug 'zchee/deoplete-go', {'for': 'go', 'do': 'make'}
 
 Plug 'rust-lang/rust.vim', {'for': 'rust'}
 Plug 'racer-rust/vim-racer', {'for': 'rust'}
+Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
 
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
@@ -136,14 +144,19 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
+" decomplete.vim
+let g:deoplete#enable_at_startup = 1
+
 " Go
 " :GoInstallBinaries
 let g:completor_gocode_binary = $HOME.'/local/bin/gocode'
+let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 let g:syntastic_go_checkers = ['go']
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
-let g:go_metalinter_autosave_enabled = ['vet', 'errcheck']
-let g:go_metalinter_autosave =1 
+let g:go_fmt_command = "goimports"
+let g:go_metalinter_enabled = ['golint', 'errcheck']
+let g:go_metalinter_autosave = 0
 let g:go_auto_sameids = 1
 autocmd Filetype go nnoremap <leader>d :GoDef<CR>
 
@@ -152,7 +165,7 @@ autocmd Filetype go nnoremap <leader>d :GoDef<CR>
 " rustup component add rust-src
 set hidden
 let g:racer_cmd = $HOME.'/.cargo/bin/racer'
-let g:completor_racer_binary = $HOME.'/.cargo/bin/racer'
+let g:deoplete#sources#rust#racer_binary = $HOME.'/.cargo/bin/racer'
 let g:rustfmt_autosave = 1
 
 " Markdown
