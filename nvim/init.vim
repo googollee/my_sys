@@ -85,7 +85,6 @@ set noswapfile
 
 " Key binding
 let mapleader = ","
-nmap <silent> z <leader>
 let g:ctrlp_map = '<C-p>'
 let g:ctrlp_cmd = 'CtrlP'
 nnoremap <silent> <C-h> :wincmd h<cr>
