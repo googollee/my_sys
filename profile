@@ -32,8 +32,10 @@ fi
 export GOPATH=~/.local:~/Code
 
 # Rust
-source $HOME/.cargo/env
-export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+if [ -f ~/.cargo.env ]; then
+  source ~/.cargo/env
+  export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+fi
 
 export PATH=~/.local/bin:~/Code/my_sys/bin:$PATH
 
