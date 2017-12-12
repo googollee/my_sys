@@ -32,7 +32,7 @@ fi
 export GOPATH=~/.local:~/Code
 
 # Rust
-if [ -f ~/.cargo.env ]; then
+if [ -f ~/.cargo/env ]; then
   source ~/.cargo/env
   export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 fi
