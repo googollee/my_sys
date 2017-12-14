@@ -3,7 +3,7 @@ alias ll='ls -lh'
 alias la='ls -a'
 alias grep='grep --color'
 NVIM=`which nvim 2>/dev/null`
-if [ ${NVIM} != "" ]; then
+if [ "${NVIM}" != "" ]; then
   alias vi='nvim'
   alias vim='nvim'
 fi
