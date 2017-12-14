@@ -95,6 +95,8 @@ nnoremap <silent> <C-w> :tabnew<CR>
 nnoremap <silent> <C-n> :tabprev<CR>
 nnoremap <silent> <C-m> :tabnext<CR>
 nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
+nnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
+vnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
