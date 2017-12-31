@@ -28,6 +28,11 @@ if [ "${BREW}" != "" ]; then
   fi
 fi
 
+# Docker
+if [ ! -f unix:///var/run/docker.sock ]; then
+  export DOCKER_HOST='tcp://localhost:2375'
+fi
+
 # Go
 export GOPATH=~/.local:~/Code
 
