@@ -1,12 +1,10 @@
 [transmission]
-googol.im
+01fraeu.zhaohai.li
 
-[k8s.global:children]
-k8s.global.master
-k8s.global.node
+[etcd]
+01fraeu.zhaohai.li
+01tyojp.zhaohai.li
+01sjcus.zhaohai.li
 
-[k8s.global.master]
-master[1:2].global.zhaohai.li
-
-[k8s.global.node]
-master[1:2].global.zhaohai.li
+[fancl20]
+01sjcus.zhaohai.li

@@ -1,5 +1,0 @@
----
-- hosts: k8s.global.master
-  roles:
-    - etcd
-    - k8s-master

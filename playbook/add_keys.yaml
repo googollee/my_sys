@@ -1,0 +1,15 @@
+- hosts: "{{ target }}"
+  tasks:
+    - name: set authorized key for googol
+      authorized_key:
+        user: googol
+        state: present
+        key: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHhogVPwnPtHoQ9Upqv7aPJNe0CdiEwMJR2AZV89jGwoIfBF0e5A7pTxgmGtj/x15wQZh18Zp9L9JUEj9C2h8Lc= publickey
+
+    - name: set authorized cert for googol
+      lineinfile:
+        path: ~/.ssh/authorized_keys
+        insertafter: "^ecdsa-sha2-nistp256 AAAAE2Vj.*"
+        line: ecdsa-sha2-nistp256-cert-v01@openssh.com AAAAKGVjZHNhLXNoYTItbmlzdHAyNTYtY2VydC12MDFAb3BlbnNzaC5jb20AAAAgRKbaK5RnO/qy+oHmpPTj9oz/LSkgqna1jVQqBikY6UMAAAAIbmlzdHAyNTYAAABBBHX1XTdmaa5jsueDLgvwCJN9mLt276+0msBFbPomBPh5Tgyauyk3SvqL0HgBZpX0LEx+7w1cIvIkNc9s6+16ZMQZAAAAAcjj1wAAAAEAAAAYemhhb2hhaWxAY29ycC5nb29nbGUuY29tAAAADAAAAAh6aGFvaGFpbAAAAABabuZbAAAAAFpwAMcAAAAAAAAAggAAABVwZXJtaXQtWDExLWZvcndhcmRpbmcAAAAAAAAAF3Blcm1pdC1hZ2VudC1mb3J3YXJkaW5nAAAAAAAAABZwZXJtaXQtcG9ydC1mb3J3YXJkaW5nAAAAAAAAAApwZXJtaXQtcHR5AAAAAAAAAA5wZXJtaXQtdXNlci1yYwAAAAAAAAAAAAABFwAAAAdzc2gtcnNhAAAAAwEAAQAAAQEAvN0ZS5b1OZYtoJ1PSKY4GIwjis1i4zZZ2MBdN/TEYqJIOVsfAtkDrhC9YGSVuyai/kOXwLLnFc5dVDRWHLDSBzoXEgl4QKCmNu9nneV/cMLEq4d03o1DPOSPQGJDq+wep4K9HuRwvzog6wTDA5Kp0loCnWY8MHTbt4S/O2Ro5mvF0x0ec9vccwW1KOtc/CydQiGmevBZOQOyXt8ZCZKEtSOTIPhAE55WK8agtMEsJlHRtcswSg2BJNJMSeUKgL1An/oCE9bKAME/zXVYVK5Fuv4epqccnd3sQW2T8qniOIcEDI4oybDejm6G8VPw/pxieSPbaFGftuLyR/rHS52OhwAAAQ8AAAAHc3NoLXJzYQAAAQCJzKAoo6Duo052mbKBj3J2fgWn/n4KZiMtlaFj+4raU9262SzEDb8u6MWamShmvT9463Rg8qGl2ceVIyGZ/udOyv9WnKIZCowdaDdcF+WiyRXkUdQlax+Wv8AaN5CFg0o3m+511nhW1MSti4E8CfG852SnQCyan4s1E30KODFWATnxRrUNeYhJZnXSUMjWt+c6JpduFw/g2tIc8fojVXTE7CJP1cIKyTtXhI6m0wJMi0bnEN13/t2+eEQKbJcE7G09a3Pfok1Rh0kmGXhOQNXcAg6YJyg8b6wRi50OAPQjB2JssC7uqvIC7Cg+JKPsojqTTNlVCfVS/U0h3q2N7NxW corp/normal
+
+

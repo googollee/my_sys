@@ -1,7 +1,20 @@
-alias ls='ls -G'
-alias ll='ls -lh'
-alias la='ls -a'
-alias grep='grep --color'
+alias ls='ls -G --color=auto'
+alias ll='ls -lh --color=auto'
+alias la='ls -a --color=auto'
+alias grep='grep --color=auto'
+
+[[ -z "$TMUX" && -n "$USE_TMUX" ]] && {
+    [[ -n "$ATTACH_ONLY" ]] && {
+        tmux a 2>/dev/null || {
+            cd && exec tmux
+        }
+        exit
+    }
+
+    tmux new-window -c "$PWD" 2>/dev/null && exec tmux a
+    exec tmux
+}
+
 NVIM=`which nvim 2>/dev/null`
 if [ "${NVIM}" != "" ]; then
   alias vi='nvim'
@@ -44,3 +57,4 @@ fi
 
 export PATH=~/.local/bin:~/Code/my_sys/bin:$PATH
 
+umask 0022

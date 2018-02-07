@@ -1,3 +1,0 @@
----
-- name: clean docker
-  command: docker system prune -a -f --volumes
