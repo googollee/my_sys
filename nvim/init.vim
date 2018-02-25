@@ -76,7 +76,6 @@ set comments=sl:/*,mb:\ *,elx:\ */                      " 智能注释
 set incsearch                                           " incremental search
 set lazyredraw                                          " Don't redraw while executing macros (good performance config)
 set magic                                               " For regular expressions turn magic on
-set autochdir                                           " 打开文件时，自动 cd 到文件所在目录
 set smarttab
 set expandtab
 set shiftwidth=2

@@ -47,7 +47,7 @@ if [ ! -f unix:///var/run/docker.sock ]; then
 fi
 
 # Go
-export GOPATH=~/.local:~/Code
+export GOPATH=~/.local:~/code
 
 # Rust
 if [ -f ~/.cargo/env ]; then
@@ -55,6 +55,6 @@ if [ -f ~/.cargo/env ]; then
   export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 fi
 
-export PATH=~/.local/bin:~/Code/my_sys/bin:$PATH
+export PATH=~/.local/bin:~/code/my_sys/bin:$PATH
 
 umask 0022
