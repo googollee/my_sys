@@ -1,7 +1,6 @@
-alias ls='ls -G --color=auto'
-alias ll='ls -lh --color=auto'
-alias la='ls -a --color=auto'
-alias grep='grep --color=auto'
+alias ls='ls -G'
+alias ll='ls -lh'
+alias la='ls -a'
 
 [[ -z "$TMUX" && -n "$USE_TMUX" ]] && {
     [[ -n "$ATTACH_ONLY" ]] && {
@@ -43,7 +42,7 @@ fi
 
 # Docker
 if [ ! -f unix:///var/run/docker.sock ]; then
-  export DOCKER_HOST='tcp://localhost:2375'
+  ping -c 1 localhost:2375 >/dev/null 2>&1 && export DOCKER_HOST='tcp://localhost:2375'
 fi
 
 # Go
