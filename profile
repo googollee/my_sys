@@ -1,6 +1,6 @@
-alias ls='ls -G'
-alias ll='ls -lh'
-alias la='ls -a'
+alias ls='ls -G --color=auto'
+alias ll='ls -lh --color=auto'
+alias la='ls -a --color=auto'
 
 [[ -z "$TMUX" && -n "$USE_TMUX" ]] && {
     [[ -n "$ATTACH_ONLY" ]] && {
