@@ -25,12 +25,15 @@ export PS1='`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\0
 OS=`uname`
 case ${OS} in
   Darwin)
-	  ;;
+    alias ls='ls -G'
+    alias ll='ls -lh'
+    alias la='ls -a'
+    ;;
   MINGW*)
-  	  PATH=$PATH:~/AppData/Local/Programs/Python/Python36-32/
-  	  ;;
+    PATH=$PATH:~/AppData/Local/Programs/Python/Python36-32/
+    ;;
   *)
-	  ;;
+    ;;
 esac
 
 BREW=`which brew 2>/dev/null`

@@ -110,7 +110,7 @@
         daemon_reload: yes
         enabled: yes
         state: restarted
-      items:
+      with_items:
         - ss 
         - kcp-us-ss
       become: true

@@ -15,7 +15,7 @@
       docker_image:
         name: "{{ item }}"
         force: yes
-      items:
+      with_items:
         - googollee/dnsdock
         - googollee/nginx
         - googollee/transmission
@@ -27,7 +27,7 @@
         group: googol
         mode: 0755
         state: directory
-      items:
+      with_items:
         - ~/dl
         - ~/transmission
         - ~/transmission/downloads
@@ -132,7 +132,7 @@
         daemon_reload: yes
         enabled: yes
         state: restarted
-      items:
+      with_items:
         - dnsdock
         - nginx
         - transmission

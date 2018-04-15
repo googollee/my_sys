@@ -43,7 +43,7 @@
     - name: install packages
       apt:
         name: "{{ item }}"
-      items:
+      with_items:
         - apt-transport-https
         - aptitude
         - exim4
