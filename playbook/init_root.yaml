@@ -10,16 +10,18 @@
   handlers:
     - name: restart sshd
       service: name={{ sshd }} state=restarted
+
   tasks:
     - name: install sudo
-      apt:
+      package:
         name: sudo
+        state: present
 
     - name: create user googol
       user:
         name: googol
         shell: /bin/bash
-        groups: sudo, systemd-journal
+        groups: systemd-journal
         append: yes
         password: $6$0u9r9KYF$QZ0tOZbqGjepGKVJDAPuZzSchQAx19fiCuC4R85ke00YO2QXaB6j0lf3An8g9C20G96YeE7zNpppvmDlBwK281
 
@@ -41,11 +43,14 @@
         regexp: "^#?PermitRootLogin"
         line: "PermitRootLogin no"
       notify: restart sshd
+      when: not target is match("^lg.*$")
 
     - name: disable password login
       lineinfile:
         path: "{{ sshd_config }}"
         regexp: "^#?PasswordAuthentication"
         line: "PasswordAuthentication no"
-      when: add_identity_key|success and not add_identity_key|skipped
+      when: add_identity_key is success and
+            not add_identity_key is skipped and
+            not target is match("^lg.*$")
       notify: restart sshd
