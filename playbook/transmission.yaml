@@ -62,6 +62,7 @@
           [Service]
           TimeoutStartSec=0
           Restart=always
+          RestartSec=3
           ExecStartPre=-/usr/bin/docker rm dnsdock
           ExecStart=/usr/bin/docker run --rm --name dnsdock \
             -p 172.17.0.1:53:53/udp \
@@ -87,6 +88,7 @@
           [Service]
           TimeoutStartSec=0
           Restart=always
+          RestartSec=3
           ExecStartPre=-/usr/bin/docker rm nginx
           ExecStart=/usr/bin/docker run --rm --dns 172.17.0.1 --name nginx \
             -p 80:80 -p 443:443 \
@@ -112,6 +114,7 @@
           [Service]
           TimeoutStartSec=0
           Restart=always
+          RestartSec=3
           ExecStartPre=-/usr/bin/docker rm transmission
           ExecStart=/usr/bin/docker run --dns 172.17.0.1 --rm --name transmission \
             --env RPC_PASSWORD="{{ rpc_password }}" \
