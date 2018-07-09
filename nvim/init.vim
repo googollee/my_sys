@@ -39,6 +39,12 @@ Plug 'rust-lang/rust.vim', {'for': 'rust'}
 Plug 'racer-rust/vim-racer', {'for': 'rust'}
 Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
 
+Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
+Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
+
+Plug 'posva/vim-vue', {'for': 'vue'}
+Plug 'Quramy/tsuquyomi-vue', {'for': 'vue'}
+
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
