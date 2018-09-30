@@ -42,6 +42,8 @@ Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
 Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 
+Plug 'tomlion/vim-solidity', {'for': 'solidity'}
+
 Plug 'posva/vim-vue', {'for': 'vue'}
 Plug 'Quramy/tsuquyomi-vue', {'for': 'vue'}
 
