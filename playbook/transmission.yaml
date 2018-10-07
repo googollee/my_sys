@@ -58,6 +58,7 @@
           ExecStart=/usr/bin/docker run --rm --name frontend \
             -p 80:80 -p 443:443 \
             -v /var/run/docker.sock:/var/run/docker.sock \
+            --label "traefik.frontend.rule=Host:admin.googol.im" \
             googollee/frontend
 
           [Install]
