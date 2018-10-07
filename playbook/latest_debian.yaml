@@ -1,7 +1,7 @@
 - hosts: "{{ target }}"
   vars:
     lsb: stretch
-    rkt_url: https://github.com/rkt/rkt/releases/download/v1.29.0/rkt_1.29.0-1_amd64.deb
+    rkt_url: https://github.com/rkt/rkt/releases/download/v1.30.0/rkt_1.30.0-1_amd64.deb
   tasks:
     - hostname:
         name: "{{ inventory_hostname }}"

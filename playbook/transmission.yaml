@@ -102,6 +102,12 @@
         mode: 0644
       become: true
 
+    - name: transmission settings
+      template:
+        dest: /home/googol/transmission/settings.json
+        src: transmission/settings.json
+        mode: 0644
+
     - name: add transmission service
       copy:
         dest: /usr/lib/systemd/system/transmission.service
