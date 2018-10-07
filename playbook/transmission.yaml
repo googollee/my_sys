@@ -1,23 +1,14 @@
 ---
 - hosts: transmission
   vars:
-    rpc_password: !vault |
-      $ANSIBLE_VAULT;1.1;AES256
-      63396264346236316662663239316631323139386635653530393561363931363637656434616566
-      6332643364623730363661366566633338616539326138330a336565653565333864383839326436
-      33623238653034343165343362323961316462353038646237623634396434313232633632326563
-      3236646435623036610a343033356666613632646534316336386533306435393835663334336666
-      32643561316365653535653430356633663736653334613134396131316439343764363665356532
-      34343430363366323262386266393433383935396634626639653261383337613036376535376138
-      663962313962326663363330626366663934
   tasks:
     - name: pull images
       docker_image:
         name: "{{ item }}"
         force: yes
       with_items:
-        - googollee/dnsdock
-        - googollee/nginx
+        - googollee/frontend
+        - googollee/filehost
         - googollee/transmission
 
     - name: mkdirs
@@ -50,12 +41,12 @@
         group: googol
         mode: 0644
 
-    - name: add dnsdock service
+    - name: add frontend service
       copy:
-        dest: /usr/lib/systemd/system/dnsdock.service
+        dest: /usr/lib/systemd/system/frontend.service
         content: |
           [Unit]
-          Description=DNS for docker
+          Description=Frontend
           After=docker.service
           Requires=docker.service
 
@@ -63,11 +54,11 @@
           TimeoutStartSec=0
           Restart=always
           RestartSec=3
-          ExecStartPre=-/usr/bin/docker rm dnsdock
-          ExecStart=/usr/bin/docker run --rm --name dnsdock \
-            -p 172.17.0.1:53:53/udp \
+          ExecStartPre=-/usr/bin/docker rm frontend
+          ExecStart=/usr/bin/docker run --rm --name frontend \
+            -p 80:80 -p 443:443 \
             -v /var/run/docker.sock:/var/run/docker.sock \
-            googollee/dnsdock
+            googollee/frontend
 
           [Install]
           WantedBy=multi-user.target
@@ -76,24 +67,24 @@
         mode: 0644
       become: true
 
-    - name: add nginx service
+    - name: add file host service
       copy:
-        dest: /usr/lib/systemd/system/nginx.service
+        dest: /usr/lib/systemd/system/filehost.service
         content: |
           [Unit]
-          Description=Webserver frontend nginx
-          After=docker.service dnsdock.service
-          Requires=docker.service dnsdock.service
+          Description=File host
+          After=docker.service
+          Requires=docker.service
 
           [Service]
           TimeoutStartSec=0
           Restart=always
           RestartSec=3
-          ExecStartPre=-/usr/bin/docker rm nginx
-          ExecStart=/usr/bin/docker run --rm --dns 172.17.0.1 --name nginx \
-            -p 80:80 -p 443:443 \
+          ExecStartPre=-/usr/bin/docker rm filehost
+          ExecStart=/usr/bin/docker run --rm --name filehost \
             -v /home/googol/dl:/var/www/dl \
-            googollee/nginx
+            --label "traefik.frontend.rule=Host:dl.googol.im" \
+            googollee/filehost
 
           [Install]
           WantedBy=multi-user.target
@@ -101,12 +92,6 @@
         group: root
         mode: 0644
       become: true
-
-    - name: transmission settings
-      template:
-        dest: /home/googol/transmission/settings.json
-        src: transmission/settings.json
-        mode: 0644
 
     - name: add transmission service
       copy:
@@ -114,18 +99,18 @@
         content: |
           [Unit]
           Description=transmission
-          After=docker.service dnsdock.service
-          Requires=docker.service dnsdock.service nginx.service
+          After=docker.service
+          Requires=docker.service
 
           [Service]
           TimeoutStartSec=0
           Restart=always
           RestartSec=3
           ExecStartPre=-/usr/bin/docker rm transmission
-          ExecStart=/usr/bin/docker run --dns 172.17.0.1 --rm --name transmission \
-            --env RPC_PASSWORD="{{ rpc_password }}" \
-            -p 51413:51413 -p 8888:80 \
+          ExecStart=/usr/bin/docker run --rm --name transmission \
+            -p 51413:51413 -p 51413:51413/udp \
             -v /home/googol/transmission:/var/lib/transmission \
+            --label "traefik.frontend.rule=Host:transmission.googol.im" \
             googollee/transmission
 
           [Install]
@@ -142,7 +127,7 @@
         enabled: yes
         state: restarted
       with_items:
-        - dnsdock
-        - nginx
+        - frontend
+        - filehost
         - transmission
       become: true
