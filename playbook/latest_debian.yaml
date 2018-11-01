@@ -1,7 +1,6 @@
 - hosts: "{{ target }}"
   vars:
     lsb: stretch
-    rkt_url: https://github.com/rkt/rkt/releases/download/v1.30.0/rkt_1.30.0-1_amd64.deb
   tasks:
     - hostname:
         name: "{{ inventory_hostname }}"
@@ -42,13 +41,12 @@
 
     - name: install packages
       apt:
-        name: "{{ item }}"
-      with_items:
-        - apt-transport-https
-        - aptitude
-        - exim4
-        - ntp
-        - python-pip
+        name: 
+          - apt-transport-https
+          - aptitude
+          - exim4
+          - ntp
+          - python-pip
       become: true
 
     - name: set timezone to Europe/Berlin
@@ -140,22 +138,10 @@
         state: latest
       become: true
 
-    - name: install rkt
-      apt:
-        deb: "{{ rkt_url }}"
-      become: true
-
-    - name: rkt gc
-      cron:
-        name: rkt gc
-        special_time: daily
-        job: /usr/bin/rkt image gc
-      become: true
-
-    - name: add to docker & rkt group
+    - name: add to docker group
       user:
         name: googol
-        groups: docker, rkt
+        groups: docker
         append: yes
       become: true
 
