@@ -7,8 +7,6 @@ endif
 call plug#begin(confdir.'/plugged')
 " Make sure you use single quotes
 
-Plug 'junegunn/vim-plug', { 'dir': confdir.'/autoload/vim-plug' }
-
 Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-fugitive' " git
@@ -42,13 +40,13 @@ Plug 'sebastianmarkow/deoplete-rust', {'for': 'rust'}
 Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 
-Plug 'tomlion/vim-solidity', {'for': 'solidity'}
-
 Plug 'posva/vim-vue', {'for': 'vue'}
 Plug 'Quramy/tsuquyomi-vue', {'for': 'vue'}
 
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
+
+Plug 'ledger/vim-ledger', {'for': 'ledger'}
 
 " Initialize plugin system
 call plug#end()
@@ -186,3 +184,11 @@ let g:vim_markdown_folding_level = 6
 
 " Typescript
 autocmd BufNewFile,BufRead *.ts setlocal expandtab tabstop=2 shiftwidth=2
+
+" Ledger
+autocmd BufNewFile,BufRead *.ledger set filetype=ledger
+let g:ledger_maxwidth = 80
+autocmd FileType ledger noremap { ?^\d<CR>
+autocmd FileType ledger noremap } /^\d<CR>
+autocmd FileType ledger inoremap <silent> <Tab> <C-r>=ledger#autocomplete_and_align()<CR>
+autocmd FileType ledger vnoremap <silent> <Tab> :LedgerAlign<CR>

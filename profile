@@ -2,18 +2,6 @@ alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
 
-[[ -z "$TMUX" && -n "$USE_TMUX" ]] && {
-    [[ -n "$ATTACH_ONLY" ]] && {
-        tmux a 2>/dev/null || {
-            cd && exec tmux
-        }
-        exit
-    }
-
-    tmux new-window -c "$PWD" 2>/dev/null && exec tmux a
-    exec tmux
-}
-
 NVIM=`which nvim 2>/dev/null`
 if [ "${NVIM}" != "" ]; then
   alias vi='nvim'
@@ -28,9 +16,6 @@ case ${OS} in
     alias ls='ls -G'
     alias ll='ls -lh'
     alias la='ls -a'
-    ;;
-  MINGW*)
-    PATH=$PATH:~/AppData/Local/Programs/Python/Python36-32/
     ;;
   *)
     ;;
@@ -51,12 +36,6 @@ fi
 # Go
 export GOPATH=~/.local:~/code
 
-# Rust
-if [ -f ~/.cargo/env ]; then
-  source ~/.cargo/env
-  export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
-fi
-
-export PATH=~/.local/bin:~/code/my_sys/bin:$PATH
+export PATH=~/.local/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
 
 umask 0022
