@@ -33,16 +33,6 @@ endif
 Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
 Plug 'ncm2/ncm2-go'
 
-Plug 'rust-lang/rust.vim', {'for': 'rust'}
-Plug 'racer-rust/vim-racer', {'for': 'rust'}
-Plug 'ncm2/ncm2-racer', {'for': 'rust'}
-
-Plug 'Quramy/tsuquyomi', {'for': 'typescript'}
-Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
-
-Plug 'posva/vim-vue', {'for': 'vue'}
-Plug 'Quramy/tsuquyomi-vue', {'for': 'vue'}
-
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
@@ -160,20 +150,14 @@ set completeopt=noinsert,menuone,noselect
 let g:syntastic_go_checkers = ['go']
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
 autocmd Filetype go nnoremap <leader>d :GoDef<CR>
+autocmd Filetype go nnoremap <leader>n :lnext<CR>
+autocmd Filetype go nnoremap <leader>p :lprevious<CR>
 let g:go_auto_sameids = 1
 let g:go_auto_type_info = 1
 let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:go_metalinter_autosave = 0
 let g:go_mod_fmt_autosave = 1
-
-" Rust
-" rustup install racer rustfmt
-" rustup component add rust-src
-set hidden
-let g:racer_cmd = $HOME.'/.cargo/bin/racer'
-let g:deoplete#sources#rust#racer_binary = $HOME.'/.cargo/bin/racer'
-let g:rustfmt_autosave = 1
 
 " Markdown
 set conceallevel=1
@@ -182,9 +166,6 @@ let g:vim_markdown_toml_frontmatter = 1
 let g:vim_markdown_json_frontmatter = 1
 let g:vim_markdown_new_list_item_indent = 2
 let g:vim_markdown_folding_level = 6
-
-" Typescript
-autocmd BufNewFile,BufRead *.ts setlocal expandtab tabstop=2 shiftwidth=2
 
 " Ledger
 autocmd BufNewFile,BufRead *.ledger set filetype=ledger
