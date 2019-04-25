@@ -149,7 +149,10 @@ set completeopt=noinsert,menuone,noselect
 " :GoInstallBinaries
 let g:syntastic_go_checkers = ['go']
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-autocmd Filetype go nnoremap <leader>d :GoDef<CR>
+autocmd Filetype go nmap <leader>b <Plug>(go-build)
+autocmd Filetype go nmap <leader>d <Plug>(go-def-tab)
+autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
+autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
 autocmd Filetype go nnoremap <leader>n :lnext<CR>
 autocmd Filetype go nnoremap <leader>p :lprevious<CR>
 let g:go_auto_sameids = 1
