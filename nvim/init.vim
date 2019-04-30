@@ -30,13 +30,20 @@ if !has('nvim')
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
-Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
-Plug 'ncm2/ncm2-go'
-
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
 Plug 'ledger/vim-ledger', {'for': 'ledger'}
+
+Plug 'prabirshrestha/async.vim', {'for': ['go', 'typescript']}
+Plug 'prabirshrestha/vim-lsp', {'for': ['go', 'typescript']}
+Plug 'ncm2/ncm2-vim-lsp', {'for': ['go', 'typescript']}
+
+Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
+Plug 'ncm2/ncm2-go', {'for': 'go'}
+
+Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
+Plug 'ryanolsonx/vim-lsp-typescript', {'for': 'typescript'}
 
 " Initialize plugin system
 call plug#end()
@@ -141,7 +148,7 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
 " NCM2
-let g:python3_host_prog="/usr/local/bin/python3"
+let g:python3_host_prog="python3"
 autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 
@@ -161,6 +168,24 @@ let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:go_metalinter_autosave = 0
 let g:go_mod_fmt_autosave = 1
+
+" Typescript
+autocmd BufNewFile,BufRead *.ts setlocal noexpandtab tabstop=2 shiftwidth=2
+if executable('typescript-language-server')
+  " npm i -g typescript-language-server
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'typescript-language-server',
+      \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+      \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+      \ 'whitelist': ['typescript'],
+      \ })
+  autocmd FileType typescript setlocal omnifunc=lsp#complete
+  autocmd FileType typescript nnoremap <buffer><silent> <c-]> :LspDefinition<cr>
+  autocmd FileType typescript nnoremap <buffer><silent> <c-[> :cclose<cr>
+  autocmd Filetype typescript nnoremap <buffer><silent> <c-n> :cn<CR>
+  autocmd Filetype typescript nnoremap <buffer><silent> <c-m> :cp<CR>
+  autocmd Filetype typescript nnoremap <buffer><silent> <c-\> :LspHover<CR>
+endif
 
 " Markdown
 set conceallevel=1
