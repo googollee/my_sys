@@ -160,8 +160,8 @@ autocmd Filetype go nmap <leader>b <Plug>(go-build)
 autocmd Filetype go nmap <leader>d <Plug>(go-def-tab)
 autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
 autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
-autocmd Filetype go nnoremap <leader>n :lnext<CR>
-autocmd Filetype go nnoremap <leader>p :lprevious<CR>
+autocmd Filetype go nnoremap <c-n> :lnext<CR>
+autocmd Filetype go nnoremap <c-m> :lprevious<CR>
 let g:go_auto_sameids = 1
 let g:go_auto_type_info = 1
 let g:go_fmt_autosave = 1
@@ -170,7 +170,8 @@ let g:go_metalinter_autosave = 0
 let g:go_mod_fmt_autosave = 1
 
 " Typescript
-autocmd BufNewFile,BufRead *.ts setlocal noexpandtab tabstop=2 shiftwidth=2
+let g:syntastic_typescript_checkers = ['tslint']
+autocmd BufNewFile,BufRead *.ts setlocal expandtab tabstop=2 shiftwidth=2
 if executable('typescript-language-server')
   " npm i -g typescript-language-server
   autocmd User lsp_setup call lsp#register_server({
@@ -180,10 +181,9 @@ if executable('typescript-language-server')
       \ 'whitelist': ['typescript'],
       \ })
   autocmd FileType typescript setlocal omnifunc=lsp#complete
+  autocmd Filetype typescript nnoremap <c-,> :lnext<CR>
+  autocmd Filetype typescript nnoremap <c-.> :lprevious<CR>
   autocmd FileType typescript nnoremap <buffer><silent> <c-]> :LspDefinition<cr>
-  autocmd FileType typescript nnoremap <buffer><silent> <c-[> :cclose<cr>
-  autocmd Filetype typescript nnoremap <buffer><silent> <c-n> :cn<CR>
-  autocmd Filetype typescript nnoremap <buffer><silent> <c-m> :cp<CR>
   autocmd Filetype typescript nnoremap <buffer><silent> <c-\> :LspHover<CR>
 endif
 
