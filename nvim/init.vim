@@ -83,8 +83,8 @@ nnoremap <silent> <C-l> :wincmd l<cr>
 nnoremap <silent> <C-w> :tabnew<CR>
 nnoremap <silent> <C-n> :tabprev<CR>
 nnoremap <silent> <C-m> :tabnext<CR>
-nnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
-vnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
+nnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
+vnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
@@ -123,3 +123,14 @@ let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:go_metalinter_autosave = 1
 let g:go_mod_fmt_autosave = 1
+augroup LspGo
+  au!
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'go-lang',
+    \ 'cmd': {server_info->['gopls']},
+    \ 'whitelist': ['go'],
+    \ })
+  autocmd FileType go setlocal omnifunc=lsp#complete
+  autocmd Filetype go nmap <leader>n <Plug>(lsp-next-error)
+  autocmd Filetype go nmap <leader>m <plug>(lsp-next-reference)
+augroup END
