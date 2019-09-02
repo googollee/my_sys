@@ -39,5 +39,6 @@ fi
 export GOPATH=~/.local:~/code
 
 export PATH=~/.local/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
+export EDITOR=nvim
 
 umask 0022
