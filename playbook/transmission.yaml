@@ -5,7 +5,8 @@
     - name: pull images
       docker_image:
         name: "{{ item }}"
-        force: yes
+        source: pull
+        force_source: true
       with_items:
         - googollee/frontend
         - googollee/filehost
