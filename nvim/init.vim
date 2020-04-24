@@ -13,19 +13,11 @@ Plug 'tpope/vim-fugitive' " git
 Plug 'junegunn/gv.vim' " git log
 Plug 'airblade/vim-gitgutter' " git diff
 Plug 'kien/ctrlp.vim'
-Plug 'majutsushi/tagbar'
-Plug 'scrooloose/nerdtree'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
 if !has('nvim')
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
@@ -33,16 +25,12 @@ endif
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
-Plug 'ledger/vim-ledger', {'for': 'ledger'}
+Plug 'prabirshrestha/async.vim', {'for': ['go']}
+Plug 'prabirshrestha/vim-lsp', {'for': ['go']}
+Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go']}
+Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go']}
 
-Plug 'prabirshrestha/async.vim', {'for': ['go', 'typescript']}
-Plug 'prabirshrestha/vim-lsp', {'for': ['go', 'typescript']}
-Plug 'ncm2/ncm2-vim-lsp', {'for': ['go', 'typescript']}
-
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
-Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
-Plug 'ryanolsonx/vim-lsp-typescript', {'for': 'typescript'}
+Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
 
 " Initialize plugin system
 call plug#end()
@@ -95,41 +83,10 @@ nnoremap <silent> <C-l> :wincmd l<cr>
 nnoremap <silent> <C-w> :tabnew<CR>
 nnoremap <silent> <C-n> :tabprev<CR>
 nnoremap <silent> <C-m> :tabnext<CR>
-nnoremap <silent> <C-e> :call ToggleNERDTreeAndTagbar()<CR>
-nnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
-vnoremap <silent> ,m :call NERDComment(0,"toggle")<CR>
+nnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
+vnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Tagbar
-let g:tagbar_left = 1
-function! ToggleNERDTreeAndTagbar()
-  let current_buf_name = bufname("")
-  if stridx(current_buf_name, 'NERD_tree') >= 0
-    NERDTreeClose
-    TagbarOpen fj
-  elseif stridx(current_buf_name, 'Tagbar') >= 0
-    TagbarClose
-    NERDTree
-  else
-    let open = 1
-    if exists('t:NERDTreeBufName')
-      if bufwinnr(t:NERDTreeBufName) != -1
-        let open = 0
-      endif
-    endif
-    if bufwinnr('__Tagbar__') != -1
-      let open = 0
-    endif
-
-    if open
-      NERDTree
-    else
-      NERDTreeClose
-      TagbarClose
-    endif
-  endif
-endfunction
 
 " NerdCommenter
 let g:NERDSpaceDelims=1
@@ -146,54 +103,6 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-" NCM2
-let g:python3_host_prog="python3"
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-
-" Go
-" :GoInstallBinaries
-let g:syntastic_go_checkers = ['govet']
-let g:go_info_mode = 'gopls'
-let g:go_def_mode = 'gopls'
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
-let g:go_echo_go_info = 1
-autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-autocmd Filetype go nmap <leader>b <Plug>(go-build)
-autocmd Filetype go nmap <leader>d <Plug>(go-def-tab)
-autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
-autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
-autocmd Filetype go nnoremap <c-,> :lnext<CR>
-autocmd Filetype go nnoremap <c-.> :lprevious<CR>
-augroup LspGo
-  au!
-  autocmd User lsp_setup call lsp#register_server({
-      \ 'name': 'go-lang',
-      \ 'cmd': {server_info->['gopls']},
-      \ 'whitelist': ['go'],
-      \ })
-  autocmd FileType go setlocal omnifunc=lsp#complete
-augroup END
-
-" Typescript
-let g:syntastic_typescript_checkers = ['tslint']
-autocmd BufNewFile,BufRead *.ts setlocal expandtab tabstop=2 shiftwidth=2
-if executable('typescript-language-server')
-  " npm i -g typescript-language-server
-  autocmd User lsp_setup call lsp#register_server({
-      \ 'name': 'typescript-language-server',
-      \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-      \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-      \ 'whitelist': ['typescript'],
-      \ })
-  autocmd FileType typescript setlocal omnifunc=lsp#complete
-  autocmd Filetype typescript nnoremap <c-,> :lnext<CR>
-  autocmd Filetype typescript nnoremap <c-.> :lprevious<CR>
-  autocmd FileType typescript nnoremap <buffer><silent> <c-]> :LspDefinition<cr>
-  autocmd Filetype typescript nnoremap <buffer><silent> <c-\> :LspHover<CR>
-endif
-
 " Markdown
 set conceallevel=1
 let g:vim_markdown_frontmatter = 1
@@ -202,10 +111,26 @@ let g:vim_markdown_json_frontmatter = 1
 let g:vim_markdown_new_list_item_indent = 2
 let g:vim_markdown_folding_level = 6
 
-" Ledger
-autocmd BufNewFile,BufRead *.ledger set filetype=ledger
-let g:ledger_maxwidth = 80
-autocmd FileType ledger noremap { ?^\d<CR>
-autocmd FileType ledger noremap } /^\d<CR>
-autocmd FileType ledger inoremap <silent> <Tab> <C-r>=ledger#autocomplete_and_align()<CR>
-autocmd FileType ledger vnoremap <silent> <Tab> :LedgerAlign<CR>
+" Go
+" :GoInstallBinaries
+autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
+autocmd Filetype go nmap <leader>b <Plug>(go-build)
+autocmd Filetype go nmap <leader>d <Plug>(go-def)
+autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
+autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
+let g:go_auto_type_info = 1
+let g:go_fmt_autosave = 1
+let g:go_fmt_command = "goimports"
+let g:go_metalinter_autosave = 1
+let g:go_mod_fmt_autosave = 1
+augroup LspGo
+  au!
+  autocmd User lsp_setup call lsp#register_server({
+    \ 'name': 'go-lang',
+    \ 'cmd': {server_info->['gopls']},
+    \ 'whitelist': ['go'],
+    \ })
+  autocmd FileType go setlocal omnifunc=lsp#complete
+  autocmd Filetype go nmap <leader>n <Plug>(lsp-next-error)
+  autocmd Filetype go nmap <leader>m <plug>(lsp-next-reference)
+augroup END
