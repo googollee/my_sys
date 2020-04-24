@@ -39,8 +39,7 @@ Plug 'prabirshrestha/async.vim', {'for': ['go', 'typescript']}
 Plug 'prabirshrestha/vim-lsp', {'for': ['go', 'typescript']}
 Plug 'ncm2/ncm2-vim-lsp', {'for': ['go', 'typescript']}
 
-Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
-Plug 'ncm2/ncm2-go', {'for': 'go'}
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 Plug 'leafgarland/typescript-vim', {'for': 'typescript'}
 Plug 'ryanolsonx/vim-lsp-typescript', {'for': 'typescript'}
@@ -154,20 +153,28 @@ set completeopt=noinsert,menuone,noselect
 
 " Go
 " :GoInstallBinaries
-let g:syntastic_go_checkers = ['go']
+let g:syntastic_go_checkers = ['govet']
+let g:go_info_mode = 'gopls'
+let g:go_def_mode = 'gopls'
+let g:go_fmt_autosave = 1
+let g:go_fmt_command = "goimports"
+let g:go_echo_go_info = 1
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
 autocmd Filetype go nmap <leader>b <Plug>(go-build)
 autocmd Filetype go nmap <leader>d <Plug>(go-def-tab)
 autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
 autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
-autocmd Filetype go nnoremap <c-n> :lnext<CR>
-autocmd Filetype go nnoremap <c-m> :lprevious<CR>
-let g:go_auto_sameids = 1
-let g:go_auto_type_info = 1
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
-let g:go_metalinter_autosave = 0
-let g:go_mod_fmt_autosave = 1
+autocmd Filetype go nnoremap <c-,> :lnext<CR>
+autocmd Filetype go nnoremap <c-.> :lprevious<CR>
+augroup LspGo
+  au!
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'go-lang',
+      \ 'cmd': {server_info->['gopls']},
+      \ 'whitelist': ['go'],
+      \ })
+  autocmd FileType go setlocal omnifunc=lsp#complete
+augroup END
 
 " Typescript
 let g:syntastic_typescript_checkers = ['tslint']

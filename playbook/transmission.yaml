@@ -5,11 +5,13 @@
     - name: pull images
       docker_image:
         name: "{{ item }}"
-        force: yes
+        source: pull
+        force_source: yes
       with_items:
         - googollee/frontend
         - googollee/filehost
         - googollee/transmission
+        - googollee/vote
 
     - name: mkdirs
       file:
@@ -121,6 +123,31 @@
         mode: 0644
       become: true
 
+    - name: add vote service
+      copy:
+        dest: /usr/lib/systemd/system/vote.service
+        content: |
+          [Unit]
+          Description=vote
+          After=docker.service
+          Requires=docker.service
+
+          [Service]
+          TimeoutStartSec=0
+          Restart=always
+          RestartSec=3
+          ExecStartPre=-/usr/bin/docker rm vote
+          ExecStart=/usr/bin/docker run --rm --name vote \
+            --label "traefik.frontend.rule=Host:vote.googol.im" \
+            googollee/vote
+
+          [Install]
+          WantedBy=multi-user.target
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
     - name: enable services
       systemd:
         name: "{{ item }}"
@@ -131,4 +158,5 @@
         - frontend
         - filehost
         - transmission
+        - vote
       become: true
