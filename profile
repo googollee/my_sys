@@ -2,6 +2,7 @@ alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
 alias nv='nvim'
+alias tmuxa='tmux attach'
 
 HOSTNAME="$(hostname)"
 # not company's environment
