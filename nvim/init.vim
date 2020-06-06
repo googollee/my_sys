@@ -15,7 +15,6 @@ Plug 'airblade/vim-gitgutter' " git diff
 Plug 'kien/ctrlp.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 if !has('nvim')
@@ -29,8 +28,9 @@ Plug 'prabirshrestha/async.vim', {'for': ['go']}
 Plug 'prabirshrestha/vim-lsp', {'for': ['go']}
 Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go']}
 Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go']}
+Plug 'mattn/vim-lsp-settings', {'for': ['go']}
 
-Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
+" Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
 
 " Initialize plugin system
 call plug#end()
@@ -83,25 +83,36 @@ nnoremap <silent> <C-l> :wincmd l<cr>
 nnoremap <silent> <C-w> :tabnew<CR>
 nnoremap <silent> <C-n> :tabprev<CR>
 nnoremap <silent> <C-m> :tabnext<CR>
+nnoremap <silent> <C-[> :cprevious<CR>
+nnoremap <silent> <C-]> :cnext<CR>
 nnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
 vnoremap <silent> <leader>. :call NERDComment(0,"toggle")<CR>
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" Completion selection
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
 
 " NerdCommenter
 let g:NERDSpaceDelims=1
 
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_error_symbol='x'
-let g:syntastic_warning_symbol='!'
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" AsyncComplete
+function! s:on_lsp_buffer_enabled() abort
+    autocmd BufWritePre <buffer> LspDocumentFormat
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gR <plug>(lsp-rename)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gs <plug>(lsp-document-symbol)
+    nmap <buffer> K <plug>(lsp-hover)
+    " refer to doc to add more commands
+endfunction
+augroup lsp_install
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 " Markdown
 set conceallevel=1
@@ -114,23 +125,10 @@ let g:vim_markdown_folding_level = 6
 " Go
 " :GoInstallBinaries
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-autocmd Filetype go nmap <leader>b <Plug>(go-build)
-autocmd Filetype go nmap <leader>d <Plug>(go-def)
-autocmd Filetype go nmap <leader>r <Plug>(go-run-split)
-autocmd Filetype go nmap <leader>t <Plug>(go-coverage-toggle)
-let g:go_auto_type_info = 1
-let g:go_fmt_autosave = 1
-let g:go_fmt_command = "goimports"
-let g:go_metalinter_autosave = 1
-let g:go_mod_fmt_autosave = 1
-augroup LspGo
-  au!
-  autocmd User lsp_setup call lsp#register_server({
-    \ 'name': 'go-lang',
-    \ 'cmd': {server_info->['gopls']},
-    \ 'whitelist': ['go'],
-    \ })
-  autocmd FileType go setlocal omnifunc=lsp#complete
-  autocmd Filetype go nmap <leader>n <Plug>(lsp-next-error)
-  autocmd Filetype go nmap <leader>m <plug>(lsp-next-reference)
-augroup END
+if executable('gopls')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'gopls',
+        \ 'cmd': {server_info->['gopls serve']},
+        \ 'whitelist': ['go'],
+        \ })
+endif
