@@ -30,8 +30,6 @@ Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go']}
 Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go']}
 Plug 'mattn/vim-lsp-settings', {'for': ['go']}
 
-" Plug 'fatih/vim-go', {'for': 'go', 'do': ':GoInstallBinaries'}
-
 " Initialize plugin system
 call plug#end()
 
@@ -113,6 +111,10 @@ augroup lsp_install
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
+function s:lsp_download_binaries() abort
+    !GO111MODULE=on go get golang.org/x/tools/gopls@latest
+endfunction
+command! LspDownloadBinaries call s:lsp_download_binaries()
 
 " Markdown
 set conceallevel=1
@@ -125,10 +127,8 @@ let g:vim_markdown_folding_level = 6
 " Go
 " :GoInstallBinaries
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-if executable('gopls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'gopls',
-        \ 'cmd': {server_info->['gopls serve']},
-        \ 'whitelist': ['go'],
-        \ })
-endif
+au User lsp_setup call lsp#register_server({
+    \ 'name': 'go',
+    \ 'cmd': {server_info->['gopls']},
+    \ 'whitelist': ['go'],
+    \ })
