@@ -29,6 +29,7 @@ Plug 'prabirshrestha/vim-lsp', {'for': ['go']}
 Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go']}
 Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go']}
 Plug 'mattn/vim-lsp-settings', {'for': ['go']}
+Plug 'sbdchd/neoformat', {'for': ['go']}
 
 " Initialize plugin system
 call plug#end()
@@ -112,9 +113,16 @@ augroup lsp_install
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 function s:lsp_download_binaries() abort
-    !GO111MODULE=on go get golang.org/x/tools/gopls@latest
+    !GO111MODULE=on go get -u golang.org/x/tools/gopls@latest
+    !GO111MODULE=on go get -u golang.org/x/tools/cmd/goimports@latest
 endfunction
 command! LspDownloadBinaries call s:lsp_download_binaries()
+
+" Neoformat
+augroup fmt
+  autocmd!
+  autocmd BufWritePre *.go undojoin | Neoformat
+augroup END
 
 " Markdown
 set conceallevel=1
@@ -125,7 +133,6 @@ let g:vim_markdown_new_list_item_indent = 2
 let g:vim_markdown_folding_level = 6
 
 " Go
-" :GoInstallBinaries
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
 au User lsp_setup call lsp#register_server({
     \ 'name': 'go',
