@@ -107,14 +107,16 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> K <plug>(lsp-hover)
     " refer to doc to add more commands
 endfunction
+
+" Install LSP Binaries
 augroup lsp_install
     au!
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 function s:lsp_download_binaries() abort
-    !GO111MODULE=on go get -u golang.org/x/tools/gopls@latest
-    !GO111MODULE=on go get -u golang.org/x/tools/cmd/goimports@latest
+    !GO111MODULE=on go get golang.org/x/tools/gopls@latest
+    !GO111MODULE=on go get golang.org/x/tools/cmd/goimports@latest
 endfunction
 command! LspDownloadBinaries call s:lsp_download_binaries()
 
@@ -134,8 +136,3 @@ let g:vim_markdown_folding_level = 6
 
 " Go
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
-au User lsp_setup call lsp#register_server({
-    \ 'name': 'go',
-    \ 'cmd': {server_info->['gopls']},
-    \ 'whitelist': ['go'],
-    \ })
