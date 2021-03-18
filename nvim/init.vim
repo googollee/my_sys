@@ -24,12 +24,14 @@ endif
 Plug 'godlygeek/tabular', {'for': ['md', 'markdown']}
 Plug 'plasticboy/vim-markdown', {'for': ['md', 'markdown']}
 
-Plug 'prabirshrestha/async.vim', {'for': ['go']}
-Plug 'prabirshrestha/vim-lsp', {'for': ['go']}
-Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go']}
-Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go']}
-Plug 'mattn/vim-lsp-settings', {'for': ['go']}
-Plug 'sbdchd/neoformat', {'for': ['go']}
+Plug 'ziglang/zig.vim', {'for': ['zig']}
+
+Plug 'prabirshrestha/async.vim', {'for': ['go', 'zig']}
+Plug 'prabirshrestha/vim-lsp', {'for': ['go', 'zig']}
+Plug 'prabirshrestha/asyncomplete.vim', {'for': ['go', 'zig']}
+Plug 'prabirshrestha/asyncomplete-lsp.vim', {'for': ['go', 'zig']}
+Plug 'mattn/vim-lsp-settings', {'for': ['go', 'zig']}
+Plug 'sbdchd/neoformat', {'for': ['go', 'zig']}
 
 " Initialize plugin system
 call plug#end()
@@ -136,3 +138,7 @@ let g:vim_markdown_folding_level = 6
 
 " Go
 autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=2 shiftwidth=2
+
+" Zig
+autocmd BufNewFile,BufRead *.zig setlocal noexpandtab tabstop=2 shiftwidth=2
+let g:zig_fmt_autosave = 0
