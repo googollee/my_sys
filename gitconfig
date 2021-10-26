@@ -26,3 +26,5 @@
 	tool = vimdiff
 [push]
 	default = current
+[http]
+	cookiefile = /Users/googol/.gitcookies
