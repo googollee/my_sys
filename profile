@@ -41,7 +41,7 @@ fi
 # Go
 export GOPATH=~/.local
 
-export PATH=~/.local/bin:/usr/local/opt/mysql-client/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
+export PATH=~/.local/bin:~/code/my_sys/bin:$PATH
 export EDITOR=nvim
 
 umask 0022
