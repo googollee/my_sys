@@ -44,8 +44,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/Users/googol/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/Users/googol/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/Users/googol/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/Users/googol/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/Users/googol/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
+local package_path_str = "/usr/local/google/home/zhaohail/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/usr/local/google/home/zhaohail/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/usr/local/google/home/zhaohail/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/usr/local/google/home/zhaohail/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/usr/local/google/home/zhaohail/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -71,71 +71,71 @@ time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
   ["auto-pairs"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/auto-pairs"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/auto-pairs"
   },
   ["gv.vim"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/gv.vim"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/gv.vim"
   },
   neoformat = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/neoformat"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/neoformat"
   },
   nerdcommenter = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/nerdcommenter"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/nerdcommenter"
   },
   ["nvim-compe"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/nvim-compe"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/nvim-compe"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
   },
   ["nvim-treesitter"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/nvim-treesitter"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/nvim-treesitter"
   },
   ["packer.nvim"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/packer.nvim"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/packer.nvim"
   },
   ["plenary.nvim"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/plenary.nvim"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/plenary.nvim"
   },
   ["popup.nvim"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/popup.nvim"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/popup.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/telescope.nvim"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/telescope.nvim"
   },
   ["vim-airline"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-airline"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-airline"
   },
   ["vim-airline-themes"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-airline-themes"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-airline-themes"
   },
   ["vim-fugitive"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-fugitive"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-fugitive"
   },
   ["vim-gitgutter"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-gitgutter"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-gitgutter"
   },
   ["vim-sensible"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-sensible"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-sensible"
   },
   ["vim-tomorrow-theme"] = {
     loaded = true,
-    path = "/Users/googol/.local/share/nvim/site/pack/packer/start/vim-tomorrow-theme"
+    path = "/usr/local/google/home/zhaohail/.local/share/nvim/site/pack/packer/start/vim-tomorrow-theme"
   }
 }
 
