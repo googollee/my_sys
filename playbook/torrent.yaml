@@ -1,0 +1,78 @@
+---
+- hosts: torrent
+  vars:
+
+  tasks:
+    - name: mount multimedia
+      include_tasks: tasks/mount_mutimedia.yaml
+
+    - name: add qbittorrent apt key
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: D35164147CA69FC4
+        state: present
+      become: yes
+
+    - name: add qbittorrent apt repository
+      apt_repository:
+        filename: qbittorrent
+        repo: "deb http://ppa.launchpad.net/qbittorrent-team/qbittorrent-stable/ubuntu focal main"
+        state: present
+        update_cache: yes
+      become: yes
+
+    - name: install packages
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - qbittorrent-nox
+        - nginx
+      become: yes
+
+    - name: nginx configuration
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          server {
+            listen 80;
+            server_name _ default_server;
+
+            location / {
+              proxy_set_header   X-Forwarded-For $remote_addr;
+              proxy_set_header   Host $http_host;
+              proxy_pass         "http://127.0.0.1:8080";
+            }
+          }
+      become: yes
+
+    - name: service configuration
+      copy:
+        dest: /etc/systemd/system/qbittorrent.service
+        content: |
+          [Unit]
+          Description=qBittorrent-nox service
+          Documentation=man:qbittorrent-nox(1)
+          Wants=network.target local-fs.target
+          After=network.target local-fs.target
+
+          [Service]
+          Type=exec
+          User=googol
+          # The -d flag should not be used in this setup
+          ExecStart=/usr/bin/qbittorrent-nox --webui-port=8080 --relative-fastresume --profile=/mnt/multimedia/.config
+
+          [Install]
+          WantedBy=multi-user.target
+      become: yes
+
+    - name: enable qbittorrent service
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+      with_items:
+        - qbittorrent.service
+        - nginx.service
+      become: yes

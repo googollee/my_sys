@@ -1,7 +1,3 @@
-[transmission]
-01fraeu.zhaohai.li
-
-[etcd]
-01fraeu.zhaohai.li
-01tyojp.zhaohai.li
-lg01fraeu.zhaohai.li
+[localhost]
+torrent
+mediaserver

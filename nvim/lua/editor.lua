@@ -33,9 +33,7 @@ local treesitter = feature:new('treesitter')
 treesitter.plugins = {
   {
     'nvim-treesitter/nvim-treesitter',
-    config = function ()
-      vim.cmd ':TSUpdate'
-    end,
+    run = ':TSUpdate',
   }
 }
 treesitter.setup = function()
