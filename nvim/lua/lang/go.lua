@@ -23,11 +23,19 @@ common = require('lang/common')
 local feature = require('fur.feature')
 
 local f = feature:new('lang.go')
+f.plugins = {
+  'ray-x/go.nvim',
+}
 f.source = 'lua/lang/go.lua'
 f.setup = function()
+  -- vim.fn.system({'go', 'install', 'golang.org/x/tools/cmd/goimports@latest'})
+  -- vim.fn.system({'go', 'install', 'golang.org/x/tools/gopls@latest'})
+
+  require('go').setup()
+
   augroup('fmt', {
     autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-    autocmd('BufWritePre', '*.go', 'undojoin | Neoformat'),
+    autocmd('BufWritePre', '*.go', "lua require('go.format').goimport()"),
   })
 
   local nvim_lsp = require 'lspconfig'

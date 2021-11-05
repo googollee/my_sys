@@ -17,6 +17,26 @@ fur.features = {
   require('lsp-settings'),
 
   require('lang/go'),
+  require('lang/cider'),
   require('lang/markdown'),
 }
 fur.start()
+
+lsp_binaries_cmds = {
+  {'go', 'install', 'golang.org/x/tools/gopls@latest'},
+}
+
+function lsp_binaries()
+  for _, cmd in pairs(lsp_binaries_cmds) do
+    log = ''
+    for _, p in pairs(cmd) do
+      log = log .. p .. ' '
+    end
+    print(log)
+    vim.fn.system(cmd)
+  end
+end
+
+vim.cmd([[
+command! LspBinaries lua lsp_binaries()
+]])

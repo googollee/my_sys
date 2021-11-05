@@ -7,9 +7,9 @@ f.plugins = {
 }
 
 f.setup = function()
-  vim.o.completeopt = 'menuone,noinsert,noselect'
-  vim.g.completion_matching_smart_case = 1
-  vim.g.completion_matching_strategy_list = {'exact', 'substring', 'fuzzy', 'all'}
+  vim.o.completeopt = 'menuone,noselect'
+  -- vim.g.completion_matching_smart_case = 1
+  -- vim.g.completion_matching_strategy_list = {'exact', 'substring', 'fuzzy', 'all'}
 
   require'compe'.setup {
     enabled = true;
@@ -42,7 +42,7 @@ f.setup = function()
       -- vsnip = true;
       -- ultisnips = true;
       -- luasnip = true;
-      omni = false;
+      omni = true;
     };
   }
 

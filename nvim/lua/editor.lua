@@ -10,8 +10,8 @@ commenter.setup = function()
   vim.g.NERDSpaceDelims = 1
 end
 commenter.mappings = {
-  {'n', '<leader>,', ':call NERDComment(0, "toggle")<CR>'},
-  {'v', '<leader>,', ':call NERDComment(0, "toggle")<CR>'},
+  {'n', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>'},
+  {'v', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>'},
 }
 
 -- UI
@@ -38,11 +38,25 @@ treesitter.plugins = {
 }
 treesitter.setup = function()
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = {"go", "gomod", "lua", "bash"},
+    ensure_installed = 'maintained',
     highlight = {
       enable = true,
     },
+    incremental_selection = {
+      enable = true,
+      keymaps = {
+        init_selection = "gnn",
+        node_incremental = "grn",
+        scope_incremental = "grc",
+        node_decremental = "grm",
+      },
+    },
+    indent = {
+      enable = true
+    },
   }
+  vim.wo.foldmethod = 'expr'
+  vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
 end
 
 -- Editor
@@ -54,7 +68,6 @@ editor.source = 'lua/editor.lua'
 editor.plugins = {
   'tpope/vim-sensible',
   'jiangmiao/auto-pairs',
-  'sbdchd/neoformat',
 }
 
 editor.setup = function()
@@ -62,6 +75,7 @@ editor.setup = function()
   local g = vim.g
   local opt = vim.opt
 
+  opt.foldenable = false
   opt.number = true
   opt.showmatch = true
   opt.cursorline = true
