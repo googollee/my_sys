@@ -1,14 +1,4 @@
-function autocmd(event, pattern, command)
-  return string.format('autocmd %s %s %s', event, pattern, command)
-end
-
-common = require('lang/common')
-
-local feature = require('fur.feature')
-
-local f = feature:new('lang.cider')
-f.source = 'lua/lang/cider.lua'
-f.setup = function()
+return function(packer)
   local nvim_lsp = require 'lspconfig'
   local configs = require 'lspconfig/configs'
 
@@ -24,14 +14,13 @@ f.setup = function()
   end
 
   cfg = {
-    on_attach = common.on_attach,
+    on_attach = require('lsp').on_attach,
   }
   nvim_lsp['ciderlsp'].setup(cfg)
 
+  local util = require('util')
+  local autocmd = util.autocmd
   autocmd("Filetype", "java", "set omnifunc=v:lua.vim.lsp.omnifunc")
   autocmd("Filetype", "proto", "set omnifunc=v:lua.vim.lsp.omnifunc")
   autocmd("Filetype", "go", "set omnifunc=v:lua.vim.lsp.omnifunc")
 end
-
-return f
-

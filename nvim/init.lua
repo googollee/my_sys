@@ -1,42 +1,24 @@
-local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/fur.nvim'
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.fn.system({ 'git', 'clone', '--depth=1', 'https://github.com/nanozuki/fur.nvim', install_path })
-  vim.cmd('packadd fur.nvim')
+local fn = vim.fn
+local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+if fn.empty(fn.glob(install_path)) > 0 then
+  packer_bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
 end
 
-vim.cmd([[command! FurReload      lua require('fur').reload()]])
-vim.cmd([[command! FurPlugCompile lua require('fur').plug_compile()]])
-vim.cmd([[command! FurPlugSync    lua require('fur').plug_sync()]])
+require('packer').startup(function(p)
+  require('editor')(p)
+  require('telescope')(p)
+  require('git')(p)
+  require('treesitter')(p)
+  require('lsp').init(p)
+  require('nvim-compe')(p)
 
-local fur = require('fur')
-fur.features = {
-  require('editor'),
-  require('telescope'),
-  require('git'),
-  require('nvim-compe'),
-  require('lsp-settings'),
+  require('lang/go')(p)
+  require('lang/markdown')(p)
 
-  require('lang/go'),
-  require('lang/cider'),
-  require('lang/markdown'),
-}
-fur.start()
-
-lsp_binaries_cmds = {
-  {'go', 'install', 'golang.org/x/tools/gopls@latest'},
-}
-
-function lsp_binaries()
-  for _, cmd in pairs(lsp_binaries_cmds) do
-    log = ''
-    for _, p in pairs(cmd) do
-      log = log .. p .. ' '
-    end
-    print(log)
-    vim.fn.system(cmd)
+  -- Automatically set up your configuration after cloning packer.nvim
+  -- Put this at the end after all plugins
+  if packer_bootstrap then
+    require('packer').sync()
   end
-end
+end)
 
-vim.cmd([[
-command! LspBinaries lua lsp_binaries()
-]])

@@ -1,126 +1,76 @@
-local feature = require('fur.feature')
+return function(packer)
+  packer 'tpope/vim-sensible'
+  packer 'jiangmiao/auto-pairs'
 
--- NerdCommenter
-
-local commenter = feature:new('commenter')
-commenter.plugins = {
-  'scrooloose/nerdcommenter',
-}
-commenter.setup = function()
-  vim.g.NERDSpaceDelims = 1
-end
-commenter.mappings = {
-  {'n', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>'},
-  {'v', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>'},
-}
-
--- UI
-
-local ui = feature:new('ui')
-ui.plugins = {
-  'chriskempson/vim-tomorrow-theme',
-  'vim-airline/vim-airline',
-  'vim-airline/vim-airline-themes',
-}
-ui.setup = function()
-  vim.cmd 'color Tomorrow-Night'
-  vim.g.airline_theme = 'lucius'
-end
-
--- TreeSitter
-
-local treesitter = feature:new('treesitter')
-treesitter.plugins = {
-  {
-    'nvim-treesitter/nvim-treesitter',
-    run = ':TSUpdate',
+  packer {
+    'vim-airline/vim-airline',
+    requires = {
+      'vim-airline/vim-airline-themes',
+    },
+    config = function() 
+      vim.g.airline_theme = 'lucius'
+    end,
   }
-}
-treesitter.setup = function()
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = 'maintained',
-    highlight = {
-      enable = true,
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "gnn",
-        node_incremental = "grn",
-        scope_incremental = "grc",
-        node_decremental = "grm",
-      },
-    },
-    indent = {
-      enable = true
-    },
+
+  packer {
+    'chriskempson/vim-tomorrow-theme',
+    config = function()
+      vim.cmd 'color Tomorrow-Night'
+    end,
   }
-  vim.wo.foldmethod = 'expr'
-  vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-end
 
--- Editor
+  packer {
+    'scrooloose/nerdcommenter',
+    config = function()
+      vim.g.NERDSpaceDelims = 1
 
-local editor = feature:new('editor')
+      local util = require('util')
+      util.noremap('n', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
+      util.noremap('v', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
+    end,
+  }
 
-editor.source = 'lua/editor.lua'
-
-editor.plugins = {
-  'tpope/vim-sensible',
-  'jiangmiao/auto-pairs',
-}
-
-editor.setup = function()
-  local cmd = vim.cmd
-  local g = vim.g
-  local opt = vim.opt
-
-  opt.foldenable = false
-  opt.number = true
-  opt.showmatch = true
-  opt.cursorline = true
-  opt.expandtab = true
-  opt.ignorecase = true
-  opt.smartcase = true
-  opt.list = true
-  opt.shiftround = true
-  opt.shiftwidth = 2
-  opt.tabstop = 2
-  opt.backspace = 'indent,eol,start'
-  opt.autoindent = true
-  opt.smartindent = true
-  opt.modeline = true
-  opt.incsearch = true
-  opt.lazyredraw = true
-  opt.magic = true
-  opt.smarttab = true
-  opt.enc = 'utf-8'
-  opt.fenc = 'utf-8'
-  opt.conceallevel = 1
+  vim.opt.foldenable = false
+  vim.opt.number = true
+  vim.opt.showmatch = true
+  vim.opt.cursorline = true
+  vim.opt.expandtab = true
+  vim.opt.ignorecase = true
+  vim.opt.smartcase = true
+  vim.opt.list = true
+  vim.opt.shiftround = true
+  vim.opt.shiftwidth = 2
+  vim.opt.tabstop = 2
+  vim.opt.backspace = 'indent,eol,start'
+  vim.opt.autoindent = true
+  vim.opt.smartindent = true
+  vim.opt.modeline = true
+  vim.opt.incsearch = true
+  vim.opt.lazyredraw = true
+  vim.opt.magic = true
+  vim.opt.smarttab = true
+  vim.opt.enc = 'utf-8'
+  vim.opt.fenc = 'utf-8'
+  vim.opt.conceallevel = 1
 
   -- Color scheme
-  cmd 'syntax on'
+  vim.cmd 'syntax on'
 
   -- Filetype
-  cmd 'filetype on'
-  cmd 'filetype plugin on'
-  cmd 'filetype indent on'
+  vim.cmd 'filetype on'
+  vim.cmd 'filetype plugin on'
+  vim.cmd 'filetype indent on'
 
-  g.mapleader = ','
+  vim.g.mapleader = ','
+
+  local util = require('util')
+  util.noremap('n', '<C-h>', ':wincmd h<CR>')
+  util.noremap('n', '<C-j>', ':wincmd j<CR>')
+  util.noremap('n', '<C-k>', ':wincmd k<CR>')
+  util.noremap('n', '<C-l>', ':wincmd l<CR>')
+  util.noremap('n', '<C-w>', ':tabnew<CR>')
+  util.noremap('n', '<C-n>', ':tabprev<CR>')
+  util.noremap('n', '<C-m>', ':tabnext<CR>')
+  util.noremap('n', '<C-[>', ':cprevious<CR>')
+  util.noremap('n', '<C-]>', ':cnext<CR>')
 end
-
-editor.mappings = {
-  {'n', '<C-h>', ':wincmd h<CR>'},
-  {'n', '<C-j>', ':wincmd j<CR>'},
-  {'n', '<C-k>', ':wincmd k<CR>'},
-  {'n', '<C-l>', ':wincmd l<CR>'},
-  {'n', '<C-w>', ':tabnew<CR>'},
-  {'n', '<C-n>', ':tabprev<CR>'},
-  {'n', '<C-m>', ':tabnext<CR>'},
-  {'n', '<C-[>', ':cprevious<CR>'},
-  {'n', '<C-]>', ':cnext<CR>'},
-}
-
-editor.children = { commenter, ui, treesitter }
-
-return editor

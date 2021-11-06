@@ -1,0 +1,13 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: upgrade brew
+      shell: |
+        brew update
+        brew upgrade
+
+    - name: update go binaries
+      shell: |
+        go install golang.org/x/tools/gopls@latest
+        go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest

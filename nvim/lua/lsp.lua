@@ -1,39 +1,39 @@
-local function vim_kv_args(args)
-  local arg_strs = {}
-  for key, arg in pairs(args) do
-    table.insert(arg_strs, string.format('%s=%s', key, arg))
-  end
-  return table.concat(arg_strs, " ")
-end
-
-function augroup(name, autocmds)
-  local cmds = {
-    string.format('augroup %s', name),
-    'autocmd!',
-  }
-
-  for _, cmd in ipairs(autocmds) do
-    -- table.insert(cmds, M.autocmd(cmd))
-    table.insert(cmds, cmd)
-  end
-
-  table.insert(cmds, 'augroup end')
-  local cmd_strs = table.concat(cmds, '\n')
-  vim.api.nvim_exec(cmd_strs, true)
-end
-
-function autocmd(event, pattern, command)
-  return string.format('autocmd %s %s %s', event, pattern, command)
-end
-
-function set_highlight(group, args)
-  local arg = vim_kv_args(args)
-  vim.cmd(string.format('hi %s %s', group, arg))
-end
-
 local M = {}
 
+function M.init(packer)
+  packer {
+    'neovim/nvim-lspconfig',
+    config = function()
+      local function vim_kv_args(args)
+        local arg_strs = {}
+        for key, arg in pairs(args) do
+          table.insert(arg_strs, string.format('%s=%s', key, arg))
+        end
+        return table.concat(arg_strs, " ")
+      end
+
+      local function sign_define(name, args)
+        local arg = vim_kv_args(args)
+        vim.cmd(string.format('sign define %s %s', name, arg))
+      end
+
+      sign_define('LspDiagnosticsSignError',
+        {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
+      sign_define('LspDiagnosticsSignWarning',
+        {text='!', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+      sign_define('LspDiagnosticsSignInformation',
+        {text='~', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
+      sign_define('LspDiagnosticsSignHint',
+        {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+    end,
+  }
+end
+
 function M.on_attach(client, bufnr)
+  local util = require('util')
+  local set_highlight = util.set_highlight
+  local augroup = util.augroup
+  local autocmd = util.autocmd
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
