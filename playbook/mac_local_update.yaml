@@ -6,6 +6,7 @@
       shell: |
         brew update
         brew upgrade
+        brew cleanup
 
     - name: update go binaries
       shell: |
