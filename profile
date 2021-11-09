@@ -1,8 +1,9 @@
 alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
+alias vi='nvim'
 alias nv='nvim'
-alias tmuxa='tmux attach'
+alias txa='tmx2 attach'
 alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
 
 HOSTNAME="$(hostname)"

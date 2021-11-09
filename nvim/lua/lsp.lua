@@ -27,9 +27,12 @@ function M.init(packer)
         {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
     end,
   }
+  packer "ray-x/lsp_signature.nvim"
 end
 
 function M.on_attach(client, bufnr)
+  require "lsp_signature".on_attach()
+
   local util = require('util')
   local set_highlight = util.set_highlight
   local augroup = util.augroup

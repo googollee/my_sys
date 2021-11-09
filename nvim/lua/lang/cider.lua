@@ -18,9 +18,9 @@ return function(packer)
   }
   nvim_lsp['ciderlsp'].setup(cfg)
 
-  local util = require('util')
-  local autocmd = util.autocmd
-  autocmd("Filetype", "java", "set omnifunc=v:lua.vim.lsp.omnifunc")
-  autocmd("Filetype", "proto", "set omnifunc=v:lua.vim.lsp.omnifunc")
-  autocmd("Filetype", "go", "set omnifunc=v:lua.vim.lsp.omnifunc")
+  -- local util = require('util')
+  -- local autocmd = util.autocmd
+  -- autocmd("Filetype", "java", "set omnifunc=v:lua.vim.lsp.omnifunc")
+  -- autocmd("Filetype", "proto", "set omnifunc=v:lua.vim.lsp.omnifunc")
+  -- autocmd("Filetype", "go", "set omnifunc=v:lua.vim.lsp.omnifunc")
 end

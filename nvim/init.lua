@@ -14,6 +14,7 @@ require('packer').startup(function(p)
 
   require('lang/go')(p)
   require('lang/markdown')(p)
+  require('lang/cider')(p)
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
