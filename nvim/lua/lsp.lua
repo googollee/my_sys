@@ -31,7 +31,12 @@ function M.init(packer)
 end
 
 function M.on_attach(client, bufnr)
-  require "lsp_signature".on_attach()
+  require "lsp_signature".on_attach({
+    floating_window_above_cur_line = true,
+    hint_enable = false,
+    hint_prefix = "P: ",
+    timer_interval = 100,
+  }, bufnr)
 
   local util = require('util')
   local set_highlight = util.set_highlight
