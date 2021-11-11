@@ -4,6 +4,7 @@ return function(packer)
 
     config = function()
       require('go').setup()
+
       local util = require('util')
       local augroup = util.augroup
       local autocmd = util.autocmd

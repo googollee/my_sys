@@ -12,8 +12,8 @@ require('packer').startup(function(p)
   require('lsp').init(p)
   require('nvim-compe')(p)
 
-  require('lang/go')(p)
   require('lang/markdown')(p)
+  require('lang/go')(p)
   require('lang/cider')(p)
 
   -- Automatically set up your configuration after cloning packer.nvim

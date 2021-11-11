@@ -1,4 +1,8 @@
 return function(packer)
+  if vim.fn.expand('%:p'):find('/google/src/cloud', 1) == nil then
+    return
+  end
+
   local nvim_lsp = require 'lspconfig'
   local configs = require 'lspconfig/configs'
 
@@ -17,10 +21,4 @@ return function(packer)
     on_attach = require('lsp').on_attach,
   }
   nvim_lsp['ciderlsp'].setup(cfg)
-
-  -- local util = require('util')
-  -- local autocmd = util.autocmd
-  -- autocmd("Filetype", "java", "set omnifunc=v:lua.vim.lsp.omnifunc")
-  -- autocmd("Filetype", "proto", "set omnifunc=v:lua.vim.lsp.omnifunc")
-  -- autocmd("Filetype", "go", "set omnifunc=v:lua.vim.lsp.omnifunc")
 end
