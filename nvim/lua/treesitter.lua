@@ -25,4 +25,13 @@ return function(packer)
       vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
     end
   }
+
+  packer {
+    'windwp/nvim-autopairs',
+    config = function()
+      require("nvim-autopairs").setup({
+        check_ts = true,
+      })
+    end
+  }
 end

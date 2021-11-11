@@ -1,6 +1,5 @@
 return function(packer)
   packer 'tpope/vim-sensible'
-  packer 'jiangmiao/auto-pairs'
 
   packer {
     'vim-airline/vim-airline',
