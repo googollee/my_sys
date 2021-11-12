@@ -14,7 +14,7 @@ return function(packer)
   packer {
     'chriskempson/vim-tomorrow-theme',
     config = function()
-      vim.cmd 'set termguicolors'
+      -- vim.cmd 'set termguicolors'
       vim.cmd 'color Tomorrow-Night'
       vim.cmd 'hi LspSignatureActiveParameter guifg=NONE ctermfg=NONE guibg=#1d1f21 ctermbg=53 gui=Bold,underline,Italic cterm=Bold,underline,Italic guisp=#fbec9f'
     end,
