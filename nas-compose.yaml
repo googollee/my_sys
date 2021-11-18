@@ -13,10 +13,10 @@ services:
     - PGID=100
     - WEBUI_PORT=8888
     network_mode: host
-    ports:
-    - 16881:16881
-    - 16881:16881/udp
-    - 8888:8888
+    # ports:
+    # - 16881:16881
+    # - 16881:16881/udp
+    # - 8888:8888
     deploy:
       resources:
         limits:
@@ -37,15 +37,15 @@ services:
     - PLEX_GID=100
     - PLEX_CLAIM=claim-wtCzztMRKA52KWqk97vU
     network_mode: host
-    ports:
-    - 32400:32400/tcp
-    - 3005:3005/tcp
-    - 8324:8324/tcp
-    - 32469:32469/tcp
-    - 32410:32410/udp
-    - 32412:32412/udp
-    - 32413:32413/udp
-    - 32414:32414/udp
+    # ports:
+    # - 32400:32400/tcp
+    # - 3005:3005/tcp
+    # - 8324:8324/tcp
+    # - 32469:32469/tcp
+    # - 32410:32410/udp
+    # - 32412:32412/udp
+    # - 32413:32413/udp
+    # - 32414:32414/udp
     deploy:
       resources:
         limits:
