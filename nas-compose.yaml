@@ -4,6 +4,7 @@ services:
   qbittorrent:
     hostname: qbittorrent
     image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
     volumes:
     - /share/Multimedia/.config:/config:rw
     - /share/Multimedia:/mnt/Multimedia:rw
@@ -21,11 +22,30 @@ services:
       resources:
         limits:
           cpus: "0.5"
+          memory: 1G
+
+  jellyfin:
+    hostname: jellyfin
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    user: 500:100
+    network_mode: "host"
+    volumes:
+      - /share/Multimedia/.config:/config
+      - /share/Multimedia/.config/cache:/cache
+      - /share/Multimedia:/media
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://nas:8096
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
           memory: 512M
 
   plex:
     hostname: plex
     image: plexinc/pms-docker:latest
+    container_name: plex
     volumes:
     - /share/Multimedia/.config/plex:/config:rw
     - /share/Multimedia/.config/plex/transcode:/transcode:rw
