@@ -30,42 +30,14 @@ services:
     container_name: jellyfin
     user: 500:100
     network_mode: "host"
+    # ports:
+      # - 8096:8096
     volumes:
       - /share/Multimedia/.config:/config
       - /share/Multimedia/.config/cache:/cache
       - /share/Multimedia:/media
     environment:
       - JELLYFIN_PublishedServerUrl=http://nas:8096
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
-
-  plex:
-    hostname: plex
-    image: plexinc/pms-docker:latest
-    container_name: plex
-    volumes:
-    - /share/Multimedia/.config/plex:/config:rw
-    - /share/Multimedia/.config/plex/transcode:/transcode:rw
-    - /share/Multimedia:/data/Multimedia:ro
-    environment:
-    - ADVERTISE_IP="http://nas:32400/"
-    - TZ="Europe/Berlin"
-    - PLEX_UID=500
-    - PLEX_GID=100
-    - PLEX_CLAIM=claim-wtCzztMRKA52KWqk97vU
-    network_mode: host
-    # ports:
-    # - 32400:32400/tcp
-    # - 3005:3005/tcp
-    # - 8324:8324/tcp
-    # - 32469:32469/tcp
-    # - 32410:32410/udp
-    # - 32412:32412/udp
-    # - 32413:32413/udp
-    # - 32414:32414/udp
     deploy:
       resources:
         limits:
