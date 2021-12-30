@@ -14,27 +14,17 @@ return function(packer)
         autocmd('BufWritePre', '*.go', "lua require('go.format').goimport()"),
       })
 
-      local nvim_lsp = require 'lspconfig'
-      local configs = require 'lspconfig/configs'
-
-      if not nvim_lsp.golangcilsp then
-        configs.golangcilsp = {
-          default_config = {
-            cmd = {'golangci-lint'},
-            root_dir = nvim_lsp.util.root_pattern('.git', 'go.mod'),
-            filetypes = {'go'},
-            init_options = {
-              command = { "golangci-lint", "run", "--fast", "--out-format", "json" };
-            },
-          };
-        }
-      end
-
       cfg = {
         on_attach = require('lsp').on_attach,
       }
-      nvim_lsp['gopls'].setup(cfg)
-      nvim_lsp['golangcilsp'].setup(cfg)
+
+      local nvim_lsp = require 'lspconfig'
+
+      -- go install golang.org/x/tools/gopls@latest
+      nvim_lsp.gopls.setup(cfg)
+      -- go install github.com/nametake/golangci-lint-langserver@latest
+      -- go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      nvim_lsp.golangci_lint_ls.setup{cfg}
     end,
   }
 end
