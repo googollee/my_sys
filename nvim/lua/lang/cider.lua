@@ -4,9 +4,9 @@ return function(packer)
   end
 
   local nvim_lsp = require 'lspconfig'
-  local configs = require 'lspconfig/configs'
+  local configs = require 'lspconfig.configs'
 
-  if not nvim_lsp.ciderlsp then
+  if not configs.ciderlsp then
     configs.ciderlsp = {
       default_config = {
         cmd = {'/google/bin/releases/cider/ciderlsp/ciderlsp', '--tooltag=nvim-lsp' , '--noforward_sync_responses'};
@@ -20,5 +20,5 @@ return function(packer)
   cfg = {
     on_attach = require('lsp').on_attach,
   }
-  nvim_lsp['ciderlsp'].setup(cfg)
+  nvim_lsp.ciderlsp.setup(cfg)
 end
