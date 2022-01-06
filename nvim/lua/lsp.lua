@@ -63,7 +63,7 @@ function M.on_attach(client, bufnr)
   buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set autocommands conditional on server_capabilities
@@ -74,7 +74,7 @@ function M.on_attach(client, bufnr)
     augroup('lsp_document_highlight', {
       autocmd('CursorHold', '<buffer>', 'lua vim.lsp.buf.document_highlight()'),
       autocmd('CursorMoved', '<buffer>', 'lua vim.lsp.buf.clear_references()'),
-      autocmd('CursorHold', '<buffer>', 'lua vim.lsp.diagnostic.show_line_diagnostics()'),
+      autocmd('CursorHold', '<buffer>', 'lua vim.diagnostic.open_float(0, { scope = "line", border = "single" })'),
     })
   end
 
