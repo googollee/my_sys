@@ -15,7 +15,8 @@ return function(packer)
       })
 
       cfg = {
-        on_attach = require('lsp').on_attach,
+        on_attach = require('lsp').on_attach(),
+        capabilities = require('nvim-cmp').capabilities(),
       }
 
       local nvim_lsp = require 'lspconfig'

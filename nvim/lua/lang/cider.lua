@@ -19,6 +19,7 @@ return function(packer)
 
   cfg = {
     on_attach = require('lsp').on_attach,
+    capabilities = require('nvim-cmp').capabilities(),
   }
   nvim_lsp.ciderlsp.setup(cfg)
 end
