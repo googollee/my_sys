@@ -11,7 +11,6 @@ require('packer').startup(function(p)
   require('treesitter')(p)
   require('lsp').init(p)
   require('nvim-cmp').init(p)
-  -- require('nvim-compe')(p)
 
   require('lang/markdown')(p)
   require('lang/go')(p)

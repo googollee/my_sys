@@ -3,7 +3,10 @@ return function(packer)
     'ray-x/go.nvim',
 
     config = function()
-      require('go').setup()
+      require('go').setup({
+        goimport = 'gopls',
+        gofmt = 'gopls',
+      })
 
       local util = require('util')
       local augroup = util.augroup
