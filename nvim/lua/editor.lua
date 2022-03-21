@@ -1,6 +1,14 @@
 return function(packer)
   packer 'tpope/vim-sensible'
-  packer 'jiangmiao/auto-pairs'
+
+  packer {
+    'Raimondi/delimitMate',
+    config = function()
+      vim.g.delimitMate_expand_cr = 1
+      vim.g.delimitMate_expand_space = 1
+      vim.g.delimitMate_jump_expansion = 1
+    end,
+  }
 
   packer {
     'vim-airline/vim-airline',
