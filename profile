@@ -1,3 +1,7 @@
+export PATH=~/.local/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
+export EDITOR=nvim
+
+umask 0022
 alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
@@ -32,7 +36,7 @@ function git_branch_name()
   fi
 }
 
-if [ "$0" = "-zsh" ]
+if [ "$SHELL" = "/bin/zsh" ]
 then
   setopt prompt_subst
   export PS1='%(?.%F{green}✓.%F{red}✗)%f%D{%H:%M:%S} [%n@%m:%~] $(git_branch_name)
@@ -49,27 +53,17 @@ case ${OS} in
     alias ls='ls -G'
     alias ll='ls -lh'
     alias la='ls -a'
+    export DOCKER_DEFAULT_PLATFORM=linux/amd64
     ;;
   *)
     ;;
 esac
 
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
 BREW="$(which brew 2>/dev/null)"
 if [ "${BREW}" != "" ]; then
   if [ -f `brew --prefix`/etc/bash_completion ]; then
     . `brew --prefix`/etc/bash_completion
   fi
 fi
-
-# Docker
-if [ ! -f unix:///var/run/docker.sock ]; then
-  ping -c 1 localhost:2375 >/dev/null 2>&1 && export DOCKER_HOST='tcp://localhost:2375'
-fi
-
-# Go
-export GOPATH=~/.local
-
-export PATH=~/.local/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
-export EDITOR=nvim
-
-umask 0022
