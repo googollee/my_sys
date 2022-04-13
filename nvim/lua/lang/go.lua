@@ -1,4 +1,8 @@
 return function(packer)
+  if vim.fn.expand('%:p'):find('/google/src/cloud', 1) ~= nil then
+    return
+  end
+
   packer {
     'ray-x/go.nvim',
 
