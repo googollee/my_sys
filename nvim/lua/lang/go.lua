@@ -1,12 +1,12 @@
 return function(packer)
-  if vim.fn.expand('%:p'):find('/google/src/cloud', 1) ~= nil then
-    return
-  end
-
   packer {
     'ray-x/go.nvim',
 
     config = function()
+      if vim.fn.expand('%:p'):find('/google/src/cloud', 1) ~= nil then
+        return
+      end
+
       require('go').setup({
         goimport = 'gopls',
         gofmt = 'gopls',

@@ -17,6 +17,33 @@ return function(packer)
 
   cfg = {
     on_attach = function (client, bufnr)
+      vim.cmd([[
+      source /usr/share/vim/google/glug/bootstrap.vim
+
+      Glug blaze plugin[mappings]
+      Glug blazedeps plugin[mappings] auto_filetypes=`['go']`
+      Glug codefmt gofmt_executable="goimports"
+      Glug codefmt-google
+
+      augroup autoformat_settings
+        autocmd FileType borg,gcl,patchpanel AutoFormatBuffer gclfmt
+        autocmd FileType bzl AutoFormatBuffer buildifier
+        autocmd FileType c,cpp,javascript,typescript AutoFormatBuffer clang-format
+        autocmd FileType dart AutoFormatBuffer dartfmt
+        autocmd FileType go AutoFormatBuffer gofmt
+        autocmd FileType java AutoFormatBuffer google-java-format
+        autocmd FileType jslayout AutoFormatBuffer jslfmt
+        autocmd FileType markdown AutoFormatBuffer mdformat
+        autocmd FileType ncl AutoFormatBuffer nclfmt
+        autocmd FileType python AutoFormatBuffer pyformat
+        autocmd FileType soy AutoFormatBuffer soyfmt
+        autocmd FileType textpb AutoFormatBuffer text-proto-format
+        autocmd FileType proto AutoFormatBuffer protofmt
+        autocmd FileType sql AutoFormatBuffer format_sql
+        " autocmd FileType html,css,json AutoFormatBuffer js-beautify
+      augroup END
+      ]])
+
       require('lsp').on_attach(client, bufnr)
 
       -- Omni-completion via LSP. See `:help compl-omni`. Use <C-x><C-o> in
@@ -33,33 +60,6 @@ return function(packer)
       end
     end,
     capabilities = require('nvim-cmp').capabilities(),
-
-    vim.cmd([[
-    source /usr/share/vim/google/glug/bootstrap.vim
-
-    Glug blaze plugin[mappings]
-    Glug blazedeps plugin[mappings] auto_filetypes=`['go']`
-    Glug codefmt gofmt_executable="goimports"
-    Glug codefmt-google
-
-    augroup autoformat_settings
-      autocmd FileType borg,gcl,patchpanel AutoFormatBuffer gclfmt
-      autocmd FileType bzl AutoFormatBuffer buildifier
-      autocmd FileType c,cpp,javascript,typescript AutoFormatBuffer clang-format
-      autocmd FileType dart AutoFormatBuffer dartfmt
-      autocmd FileType go AutoFormatBuffer gofmt
-      autocmd FileType java AutoFormatBuffer google-java-format
-      autocmd FileType jslayout AutoFormatBuffer jslfmt
-      autocmd FileType markdown AutoFormatBuffer mdformat
-      autocmd FileType ncl AutoFormatBuffer nclfmt
-      autocmd FileType python AutoFormatBuffer pyformat
-      autocmd FileType soy AutoFormatBuffer soyfmt
-      autocmd FileType textpb AutoFormatBuffer text-proto-format
-      autocmd FileType proto AutoFormatBuffer protofmt
-      autocmd FileType sql AutoFormatBuffer format_sql
-      " autocmd FileType html,css,json AutoFormatBuffer js-beautify
-    augroup END
-    ]])
   }
   nvim_lsp.ciderlsp.setup(cfg)
 end
