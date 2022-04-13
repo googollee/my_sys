@@ -1,14 +1,20 @@
 export PATH=~/.local/bin:~/code/my_sys/bin:/usr/local/sbin:$PATH
-export EDITOR=nvim
 
 umask 0022
 alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
-alias vi='nvim'
-alias nv='nvim'
-alias txa='tmx2 attach'
-alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
+
+if [ `which nvim` != "" ]; then
+  export EDITOR=nvim
+  alias vi='nvim'
+  alias nv='nvim'
+fi
+
+if [ `lsb_release -rs` = "rodete" ]; then
+  alias txa='tmx2 attach'
+  alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
+fi
 
 HOSTNAME="$(hostname)"
 # not company's environment
@@ -47,22 +53,14 @@ fi
 
 export LC_ALL="en_US.UTF-8"
 
-OS="$(uname)"
-case ${OS} in
-  Darwin)
-    alias ls='ls -G'
-    alias ll='ls -lh'
-    alias la='ls -a'
-    export DOCKER_DEFAULT_PLATFORM=linux/amd64
-    ;;
-  *)
-    ;;
-esac
+if [ `uname` = "Darwin" ]; then
+  export DOCKER_DEFAULT_PLATFORM=linux/amd64
+fi
 
 # Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
-BREW="$(which brew 2>/dev/null)"
-if [ "${BREW}" != "" ]; then
+if [ -e /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  BREW="$(which brew 2>/dev/null)"
   if [ -f `brew --prefix`/etc/bash_completion ]; then
     . `brew --prefix`/etc/bash_completion
   fi
