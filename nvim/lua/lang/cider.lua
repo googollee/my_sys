@@ -38,8 +38,8 @@ return function(packer)
     source /usr/share/vim/google/glug/bootstrap.vim
 
     Glug blaze plugin[mappings]
-    Glug blazedeps plugin[mappings]
-    Glug codefmt
+    Glug blazedeps plugin[mappings] auto_filetypes=`['go']`
+    Glug codefmt gofmt_executable="goimports"
     Glug codefmt-google
 
     augroup autoformat_settings
