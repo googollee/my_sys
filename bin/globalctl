@@ -1,3 +1,0 @@
-#!/bin/sh
-
-etcdctl --ca-file ~/Dropbox/keys/k8s.global/root/ca.pem --cert-file ~/Dropbox/keys/k8s.global/etcd/api.pem --key-file ~/Dropbox/keys/k8s.global/etcd/api-key.pem --endpoints "https://master1.global.zhaohai.li:2379,https://master2.global.zhaohai.li:2379,https://master3.global.zhaohai.li:2379" $*
