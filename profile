@@ -16,13 +16,6 @@ if [ `lsb_release -rs` = "rodete" ]; then
   alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
 fi
 
-HOSTNAME="$(hostname)"
-# not company's environment
-if [ "${HOSTNAME#*.google.com}" != "" ]; then
-  alias vi='nvim'
-  alias vim='nvim'
-fi
-
 function git_branch_name()
 {
   git_status=$(git status -s 2>/dev/null | head -1)
@@ -65,3 +58,7 @@ if [ -e /opt/homebrew/bin/brew ]; then
     . `brew --prefix`/etc/bash_completion
   fi
 fi
+
+# Go
+export GOPATH=~/.local
+export PATH=$PATH:$GOPATH/bin
