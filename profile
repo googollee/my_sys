@@ -5,17 +5,6 @@ alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
 
-if [ `which nvim` != "" ]; then
-  export EDITOR=nvim
-  alias vi='nvim'
-  alias nv='nvim'
-fi
-
-if [ `lsb_release -rs` = "rodete" ]; then
-  alias txa='tmx2 attach'
-  alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
-fi
-
 function git_branch_name()
 {
   git_status=$(git status -s 2>/dev/null | head -1)
@@ -62,3 +51,18 @@ fi
 # Go
 export GOPATH=~/.local
 export PATH=$PATH:$GOPATH/bin
+
+if [ "$(which nvim)" != "nvim not found" ]; then
+  export EDITOR=nvim
+  alias vi='nvim'
+  alias nv='nvim'
+fi
+
+if [ "$(which lsb_release)" != "lsb_release not found" ]; then
+  if [ $(lsb_release -rs) = "rodete" ]; then
+    alias txa='tmx2 attach'
+    alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
+  fi
+fi
+
+
