@@ -81,6 +81,7 @@ return function(packer)
   util.noremap('n', '<C-w>', ':tabnew<CR>')
   util.noremap('n', '<C-u>', ':tabprev<CR>')
   util.noremap('n', '<C-i>', ':tabnext<CR>')
+  util.noremap('n', '<TAB>', ':tabnext<CR>')
   util.noremap('n', '<C-[>', ':cprevious<CR>')
   util.noremap('n', '<C-]>', ':cnext<CR>')
 end
