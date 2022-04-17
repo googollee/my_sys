@@ -30,7 +30,7 @@ function M.init(packer)
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-j>'] = cmp.mapping.select_next_item(),
           ['<C-k>'] = cmp.mapping.select_prev_item(),
-          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
           ['<CR>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
@@ -41,8 +41,6 @@ function M.init(packer)
               cmp.select_next_item()
             -- elseif vim.fn["vsnip#available"](1) == 1 then
               -- feedkey("<Plug>(vsnip-expand-or-jump)", "")
-            elseif has_words_before() then
-              cmp.complete()
             else
               fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
             end
