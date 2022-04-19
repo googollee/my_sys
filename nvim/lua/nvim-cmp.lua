@@ -10,37 +10,32 @@ function M.init(packer)
     'hrsh7th/nvim-cmp',
 
     config = function()
-      vim.cmd('set completeopt=menu,menuone,noselect')
-
       -- Setup nvim-cmp.
       local cmp = require'cmp'
 
       cmp.setup({
+        preselect = cmp.PreselectMode.None,
+        completion = {
+          completeopt = 'menu,menuone,noinsert',
+        },
         snippet = {
-          -- REQUIRED - you must specify a snippet engine
           expand = function(args)
-            -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-            -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-            -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-            -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
           end,
         },
         mapping = {
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-j>'] = cmp.mapping.select_next_item(),
-          ['<C-k>'] = cmp.mapping.select_prev_item(),
-          ['<C-space>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.close(),
+          ['<C-y>'] = cmp.mapping({
+            c = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+          }),
           ['<CR>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Insert,
-            select = true,
+            select = false,
           }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
-            -- elseif vim.fn["vsnip#available"](1) == 1 then
-              -- feedkey("<Plug>(vsnip-expand-or-jump)", "")
             else
               fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
             end
@@ -48,8 +43,6 @@ function M.init(packer)
           ["<S-Tab>"] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_prev_item()
-            -- elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-              -- feedkey("<Plug>(vsnip-jump-prev)", "")
             end
           end, { "i", "s" }),
         },
