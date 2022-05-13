@@ -42,7 +42,7 @@ fi
 
 # Google Env
 if [ `lsb_release -cs` = "rodete" ]; then
-  eval $(ssh-agent -s)
+  true;
 fi
 
 # Homebrew
