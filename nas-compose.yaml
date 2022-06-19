@@ -13,11 +13,10 @@ services:
     - PUID=500
     - PGID=100
     - WEBUI_PORT=8888
-    network_mode: host
-    # ports:
-    # - 16881:16881
-    # - 16881:16881/udp
-    # - 8888:8888
+    ports:
+    - 16881:16881
+    - 16881:16881/udp
+    - 8888:8888
     deploy:
       resources:
         limits:
@@ -29,9 +28,11 @@ services:
     image: jellyfin/jellyfin
     container_name: jellyfin
     user: 500:100
-    network_mode: "host"
-    # ports:
-      # - 8096:8096
+    ports:
+    - 8096:8096
+    - 8920:8920
+    - 1900:1900/udp
+    - 7359:7359/udp
     volumes:
       - /share/Multimedia/.config:/config
       - /share/Multimedia/.config/cache:/cache
