@@ -1,10 +1,33 @@
 version: "3"
 
 services:
+  gateway:
+    hostname: gateway
+    image: traefik
+    container_name: gateway
+    labels:
+    - traefik.http.services.gateway-svc.loadbalancer.server.port=8080
+    command:
+    - "--api.insecure=true"
+    - "--providers.docker"
+    - "--providers.docker.defaultrule"
+    - 'Host(`{{ normalize .Name | trimSuffix "-services" }}.nas`) || Host(`{{ normalize .Name | trimSuffix "-services" }}.nas.local`)'
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+    - 80:80
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
   qbittorrent:
     hostname: qbittorrent
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
+    labels:
+    - traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080
     volumes:
     - /share/Multimedia/.config:/config:rw
     - /share/Multimedia:/mnt/Multimedia:rw
@@ -12,11 +35,10 @@ services:
     - TZ="Europe/Berlin"
     - PUID=500
     - PGID=100
-    - WEBUI_PORT=8888
+    - WEBUI_PORT=8080
     ports:
     - 16881:16881
     - 16881:16881/udp
-    - 8888:8888
     deploy:
       resources:
         limits:
@@ -27,10 +49,10 @@ services:
     hostname: jellyfin
     image: jellyfin/jellyfin
     container_name: jellyfin
+    labels:
+    - traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096
     user: 500:100
     ports:
-    - 8096:8096
-    - 8920:8920
     - 1900:1900/udp
     - 7359:7359/udp
     volumes:
@@ -38,7 +60,7 @@ services:
       - /share/Multimedia/.config/cache:/cache
       - /share/Multimedia:/media
     environment:
-      - JELLYFIN_PublishedServerUrl=http://nas:8096
+      - JELLYFIN_PublishedServerUrl=http://jellyfin.nas
     deploy:
       resources:
         limits:
