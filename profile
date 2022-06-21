@@ -41,7 +41,7 @@ if [ `uname` = "Darwin" ]; then
 fi
 
 # Google Env
-if [ `lsb_release -cs` = "rodete" ]; then
+if [ "`lsb_release -cs 2>/dev/null`" = "rodete" ]; then
   true;
 fi
 
