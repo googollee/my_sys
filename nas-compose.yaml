@@ -22,12 +22,12 @@ services:
           cpus: "0.5"
           memory: 512M
 
-  qbittorrent:
+  bt:
     hostname: qbittorrent
     image: linuxserver/qbittorrent:latest
     container_name: qbittorrent
     labels:
-    - traefik.http.services.qbittorrent-svc.loadbalancer.server.port=8080
+    - traefik.http.services.bt-svc.loadbalancer.server.port=8080
     volumes:
     - /share/Multimedia/.config:/config:rw
     - /share/Multimedia:/mnt/Multimedia:rw
@@ -45,12 +45,12 @@ services:
           cpus: "0.5"
           memory: 1G
 
-  jellyfin:
+  media:
     hostname: jellyfin
     image: jellyfin/jellyfin
     container_name: jellyfin
     labels:
-    - traefik.http.services.jellyfin-svc.loadbalancer.server.port=8096
+    - traefik.http.services.media-svc.loadbalancer.server.port=8096
     user: 500:100
     ports:
     - 8096:8096
