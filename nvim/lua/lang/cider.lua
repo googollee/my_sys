@@ -3,6 +3,14 @@ return function(packer)
     return
   end
 
+  local util = require('util')
+  local augroup = util.augroup
+  local autocmd = util.autocmd
+
+  augroup('fmt', {
+    autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2')
+  })
+
   vim.cmd([[
   source /usr/share/vim/google/glug/bootstrap.vim
 
