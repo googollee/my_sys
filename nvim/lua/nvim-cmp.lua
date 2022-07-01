@@ -31,9 +31,6 @@ function M.init(packer)
         mapping = cmp.mapping.preset.insert({
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<CR>'] = cmp.mapping(function(fallback)
-            fallback()
-          end),
           ['<Tab>'] = cmp.mapping(function(fallback)
             if not cmp.visible() then
               fallback()
