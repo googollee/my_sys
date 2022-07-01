@@ -1,4 +1,15 @@
 return function(packer)
+  packer {
+    'ray-x/go.nvim',
+
+    config = function()
+      require('go').setup({
+        goimport = 'gopls',
+        gofmt = 'gopls',
+      })
+    end,
+  }
+
   if vim.fn.expand('%:p'):find('/google/src/cloud', 1) ~= nil then
     return
   end
@@ -24,15 +35,4 @@ return function(packer)
     autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
     autocmd('BufWritePre', '*.go', "lua require('go.format').goimport()"),
   })
-
-  packer {
-    'ray-x/go.nvim',
-
-    config = function()
-      require('go').setup({
-        goimport = 'gopls',
-        gofmt = 'gopls',
-      })
-    end,
-  }
 end
