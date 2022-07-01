@@ -10,6 +10,10 @@ return function(packer)
       util.noremap('n', '<leader>fg', ':Telescope live_grep<CR>')
       util.noremap('n', '<leader>fb', ':Telescope buffers<CR>')
       util.noremap('n', '<leader>fh', ':Telescope help_tags<CR>')
+
+      vim.api.nvim_create_user_command('CfgReload', function()
+        require('plenary.reload').reload_module('.')
+      end, {})
     end,
   }
 end
