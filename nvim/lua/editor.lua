@@ -11,15 +11,15 @@ return function(packer)
   }
 
   packer {
-    'lukas-reineke/indent-blankline.nvim',
+    'nathanaelkane/vim-indent-guides',
     config = function()
-      require("indent_blankline").setup {
-        show_end_of_line = true,
-        space_char_blankline = " ",
-        show_current_context = true,
-        show_current_context_start = true,
-      }
-    end,
+      vim.cmd([[
+        let g:indent_guides_enable_on_vim_startup = 1
+        let g:indent_guides_auto_colors = 0
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=235 ctermfg=darkgray
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=236 ctermfg=darkgray
+      ]])
+    end
   }
 
   packer {
@@ -60,7 +60,9 @@ return function(packer)
   vim.opt.ignorecase = true
   vim.opt.smartcase = true
   vim.opt.list = true
-  vim.opt.listchars:append("eol:↴")
+  vim.opt.listchars:append('eol:↴')
+  vim.opt.listchars:append('tab:¦ ')
+  vim.opt.listchars:append('trail:·')
   vim.opt.shiftround = true
   vim.opt.shiftwidth = 2
   vim.opt.tabstop = 2
