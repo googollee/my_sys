@@ -13,12 +13,12 @@ let g:loaded_python3_provider = 0
 ]])
 
 require('packer').startup(function(p)
-  require('editor')(p)
-  require('telescope')(p)
-  require('git')(p)
   require('treesitter')(p)
   require('lsp').init(p)
   require('nvim-cmp').init(p)
+  require('editor')(p)
+  require('telescope')(p)
+  require('git')(p)
 
   require('lang/markdown')(p)
   require('lang/go')(p)

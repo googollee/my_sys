@@ -34,7 +34,7 @@ return function(packer)
     autocmd FileType textpb AutoFormatBuffer text-proto-format
     autocmd FileType proto AutoFormatBuffer protofmt
     autocmd FileType sql AutoFormatBuffer format_sql
-    " autocmd FileType html,css,json AutoFormatBuffer js-beautify
+    autocmd FileType html,css,json AutoFormatBuffer js-beautify
   augroup END
   ]])
 
