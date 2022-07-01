@@ -32,21 +32,24 @@ function M.init(packer)
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<CR>'] = cmp.mapping(function(fallback)
-            if not cmp.get_active_entry() then
-              fallback()
-              return
-            end
-
-            cmp.confirm({ select = false })
+            fallback()
           end),
-          ["<Tab>"] = cmp.mapping(function(fallback)
+          ['<Tab>'] = cmp.mapping(function(fallback)
             if not cmp.visible() then
               fallback()
               return
             end
 
             cmp.select_next_item()
-          end, { "i", "s" }),
+          end, { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if not cmp.visible() then
+              fallback()
+              return
+            end
+
+            cmp.select_prev_item()
+          end, { 'i', 's' }),
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
