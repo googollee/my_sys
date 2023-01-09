@@ -77,7 +77,7 @@ function M.on_attach()
     buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
     -- Set autocommands conditional on server_capabilities
-    if client.resolved_capabilities.document_highlight then
+    if client.server_capabilities.document_highlight then
       set_highlight('LspReferenceRead', {cterm='bold', ctermbg='red', guibg='LightYellow'})
       set_highlight('LspReferenceText', {cterm='bold', ctermbg='red', guibg='LightYellow'})
       set_highlight('LspReferenceWrite', {cterm='bold', ctermbg='red', guibg='LightYellow'})
