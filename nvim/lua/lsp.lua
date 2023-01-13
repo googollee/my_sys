@@ -62,7 +62,8 @@ function M.on_attach()
     buf_set_keymap('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+    buf_set_keymap("n", "gr", "<cmd>TroubleToggle lsp_references<cr>", opts)
+    -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
     buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
     buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -84,7 +85,6 @@ function M.on_attach()
       augroup('lsp_document_highlight', {
         autocmd('CursorHold', '<buffer>', 'lua vim.lsp.buf.document_highlight()'),
         autocmd('CursorMoved', '<buffer>', 'lua vim.lsp.buf.clear_references()'),
-        autocmd('CursorHold', '<buffer>', 'lua vim.diagnostic.open_float()'),
       })
     end
 

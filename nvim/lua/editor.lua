@@ -1,4 +1,6 @@
 return function(packer)
+  util = require('util')
+
   packer 'tpope/vim-sensible'
 
   packer {
@@ -8,6 +10,19 @@ return function(packer)
       vim.g.delimitMate_expand_space = 1
       vim.g.delimitMate_jump_expansion = 1
     end,
+  }
+
+  packer {
+    'ggandor/leap.nvim',
+    config = function()
+      local leap = require('leap')
+      leap.add_default_mappings()
+      leap.opts.safe_labels = {}
+
+      -- Bidirectional search
+      util.noremap('n', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
+      util.noremap('v', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
+    end
   }
 
   packer {
@@ -46,10 +61,30 @@ return function(packer)
     config = function()
       vim.g.NERDSpaceDelims = 1
 
-      local util = require('util')
       util.noremap('n', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
       util.noremap('v', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
     end,
+  }
+
+  packer {
+    'folke/trouble.nvim',
+    config = function()
+      require("trouble").setup {
+        icons = false,
+        fold_open = "v",
+        fold_closed = ">",
+        indent_lines = true,
+        signs = {
+          error = "x",
+          warning = "!",
+          hint = "?",
+          information = "i",
+          other = ">",
+        },
+      }
+
+      util.noremap("n", "<leader>x", "<cmd>TroubleToggle<cr>")
+    end
   }
 
   vim.opt.foldenable = false
@@ -77,6 +112,15 @@ return function(packer)
   vim.opt.enc = 'utf-8'
   vim.opt.fenc = 'utf-8'
   vim.opt.conceallevel = 1
+  vim.opt.updatetime = 1000
+
+  local util = require('util')
+  local augroup = util.augroup
+  local autocmd = util.autocmd
+
+  augroup('lsp_document_highlight', {
+    autocmd('CursorHold', '<buffer>', 'lua vim.diagnostic.open_float()'),
+  })
 
   -- Color scheme
   vim.cmd 'syntax on'
@@ -88,7 +132,6 @@ return function(packer)
 
   vim.g.mapleader = ','
 
-  local util = require('util')
   util.noremap('n', '<C-h>', ':wincmd h<CR>')
   util.noremap('n', '<C-j>', ':wincmd j<CR>')
   util.noremap('n', '<C-k>', ':wincmd k<CR>')
