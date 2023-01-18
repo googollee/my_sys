@@ -33,6 +33,6 @@ return function(packer)
 
   augroup('fmt', {
     autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-    autocmd('BufWritePre', '*.go', "lua require('go.format').goimport()"),
+    autocmd('BufWritePre', '*.go', 'lua require("go.format").goimport()'),
   })
 end

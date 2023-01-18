@@ -22,6 +22,8 @@ return function(packer)
       -- Bidirectional search
       util.noremap('n', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
       util.noremap('v', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
+      vim.keymap.del({'x', 'o'}, 'x')
+      vim.keymap.del({'x', 'o'}, 'X')
     end
   }
 
