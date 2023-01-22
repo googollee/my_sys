@@ -4,9 +4,9 @@ MY_SYS=`pwd`
 
 defaults import com.mizage.Divvy.plist ./divvy
 
-ln -s ~/.gitconfig ${MY_SYS}/gitconfig
-ln -s ~/.gitignore ${MY_SYS}/gitignore
-ln -s ~/.tmux.conf ${MY_SYS}/tmux.conf
-ln -s ~/.zshrc ${MY_SYS}/profile
+ln -s ${MY_SYS}/gitconfig ~/.gitconfig
+ln -s ${MY_SYS}/gitignore ~/.gitignore
+ln -s ${MY_SYS}/tmux.conf ~/.tmux.conf
+ln -s ${MY_SYS}/profile ~/.zshrc
 mkdir -p ~/.config
-ln -s ~/.config/nvim ${MY_SYS}/nvim
+ln -s ${MY_SYS}/nvim ~/.config/nvim
