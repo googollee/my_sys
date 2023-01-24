@@ -10,3 +10,4 @@ ln -s ${MY_SYS}/tmux.conf ~/.tmux.conf
 ln -s ${MY_SYS}/profile ~/.zshrc
 mkdir -p ~/.config
 ln -s ${MY_SYS}/nvim ~/.config/nvim
+ln -s ${MY_SYS}/etc/hammerspoon ~/.hammerspoon
