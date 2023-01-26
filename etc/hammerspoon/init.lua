@@ -5,22 +5,23 @@ spoon.RecursiveBinder.escapeKey = {{}, 'escape'}  -- Press escape to abort
 local singleKey = spoon.RecursiveBinder.singleKey
 
 local setFocusedWindowPosition = function(left, right, top, bottom)
+  local screen = hs.mouse.getCurrentScreen()
   local win = hs.window.focusedWindow()
+
   local f = win:frame()
-  local screen = win:screen()
   local max = screen:frame()
 
-  f.x = max.w * left
-  f.y = max.h * top
-  f.w = max.w * right - f.x
-  f.h = max.h * bottom - f.y
+  f.x = max.w * left + max.x
+  f.y = max.h * top + max.y
+  f.w = max.w * right - f.x + max.x
+  f.h = max.h * bottom - f.y + max.y
 
-  win:setFrame(f)
+  win:move(f, screen)
 end
 
 local windowMoving = {
   [singleKey('`', 'full')]       = function() setFocusedWindowPosition(0,   1,   0,   1) end,
-  [singleKey('space', 'center')] = function() setFocusedWindowPosition(1/6, 5/6, 0,   1) end,
+  [singleKey('space', 'center')] = function() setFocusedWindowPosition(1/8, 7/8, 0,   1) end,
   [singleKey('a', 'left')]       = function() setFocusedWindowPosition(0,   0.5, 0,   1) end,
   [singleKey('s', 'bottom')]     = function() setFocusedWindowPosition(0,   1,   0.5, 1) end,
   [singleKey('d', 'top')]        = function() setFocusedWindowPosition(0,   1,   0,   0.5) end,
