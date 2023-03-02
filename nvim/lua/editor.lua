@@ -115,6 +115,7 @@ return function(packer)
   vim.opt.fenc = 'utf-8'
   vim.opt.conceallevel = 1
   vim.opt.updatetime = 1000
+  vim.opt.mouse = ''
 
   local util = require('util')
   local augroup = util.augroup
