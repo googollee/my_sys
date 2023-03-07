@@ -1,0 +1,122 @@
+{{- $pw := env.Getenv "PW" -}}
+version: "3"
+services:
+  configs:
+    image: alpine:3
+    container_name: configs
+    restart: "no"
+    volumes:
+      - type: volume
+        source: ddclient
+        target: /ddclient
+        volume:
+          nocopy: true
+      - type: volume
+        source: ignition
+        target: /ignition
+        volume:
+          nocopy: true
+    environment:
+      DDCLIENT: |
+        daemon=300 # check every 5 * 60 seconds
+        foreground=yes
+        ssl=yes
+        use=web
+        web='https://cloudflare.com/cdn-cgi/trace'
+        web-skip='ip=' # IP address above is after 'ip='
+
+        protocol=cloudflare, \
+        zone=zhaohai.li, \
+        ttl=150,
+        password='{{ base64.Decode "password" | crypto.DecryptAES $pw 128 }}',
+        zhaohai.li,*.zhaohai.li
+      IGNTION: |
+        {
+          "ignition": {
+            "version": "3.3.0"
+          },
+          "passwd": {
+            "users": [
+              {
+                "groups": [
+                  "sudo",
+                  "docker",
+                  "adm",
+                  "systemd-journal"
+                ],
+                "name": "googol",
+                "passwordHash": "$y$j9T$bUxnG.hS5Y43W5SzQpFcL1$WnZ1OTvv0rs1Z6URFxPvF9vnK2D5VbgG8HDLep.gLC4",
+                "sshAuthorizedKeys": [
+                  "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC3gcEcKThasoZWYrEjBi4LQJAtVo2deuPl5JoxboKeVYJ8j4i4QtFjprh/aI0YfS6btf4xrNLuEIzySo3d9fkFk/EHSwzdYo0f52EQwJbMix7+nK6K3sea+SxWS5mc8YGZVWKHGpKChfJEwZOD6GMVH3AXZTUMIAjzxNF6LjoSF/Yx/YOAsWeAtDeiwp4jROMqtv45aq90jLqIZ857XRlQ8YHtoobPdmSUMoFFoy6A4TdaigWf93GSSqamJEV5WnSrGU6eOJLDsYwvJzuUskFV+H28mjjtP2FKHwC5uyGp/k9fyihnXHkodTtifx8ci8mPNgMzkQ/cDLoQ56sjeuBo1i+d4MOGThb/45+mcGDSOZCpOivz1uB9sM6Pj/virGqRLLhip6ehjIPtXch9wXrPiyG72xsNJSnYIJTsGuKl1rRzyk6o/miy5ckFZSYo7sdP9xfm9x9YcbT795lV4hg9T0cR0IryU01J4C6F+BCRoh78sxVEbmcU1ZLgXWrVrBMn4n1wK+06Cx3Vi7gpvTTiEq1opziKazLpRmkNH7ToMoLgUvH3AdeJ6mNENHv3nxYCNOrng18IesDn8gxVNiqKUPWW+Bloh1+/JZwOcdz6+cHJrf3lnwxTBlF9bRYHHDwUy+JuR2CXQ01pD16Bz741nnppkXjTPVWRAzwO4pS9vw== googollee@macOS\n"
+                ]
+              }
+            ]
+          },
+          "storage": {
+            "directories": [
+              {
+                "group": {
+                  "name": "root"
+                },
+                "path": "/var/mnt/multimedia",
+                "user": {
+                  "name": "root"
+                },
+                "mode": 493
+              }
+            ],
+            "files": [
+              {
+                "group": {
+                  "name": "root"
+                },
+                "path": "/etc/hostname",
+                "user": {
+                  "name": "root"
+                },
+                "contents": {
+                  "compression": "",
+                  "source": "data:,coreos%0A"
+                },
+                "mode": 420
+              }
+            ]
+          },
+          "systemd": {
+            "units": [
+              {
+                "contents": "[Unit]\nDescription=Mount data directory\n\n[Mount]\nWhat=//nas.local/Multimedia\nWhere=/var/mnt/multimedia/\nType=cifs\nOptions=rw,username=googol,password={{ base64.Decode "password" | crypto.DecryptAES $pw 128 }}\n\n[Install]\nWantedBy=multi-user.target\n",
+                "enabled": true,
+                "name": "var-mnt-multimedia.mount"
+              }
+            ]
+          }
+        }
+    command: |
+      /bin/sh -c '
+        echo "$${DDCLIENT}" > /ddclient/ddclient.conf;
+        echo "$${IGNTION}" > /ignition/ignition.json;
+      '
+
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    depends_on:
+      configs:
+        condition: service_completed_successfully
+    volumes:
+      - type: volume
+        source: ddclient
+        target: /config
+        volume:
+          nocopy: true
+    environment:
+      PUID: "65534"
+      PGID: "65533"
+      TZ: "Europe/Berlin"
+
+volumes:
+  ddclient:
+    name: "ddclient"
+  ignition:
+    name: "ignition"
