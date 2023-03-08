@@ -44,7 +44,7 @@ services:
                 - "docker"
                 - "adm"
                 - "systemd-journal"
-              password_hash: "$$y$$j9T$$bUxnG.hS5Y43W5SzQpFcL1$$WnZ1OTvv0rs1Z6URFxPvF9vnK2D5VbgG8HDLep.gLC4"
+              password_hash: "{{ `$y$j9T$bUxnG.hS5Y43W5SzQpFcL1$WnZ1OTvv0rs1Z6URFxPvF9vnK2D5VbgG8HDLep.gLC4` | strings.ReplaceAll `$` `$$` }}"
               ssh_authorized_keys: 
                 - |
                   {{ base64.Decode "jFz/kQqf3XbmIBYtY4VyxnkZ8X6QLwyg+hJvwPV+VoJ/OoPxmjjhaZQDOeZ1NMgwkWwvVcCjVS8B2Zgb78RcNP5Z3LA2pbkdQGLQDFFpfInwK9/r11mDvBXhDohjNEFomViFYJh28o/ZP/Ep9t3YLxeRU1RkALic/1iO1xWvAqmn3CVoQdoHgsY+GNzAi3Vp+d10PebqR7Mg5wobBwVjbfmtTyI4mzZwAKEWoGFzbjzdiN8gCHT3ngZ0pvXrlvZOijfkKC2bgXR69NyjkesJhd47AaK8jg+XBb3UxKfdCZcxPx+olVBYAEasFXl2AAr7NsY4wAXaG281Z/fKlNzlf2crdwX/9FFPKQWiAJEvKOKPPP/nKrz7JB5WRITEukOhMFWQvCXIrQ82iayrbBGjXzxw94d6jL8yELiMWik5aRvM6/PoUaFsBn25eslSw2iT1chwehV82ev5rCrB8+P5UkJcgzSMq6AlINOeuSSNMcIf18RbfzOcDMvkwDv7JXgH0SsXKM9X17tQtlBBrsN3F7DCtdWBkYX+SbMTXs9++1FgliXbN1pCQpqdzhNR5TBKWetb8KB8kLGjJ2wo3pCXVX5Tm2Oub/1tawQcC6NfB3MhxYpu7lexX1AQmI0DWgcxtGVGh4P/cQTarB3ycUgoAm5Hxlsx/g7AsDZU2DscfAgudk3enw4vQSyuIbnwpMezC6ORp5fquicwoQOfEjk6NaElXhvWmT+dO9KV90aVox1HxuHDoSnOedM+SVkunjjXza/pXJ/nIzq+DCDbrYgb9HQdXvSpKIPw/jEHZeN32UogMP5IdTiPicJo3RBAe7qZeXgI85eGOiQ9R9FWpn4xq4sihm6hbcZtwrSz1tkBWmdGGEJDOf07jAZF6I217HQ+CObnhcYpXoZvZUuw4YUNrmfyPoch5sE8+mAMj34huApazD67gTv8S1bnv1QAKCkFYnrLgoAMFHvWqDze81A0QnyJSpLjXOUrMWGCj6WazRpJ65BvhUyV6KbSxiXT8Spi" | crypto.DecryptAES $pw 256 }}
