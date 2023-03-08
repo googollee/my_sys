@@ -1,3 +1,4 @@
 nvim/plug*
 nvim/.*
 playbook/.vault_password
+base-compose.yaml

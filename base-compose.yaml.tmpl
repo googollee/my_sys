@@ -1,0 +1,135 @@
+{{- $pw := env.Getenv "PW" -}}
+version: "3"
+services:
+  configs:
+    image: quay.io/coreos/butane:release
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+    container_name: configs
+    restart: "no"
+    volumes:
+      - type: volume
+        source: ddclient
+        target: /ddclient
+        volume:
+          nocopy: true
+      - type: volume
+        source: ignition
+        target: /ignition
+        volume:
+          nocopy: true
+    environment:
+      DDCLIENT: |
+        daemon=300 # check every 5 * 60 seconds
+        foreground=yes
+        ssl=yes
+        use=web
+        web='https://cloudflare.com/cdn-cgi/trace'
+        web-skip='ip=' # IP address above is after 'ip='
+
+        protocol=cloudflare, \
+        zone=zhaohai.li, \
+        ttl=150,
+        password='{{ base64.Decode "x5UNS3mLUV/M2QFJEUAQ4vedFT19mqHCOsUaTrmpY+CTl3/IM9gWeqGvavwT3o4X6xlv9NhsJWvIySopuUvrig==" | crypto.DecryptAES $pw 256 }}',
+        zhaohai.li,*.zhaohai.li
+      IGNTION: |
+        variant: "fcos"
+        version: "1.4.0"
+        passwd:
+          users:
+            - name: "googol"
+              groups:
+                - "sudo"
+                - "docker"
+                - "adm"
+                - "systemd-journal"
+              password_hash: "$$y$$j9T$$bUxnG.hS5Y43W5SzQpFcL1$$WnZ1OTvv0rs1Z6URFxPvF9vnK2D5VbgG8HDLep.gLC4"
+              ssh_authorized_keys: 
+                - |
+                  {{ base64.Decode "jFz/kQqf3XbmIBYtY4VyxnkZ8X6QLwyg+hJvwPV+VoJ/OoPxmjjhaZQDOeZ1NMgwkWwvVcCjVS8B2Zgb78RcNP5Z3LA2pbkdQGLQDFFpfInwK9/r11mDvBXhDohjNEFomViFYJh28o/ZP/Ep9t3YLxeRU1RkALic/1iO1xWvAqmn3CVoQdoHgsY+GNzAi3Vp+d10PebqR7Mg5wobBwVjbfmtTyI4mzZwAKEWoGFzbjzdiN8gCHT3ngZ0pvXrlvZOijfkKC2bgXR69NyjkesJhd47AaK8jg+XBb3UxKfdCZcxPx+olVBYAEasFXl2AAr7NsY4wAXaG281Z/fKlNzlf2crdwX/9FFPKQWiAJEvKOKPPP/nKrz7JB5WRITEukOhMFWQvCXIrQ82iayrbBGjXzxw94d6jL8yELiMWik5aRvM6/PoUaFsBn25eslSw2iT1chwehV82ev5rCrB8+P5UkJcgzSMq6AlINOeuSSNMcIf18RbfzOcDMvkwDv7JXgH0SsXKM9X17tQtlBBrsN3F7DCtdWBkYX+SbMTXs9++1FgliXbN1pCQpqdzhNR5TBKWetb8KB8kLGjJ2wo3pCXVX5Tm2Oub/1tawQcC6NfB3MhxYpu7lexX1AQmI0DWgcxtGVGh4P/cQTarB3ycUgoAm5Hxlsx/g7AsDZU2DscfAgudk3enw4vQSyuIbnwpMezC6ORp5fquicwoQOfEjk6NaElXhvWmT+dO9KV90aVox1HxuHDoSnOedM+SVkunjjXza/pXJ/nIzq+DCDbrYgb9HQdXvSpKIPw/jEHZeN32UogMP5IdTiPicJo3RBAe7qZeXgI85eGOiQ9R9FWpn4xq4sihm6hbcZtwrSz1tkBWmdGGEJDOf07jAZF6I217HQ+CObnhcYpXoZvZUuw4YUNrmfyPoch5sE8+mAMj34huApazD67gTv8S1bnv1QAKCkFYnrLgoAMFHvWqDze81A0QnyJSpLjXOUrMWGCj6WazRpJ65BvhUyV6KbSxiXT8Spi" | crypto.DecryptAES $pw 256 }}
+        systemd:
+          units:
+            - name: "var-mnt-multimedia.mount"
+              enabled: true
+              contents: |
+                [Unit]
+                Description=Mount data directory
+
+                [Mount]
+                What=//nas.local/Multimedia
+                Where=/var/mnt/multimedia/
+                Type=cifs
+                Options=rw,username=googol,password={{ base64.Decode "aEOpNFNd44182ENhkUYMilZsODXaDqTJ9kyD86jz0Qo=" | crypto.DecryptAES $pw 256 }}
+
+                [Install]
+                WantedBy=multi-user.target
+        storage:
+          files:
+            - path: "/etc/hostname"
+              mode: 0644
+              user:
+                name: "root"
+              group:
+                name: "root"
+              contents:
+                inline: |
+                  coreos
+            - path: /etc/zincati/config.d/55-updates-strategy.toml
+              contents:
+                inline: |
+                  [updates]
+                  strategy = "periodic"
+                  [[updates.periodic.window]]
+                  days = [ "Mon", "Tue" ]
+                  start_time = "02:30"
+                  length_minutes = 60
+          directories:
+            - path: "/var/mnt/multimedia"
+              mode: 0755
+              user:
+                name: "root"
+              group:
+                name: "root"
+    command:
+      - |
+        echo "$${DDCLIENT}" > /ddclient/ddclient.conf
+        echo "$${IGNTION}" | butane -ps > /ignition/coreos.json
+
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    depends_on:
+      configs:
+        condition: service_completed_successfully
+    volumes:
+      - type: volume
+        source: ddclient
+        target: /config
+        volume:
+          nocopy: true
+    environment:
+      PUID: "65534"
+      PGID: "65533"
+      TZ: "Europe/Berlin"
+
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    depends_on:
+      configs:
+        condition: service_completed_successfully
+    ports:
+      - 8000:80
+    volumes:
+      - type: volume
+        source: ignition
+        target: /usr/share/nginx/html
+        volume:
+          nocopy: true
+
+volumes:
+  ddclient:
+    name: "ddclient"
+  ignition:
+    name: "ignition"
