@@ -3,9 +3,7 @@ version: "3"
 services:
   configs:
     image: quay.io/coreos/butane:release
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
+    entrypoint: ""
     container_name: configs
     restart: "no"
     volumes:
@@ -84,6 +82,9 @@ services:
                   days = [ "Mon", "Tue" ]
                   start_time = "02:30"
                   length_minutes = 60
+          links:
+            - path: /etc/localtime
+              target: ../usr/share/zoneinfo/Europe/Berlin
           directories:
             - path: "/var/mnt/multimedia"
               mode: 0755
@@ -92,6 +93,8 @@ services:
               group:
                 name: "root"
     command:
+      - "/bin/bash"
+      - "-c"
       - |
         echo "$${DDCLIENT}" > /ddclient/ddclient.conf
         echo "$${IGNTION}" | butane -ps > /ignition/coreos.json
