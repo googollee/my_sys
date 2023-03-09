@@ -131,6 +131,23 @@ services:
         volume:
           nocopy: true
 
+    dnsmasq:
+      image: alpine:3.17
+      container_name: dnsmasq
+      ports:
+        - 53:53/tcp
+        - 53:53/udp
+      command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          apk update
+          apk add dnsmasq
+          dnsmasq --enable-ra --no-hosts --no-daemon -k \
+            --local=/svr.zhaohai.li/ \
+            --domain=svr.zhaohai.li \
+            --address=/svr.zhaohai.li/192.160.10.123
+
 volumes:
   ddclient:
     name: "ddclient"
