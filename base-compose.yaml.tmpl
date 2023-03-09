@@ -141,7 +141,6 @@ services:
         - "/bin/sh"
         - "-c"
         - |
-          apk update
           apk add dnsmasq
           dnsmasq --enable-ra --no-hosts --no-daemon -k \
             --local=/svr.zhaohai.li/ \
