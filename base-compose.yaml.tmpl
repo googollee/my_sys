@@ -142,7 +142,7 @@ services:
         - "-c"
         - |
           apk add dnsmasq
-          dnsmasq --enable-ra --no-hosts --no-daemon -k \
+          exec dnsmasq --enable-ra --no-hosts --no-daemon -k \
             --local=/svr.zhaohai.li/ \
             --domain=svr.zhaohai.li \
             --address=/svr.zhaohai.li/192.160.10.123
