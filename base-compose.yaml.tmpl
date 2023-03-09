@@ -131,21 +131,21 @@ services:
         apk add inadyn
         exec inadyn --foreground --no-pidfile -f /config/inadyn.conf
 
-    dnsmasq:
-      image: alpine:3.17
-      container_name: dnsmasq
-      ports:
-        - 53:53/tcp
-        - 53:53/udp
-      command:
-        - "/bin/sh"
-        - "-c"
-        - |
-          apk add dnsmasq
-          exec dnsmasq --enable-ra --no-hosts --no-daemon -k \
-            --local=/zhaohai.li/ \
-            --domain=zhaohai.li \
-            --address=/zhaohai.li/192.160.10.123
+  dnsmasq:
+    image: alpine:3.17
+    container_name: dnsmasq
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        apk add dnsmasq
+        exec dnsmasq --enable-ra --no-hosts --no-daemon -k \
+          --local=/zhaohai.li/ \
+          --domain=zhaohai.li \
+          --address=/zhaohai.li/192.160.10.123
 
 volumes:
   inadyn:
