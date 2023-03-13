@@ -71,6 +71,20 @@ services:
               contents:
                 inline: |
                   coreos
+            - path: /etc/NetworkManager/system-connections/ens3.nmconnection
+              mode: 0600
+              contents:
+                inline: |
+                  [connection]
+                  id=ens3
+                  type=ethernet
+                  interface-name=ens3
+                  [ipv4]
+                  address1=192.168.10.3/24,192.168.10.1
+                  dns=192.168.10.2;192.168.10.1;
+                  dns-search=local;
+                  may-fail=false
+                  method=manual
             - path: /etc/zincati/config.d/55-updates-strategy.toml
               contents:
                 inline: |
@@ -146,7 +160,10 @@ services:
           --except-interface=lo \
           --local=/zhaohai.li/ \
           --domain=zhaohai.li \
-          --address=/zhaohai.li/192.160.10.123
+          --address=/zhaohai.li/192.160.10.3 \
+          --address=/coreos.local/192.160.10.3 \
+          --address=/nasl.local/192.160.10.2 \
+          --address=/router.local/192.160.10.1
 
 volumes:
   inadyn:
