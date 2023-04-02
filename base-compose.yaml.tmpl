@@ -53,7 +53,7 @@ services:
                 Description=Mount data directory
 
                 [Mount]
-                What=//nas.local/Multimedia
+                What=//192.168.170.2/Multimedia
                 Where=/var/mnt/multimedia/
                 Type=cifs
                 Options=rw,username=googol,password={{ base64.Decode "aEOpNFNd44182ENhkUYMilZsODXaDqTJ9kyD86jz0Qo=" | crypto.DecryptAES $pw 256 }}
@@ -71,20 +71,6 @@ services:
               contents:
                 inline: |
                   coreos
-            - path: /etc/NetworkManager/system-connections/ens3.nmconnection
-              mode: 0600
-              contents:
-                inline: |
-                  [connection]
-                  id=ens3
-                  type=ethernet
-                  interface-name=ens3
-                  [ipv4]
-                  address1=192.168.10.3/24,192.168.10.1
-                  dns=192.168.10.2;192.168.10.1;
-                  dns-search=local;
-                  may-fail=false
-                  method=manual
             - path: /etc/zincati/config.d/55-updates-strategy.toml
               contents:
                 inline: |
@@ -144,26 +130,6 @@ services:
       - |
         apk add inadyn
         exec inadyn --foreground --no-pidfile -f /config/inadyn.conf
-
-  dnsmasq:
-    image: alpine:3.17
-    container_name: dnsmasq
-    ports:
-      - 192.168.10.2:53:53/tcp
-      - 192.168.10.2:53:53/udp
-    command:
-      - "/bin/sh"
-      - "-c"
-      - |
-        apk add dnsmasq
-        exec dnsmasq --enable-ra --no-hosts --no-daemon -k \
-          --except-interface=lo \
-          --local=/zhaohai.li/ \
-          --domain=zhaohai.li \
-          --address=/router.local/192.168.10.1 \
-          --address=/nas.local/192.168.10.2 \
-          --address=/coreos.local/192.168.10.3 \
-          --address=/zhaohai.li/192.168.10.3 \
 
 volumes:
   inadyn:
