@@ -53,7 +53,7 @@ services:
                 Description=Mount data directory
 
                 [Mount]
-                What=//192.168.170.2/Multimedia
+                What=//nas/Multimedia
                 Where=/var/mnt/multimedia/
                 Type=cifs
                 Options=rw,username=googol,password={{ base64.Decode "aEOpNFNd44182ENhkUYMilZsODXaDqTJ9kyD86jz0Qo=" | crypto.DecryptAES $pw 256 }}
