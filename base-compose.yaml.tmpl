@@ -21,10 +21,17 @@ services:
       INADYN: |
         period     = 300
         user-agent = Mozilla/5.0
-        provider cloudflare.com {
+        provider cloudflare.com:1 {
             username = zhaohai.li
             password = {{ base64.Decode "x5UNS3mLUV/M2QFJEUAQ4vedFT19mqHCOsUaTrmpY+CTl3/IM9gWeqGvavwT3o4X6xlv9NhsJWvIySopuUvrig==" | crypto.DecryptAES $pw 256 }}
             hostname = "*.zhaohai.li"
+            ttl = 1 # optional, value of 1 is 'automatic'.
+            proxied = true # optional.
+        }
+        provider cloudflare.com:2 {
+            username = zhaohai.li
+            password = {{ base64.Decode "x5UNS3mLUV/M2QFJEUAQ4vedFT19mqHCOsUaTrmpY+CTl3/IM9gWeqGvavwT3o4X6xlv9NhsJWvIySopuUvrig==" | crypto.DecryptAES $pw 256 }}
+            hostname = "zhaohai.li"
             ttl = 1 # optional, value of 1 is 'automatic'.
             proxied = true # optional.
         }
