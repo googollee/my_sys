@@ -3,6 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
   name: wan-auth
+  namespace: traefik-system
   labels:
     app: traefik
 spec:
@@ -13,6 +14,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: wan-auth
+  namespace: traefik-system
   labels:
     app: traefik
 spec:
@@ -23,6 +25,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: traefik-config
+  namespace: traefik-system
   labels:
     app: traefik
 data:
@@ -44,7 +47,7 @@ data:
             - wansecure
           rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
           middlewares:
-            - default-wan-auth@kubernetescrd
+            - traefik-system-wan-auth@kubernetescrd
           service: "httpsInLan"
       services:
         httpsInLan:
@@ -59,9 +62,9 @@ data:
     api:
       insecure: false
       dashboard: true
-      debug: true
-    log:
-      level: "debug"
+      debug: false
+    # log:
+      # level: "debug"
     accessLog: {}
     ping:
       manualRouting: true
@@ -121,6 +124,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: traefik-deployment
+  namespace: traefik-system
   labels:
     app: traefik
 spec:
@@ -133,7 +137,7 @@ spec:
       labels:
         app: traefik
     spec:
-      serviceAccountName: traefik-account
+      serviceAccountName: traefik-ingress-controller
       volumes:
         - name: acme
           hostPath:
@@ -189,6 +193,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: traefik-web-service
+  namespace: traefik-system
   labels:
     app: traefik
   annotations:
