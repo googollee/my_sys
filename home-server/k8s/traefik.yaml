@@ -1,0 +1,212 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: wan-auth
+  labels:
+    app: traefik
+spec:
+  basicAuth:
+    secret: wan-auth
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: wan-auth
+  labels:
+    app: traefik
+spec:
+  basicAuth:
+    secret: wan-auth
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  labels:
+    app: traefik
+data:
+  routes.yaml: |
+    http:
+      routers:
+        dashboard:
+          entryPoints:
+            - lansecure
+          rule: "Host(`gateway.zhaohai.li`)"
+          service: "api@internal"
+        ping:
+          entryPoints:
+            - lansecure
+          rule: "Host(`health.zhaohai.li`) && Path(`/ping`)"
+          service: "ping@internal"
+        wan-to-lan:
+          entryPoints:
+            - wansecure
+          rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
+          middlewares:
+            - default-wan-auth@kubernetescrd
+          service: "httpsInLan"
+      services:
+        httpsInLan:
+          loadBalancer:
+            passHostHeader: true
+            servers:
+              - url: "https://zhaohai.li"
+  config.yaml: |
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: false
+    api:
+      insecure: false
+      dashboard: true
+      debug: true
+    log:
+      level: "debug"
+    accessLog: {}
+    ping:
+      manualRouting: true
+    providers:
+      kubernetesIngress: {}
+      kubernetesCRD: {}
+      file:
+        directory: "/etc/traefik/"
+        watch: false
+        filename: "routes.yaml"
+    entryPoints:
+      lan:
+        address: ":80"
+        http:
+          redirections:
+            entryPoint:
+              to: lansecure
+              scheme: https
+      lansecure:
+        address: ":443"
+        http:
+          tls:
+            certResolver: letsencrypt
+            domains:
+              - main: "zhaohai.li"
+                sans: 
+                  - "*.zhaohai.li"
+      wan:
+        address: ":880"
+        http:
+          redirections:
+            entryPoint:
+              to: wansecure
+              scheme: https
+      wansecure:
+        address: ":8443"
+        http:
+          tls:
+            certResolver: letsencrypt
+            domains:
+              - main: "zhaohai.li"
+                sans:
+                  - "*.zhaohai.li"
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          email: "i@googol.im"
+          storage: "/var/run/acme.json"
+          caServer: "https://acme-v02.api.letsencrypt.org/directory"
+          dnsChallenge:
+            provider: cloudflare
+            resolvers: 
+              - "1.1.1.1:53"
+              - "8.8.8.8:53"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-deployment
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-account
+      volumes:
+        - name: acme
+          hostPath:
+            path: "/var/run/acme.json"
+            type: FileOrCreate
+        - name: config
+          configMap:
+            name: traefik-config
+            items:
+              - key: "config.yaml"
+                path: "config.yaml"
+              - key: "routes.yaml"
+                path: "routes.yaml"
+      containers:
+        - name: traefik
+          image: traefik:v2.10
+          command:
+            - /bin/sh
+            - -c
+            - |
+              chmod 0600 /var/run/acme.json
+              exec traefik --configfile /etc/traefik/config.yaml
+          volumeMounts:
+            - name: acme
+              mountPath: "/var/run/acme.json"
+            - name: config
+              mountPath: "/etc/traefik/"
+          env:
+            - name: CF_DNS_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-token
+                  key: token
+          ports:
+            - name: lan
+              containerPort: 80
+            - name: lansecure
+              containerPort: 443
+            - name: wan
+              containerPort: 880
+            - name: wansecure
+              containerPort: 8443
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              host: health.zhaohai.li
+              path: /ping
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-web-service
+  labels:
+    app: traefik
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.10.3
+spec:
+  type: LoadBalancer
+  ports:
+    - name: lan
+      targetPort: lan
+      port: 80
+    - name: lansecure
+      targetPort: lansecure
+      port: 443
+    - name: wan
+      targetPort: wan
+      port: 880
+    - name: wansecure
+      targetPort: wansecure
+      port: 8443
+  selector:
+    app: traefik
