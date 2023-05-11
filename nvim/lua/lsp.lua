@@ -3,6 +3,7 @@ local M = {}
 function M.init(packer)
   packer {
     'neovim/nvim-lspconfig',
+
     config = function()
       local function vim_kv_args(args)
         local arg_strs = {}

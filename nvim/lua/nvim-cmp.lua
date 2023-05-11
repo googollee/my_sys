@@ -2,15 +2,20 @@ local M = {}
 
 function M.init(packer)
   packer 'hrsh7th/cmp-nvim-lsp'
+  packer 'hrsh7th/cmp-nvim-lua'
   packer 'hrsh7th/cmp-buffer'
   packer 'hrsh7th/cmp-path'
   packer 'hrsh7th/cmp-cmdline'
+  packer 'onsails/lspkind.nvim'
 
   packer {
     'hrsh7th/nvim-cmp',
 
     config = function()
       -- Setup nvim-cmp.
+      local lspkind = require("lspkind")
+      lspkind.init()
+
       local cmp = require'cmp'
 
       cmp.setup({
@@ -34,15 +39,29 @@ function M.init(packer)
           ['<Tab>'] = cmp.mapping.select_next_item(),
           ['<S-Tab>'] = cmp.mapping.select_prev_item(),
         }),
-        sources = cmp.config.sources({
+        sources = {
           { name = 'nvim_lsp' },
-          -- { name = 'vsnip' }, -- For vsnip users.
-          -- { name = 'luasnip' }, -- For luasnip users.
-          -- { name = 'ultisnips' }, -- For ultisnips users.
-          -- { name = 'snippy' }, -- For snippy users.
-        }, {
-          { name = 'buffer' },
-        })
+          { name = 'path' },
+          { name = 'buffer', keyword_length = 5 },
+        },
+        formatting = {
+          format = lspkind.cmp_format({
+            with_text = true,
+            mode = 'text',
+            maxwidth = 40, -- half max width
+            menu = {
+              buffer   = "[BUF]",
+              nvim_lsp = "[LSP]",
+              nvim_lua = "[API]",
+              path     = "[PATH]",
+            },
+          }),
+        },
+
+        experimental = {
+          native_menu = false,
+          ghost_text = false,
+        },
       })
 
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
