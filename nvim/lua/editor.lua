@@ -71,21 +71,54 @@ return function(packer)
   packer {
     'folke/trouble.nvim',
     config = function()
-      require("trouble").setup {
+      require("trouble").setup({
+        position = "bottom",
         icons = false,
+        mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
         fold_open = "v",
         fold_closed = ">",
         indent_lines = true,
+        group = true,
+        padding = true,
+        action_keys = {
+          close = "<esc>", -- close the list
+          cancel = {}, -- cancel the preview and get back to your last window / buffer / cursor
+          refresh = "r", -- manually refresh
+          jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
+          open_split = { "<c-x>" }, -- open buffer in new split
+          open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+          open_tab = { "<c-t>" }, -- open buffer in new tab
+          jump_close = { "o" }, -- jump to the diagnostic and close the list
+          toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+          toggle_preview = "P", -- toggle auto_preview
+          hover = "K", -- opens a small popup with the full multiline message
+          preview = "p", -- preview the diagnostic location
+          close_folds = { "zM", "zm" }, -- close all folds
+          open_folds = { "zR", "zr" }, -- open all folds
+          toggle_fold = { "zA", "za" }, -- toggle fold of current file
+          previous = "k", -- preview item
+          next = "j", -- next item
+        },
+        auto_open = false, -- automatically open the list when you have diagnostics
+        auto_close = false, -- automatically close the list when you have no diagnostics
+        auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+        auto_fold = false, -- automatically fold a file trouble list at creation
+        auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
         signs = {
           error = "x",
           warning = "!",
           hint = "?",
           information = "i",
-          other = ">",
+          other = "-",
         },
-      }
+        use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
+      })
 
-      util.noremap("n", "<leader>x", "<cmd>TroubleToggle<cr>")
+      util.noremap("n", "<Leader>xx", "<Cmd>TroubleToggle<CR>")
+      util.noremap("n", "<Leader>xw", "<Cmd>Trouble workspace_diagnostics<CR>")
+      util.noremap("n", "<Leader>xd", "<Cmd>Trouble document_diagnostics<CR>")
+      util.noremap("n", "<Leader>xl", "<Cmd>Trouble loclist<CR>")
+      util.noremap("n", "<Leader>xq", "<Cmd>Trouble quickfix<CR>")
     end
   }
 
