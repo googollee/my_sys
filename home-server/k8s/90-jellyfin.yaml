@@ -1,0 +1,94 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tinyfilemanager
+  template:
+    metadata:
+      labels:
+        app: tinyfilemanager
+    spec:
+      volumes:
+      - name: fs
+        hostPath:
+          path: "/mnt/multimedia/"
+          type: Directory
+      - name: config
+        hostPath:
+          path: "/share/Multimedia/.config/jellyfin"
+          type: DirectoryOrCreate
+      - name: cache
+        hostPath:
+          path: "/share/Multimedia/.config/jellyfin.cache"
+          type: DirectoryOrCreate
+      containers:
+      - name: jellyfin
+        image: jellyfin/jellyfin
+        securityContext:
+          runAsUser: 500
+          runAsGroup: 100
+        env:
+        - name: JELLYFIN_PublishedServerUrl
+          value: http://fs.zhaohai.li
+        volumeMounts:
+        - name: fs
+          mountPath: "/media"
+        - name: config
+          mountPath: "/config"
+        - name: cache
+          mountPath: "/cache"
+        ports:
+        - containerPort: 8096
+          protocol: TCP
+        - containerPort: 1900
+          protocol: UDP
+        - containerPort: 7359
+          protocol: UDP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin-service
+  labels:
+    app: jellyfin
+spec:
+  ports:
+  - name: web
+    targetPort: 8096
+    port: 8096
+  - name: dlna
+    targetPort: 1900
+    port: 1900
+  - name: discovery
+    targetPort: 7359
+    port: 7359
+  selector:
+    app: jellyfin
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: lansecure
+spec:
+  rules:
+  - host: "media.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jellyfin-service
+            port:
+              number: 8096

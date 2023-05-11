@@ -108,6 +108,14 @@ data:
               - main: "zhaohai.li"
                 sans:
                   - "*.zhaohai.li"
+      jellyfin-dlna:
+        address: ":1900/udp"
+        udp:
+          timeout: "10s"
+      jellyfin-client-discovery:
+        address: ":7359/udp"
+        udp:
+          timeout: "10s"
     certificatesResolvers:
       letsencrypt:
         acme:
