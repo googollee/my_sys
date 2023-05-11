@@ -112,7 +112,7 @@ data:
         address: ":1900/udp"
         udp:
           timeout: "10s"
-      jellyfin-client-discovery:
+      jellyfin-discovery:
         address: ":7359/udp"
         udp:
           timeout: "10s"

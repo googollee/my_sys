@@ -9,11 +9,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tinyfilemanager
+      app: jellyfin
   template:
     metadata:
       labels:
-        app: tinyfilemanager
+        app: jellyfin
     spec:
       volumes:
       - name: fs
@@ -22,24 +22,25 @@ spec:
           type: Directory
       - name: config
         hostPath:
-          path: "/share/Multimedia/.config/jellyfin"
+          path: "/var/home/googol/jellyfin"
           type: DirectoryOrCreate
       - name: cache
         hostPath:
-          path: "/share/Multimedia/.config/jellyfin.cache"
+          path: "/var/home/googol/jellyfin/cache"
           type: DirectoryOrCreate
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
       - name: jellyfin
-        image: jellyfin/jellyfin
-        securityContext:
-          runAsUser: 500
-          runAsGroup: 100
+        image: jellyfin/jellyfin:10.8.10
         env:
         - name: JELLYFIN_PublishedServerUrl
-          value: http://fs.zhaohai.li
+          value: https://fs.zhaohai.li
         volumeMounts:
         - name: fs
           mountPath: "/media"
+          readOnly: true
         - name: config
           mountPath: "/config"
         - name: cache
@@ -92,3 +93,59 @@ spec:
             name: jellyfin-service
             port:
               number: 8096
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: jellyfin-dlna
+  labels:
+    app: jellyfin
+spec:
+  entryPoints:
+  - jellyfin-dlna
+  routes:
+  - services:
+    - name: jellyfin-service
+      port: 1900
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: jellyfin-discovery
+  labels:
+    app: jellyfin
+spec:
+  entryPoints:
+  - jellyfin-discovery
+  routes:
+  - services:
+    - name: jellyfin-service
+      port: 7359
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: jellyfin-dlna
+  labels:
+    app: jellyfin
+spec:
+  entryPoints:
+  - jellyfin-dlna
+  routes:
+  - services:
+    - name: jellyfin-service
+      port: 1900
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: jellyfin-discovery
+  labels:
+    app: jellyfin
+spec:
+  entryPoints:
+  - jellyfin-discovery
+  routes:
+  - services:
+    - name: jellyfin-service
+      port: 7359
