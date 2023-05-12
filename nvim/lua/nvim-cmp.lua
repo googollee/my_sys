@@ -60,7 +60,7 @@ function M.init(packer)
 
         experimental = {
           native_menu = false,
-          ghost_text = false,
+          ghost_text = true,
         },
       })
 
