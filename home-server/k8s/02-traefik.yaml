@@ -116,6 +116,12 @@ data:
         address: ":7359/udp"
         udp:
           timeout: "10s"
+      qbittorrent-tcp:
+        address: ":16881/tcp"
+      qbittorrent-udp:
+        address: ":16881/udp"
+        udp:
+          timeout: "10s"
     certificatesResolvers:
       letsencrypt:
         acme:

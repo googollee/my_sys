@@ -1,0 +1,151 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      volumes:
+      - name: fs
+        hostPath:
+          path: "/mnt/multimedia/"
+          type: Directory
+      - name: config
+        hostPath:
+          path: "/var/home/googol/qbittorrent"
+          type: DirectoryOrCreate
+      containers:
+      - name: qbittorrent
+        image: linuxserver/qbittorrent:4.5.2
+        env:
+        - name: WEBUI_PORT
+          value: "8080"
+        - name: TZ
+          value: "Europe/Berlin"
+        - name: PUID
+          value: "1001"
+        - name: PGID
+          value: "1001"
+        volumeMounts:
+        - name: fs
+          mountPath: "/mnt/Multimedia"
+        - name: config
+          mountPath: "/config"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 16881
+          protocol: TCP
+        - containerPort: 16881
+          protocol: UDP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-service
+  labels:
+    app: qbittorrent
+spec:
+  ports:
+  - name: web
+    targetPort: 8080
+    port: 8080
+  - name: svr-tcp
+    targetPort: 16881
+    port: 16881
+    protocol: TCP
+  - name: svr-udp
+    targetPort: 16881
+    port: 16881
+    protocol: UDP
+  selector:
+    app: qbittorrent
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qbittorrent
+  labels:
+    app: qbittorrent
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: lansecure
+spec:
+  rules:
+  - host: "bt.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: qbittorrent-service
+            port:
+              number: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: qbittorrent-tcp
+  labels:
+    app: qbittorrent
+spec:
+  entryPoints:
+  - qbittorrent-tcp
+  routes:
+  - match: "HostSNIRegexp(`.+`)"
+    services:
+    - name: qbittorrent-service
+      port: 16881
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: qbittorrent-udp
+  labels:
+    app: qbittorrent
+spec:
+  entryPoints:
+  - qbittorrent-udp
+  routes:
+  - services:
+    - name: qbittorrent-service
+      port: 16881
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: qbittorrent-tcp
+  labels:
+    app: qbittorrent
+spec:
+  entryPoints:
+  - qbittorrent-tcp
+  routes:
+  - match: "HostSNIRegexp(`.+`)"
+    services:
+    - name: qbittorrent-service
+      port: 16881
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteUDP
+metadata:
+  name: qbittorrent-udp
+  labels:
+    app: qbittorrent
+spec:
+  entryPoints:
+  - qbittorrent-udp
+  routes:
+  - services:
+    - name: qbittorrent-service
+      port: 16881
