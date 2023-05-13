@@ -97,7 +97,7 @@ data:
         http:
           redirections:
             entryPoint:
-              to: wansecure
+              to: lansecure
               scheme: https
       wansecure:
         address: ":8443"
