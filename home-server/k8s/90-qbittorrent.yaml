@@ -33,9 +33,9 @@ spec:
         - name: TZ
           value: "Europe/Berlin"
         - name: PUID
-          value: "1001"
+          value: "0"
         - name: PGID
-          value: "1001"
+          value: "0"
         volumeMounts:
         - name: fs
           mountPath: "/mnt/Multimedia"
