@@ -9,6 +9,7 @@ return function(packer)
 
   augroup('fmt', {
     autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
+    autocmd('BufWritePost,FileWritePost', '*.go', '%!goimports'),
     autocmd('BufWritePost,FileWritePost', '*.go', '!glaze .'),
   })
 
