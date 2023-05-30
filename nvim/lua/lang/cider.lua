@@ -8,7 +8,8 @@ return function(packer)
   local autocmd = util.autocmd
 
   augroup('fmt', {
-    autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2')
+    autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
+    autocmd('BufWritePost,FileWritePost', '*.go', '!glaze .'),
   })
 
   local nvim_lsp = require 'lspconfig'
