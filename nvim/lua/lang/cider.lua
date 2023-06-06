@@ -9,8 +9,8 @@ return function(packer)
 
   augroup('fmt', {
     autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-    autocmd('BufWritePost,FileWritePost', '*.go', '%!goimports'),
-    autocmd('BufWritePost,FileWritePost', '*.go', '!glaze .'),
+    autocmd('BufWritePost,FileWritePost', '*.go', 'silent! %!goimports'),
+    autocmd('BufWritePost,FileWritePost', '*.go', 'silent! !glaze .'),
   })
 
   local nvim_lsp = require 'lspconfig'
