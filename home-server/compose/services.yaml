@@ -197,9 +197,8 @@ services:
     environment:
       TINYFILEMANAGER_CONFIG: |
         <?php
-        $$root_path = "/share/Multimedia";
+        $$root_path = '/share/Multimedia/';
         $$use_auth = false;
-        ?>
 
   qbittorrent:
     image: linuxserver/qbittorrent:4.5.4
@@ -238,7 +237,7 @@ services:
     volumes:
       - type: bind
         source: /share/Multimedia
-        target: /media
+        target: /share/Multimedia
       - type: bind
         source: /share/Multimedia/.config/jellyfin
         target: /config
