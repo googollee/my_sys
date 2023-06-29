@@ -63,14 +63,14 @@ services:
                 - wansecure
               rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
               middlewares:
-                - wan-auth:
-              service: "httpsInLan"
+                - wan-auth
+              service: "https-in-lan"
           middlewares:
             wan-auth:
               basicAuth:
                 usersFile: "/etc/host_config/wan_auth"
           services:
-            httpsInLan:
+            https-in-lan:
               loadBalancer:
                 passHostHeader: true
                 servers:
