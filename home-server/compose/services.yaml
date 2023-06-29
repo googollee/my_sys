@@ -1,0 +1,254 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    hostname: traefik
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        mkdir -p /etc/traefik
+        echo "$${TRAEFIK_ROUTES_CONFIG}" > /etc/traefik/routes.yaml
+        echo "$${TRAEFIK_CONFIG}" > /etc/traefik/config.yaml
+        chmod 0600 /etc/host_config/acme.json
+        export CF_DNS_API_TOKEN=$$(cat /etc/host_config/cloudflare_token)
+        exec /usr/local/bin/traefik --configfile /etc/traefik/config.yaml
+    volumes:
+      - type: bind
+        source: /share/Multimedia/.config/acme.json
+        target: /etc/host_config/acme.json
+      - type: bind
+        source: /share/Multimedia/.config/cloudflare_token
+        target: /etc/host_config/cloudflare_token
+      - type: bind
+        source: /share/Multimedia/.config/wan_auth
+        target: /etc/host_config/wan_auth
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    ports:
+      - 80:80
+      - 443:443
+      - 880:880
+      - 8443:8443
+    healthcheck:
+      test:
+        - "CMD"
+        - "/bin/sh"
+        - "-c"
+        - |
+          wget https://health.zhaohai.li/ping -O -
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 1m
+    environment:
+      TRAEFIK_ROUTES_CONFIG: |
+        http:
+          routers:
+            dashboard:
+              entryPoints:
+                - lansecure
+              rule: "Host(`gateway.zhaohai.li`)"
+              service: "api@internal"
+            ping:
+              entryPoints:
+                - lansecure
+              rule: "Host(`health.zhaohai.li`) && Path(`/ping`)"
+              service: "ping@internal"
+            wan-to-lan:
+              entryPoints:
+                - wansecure
+              rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
+              middlewares:
+                - wan-auth:
+              service: "httpsInLan"
+          middlewares:
+            wan-auth:
+              basicAuth:
+                usersFile: "/etc/host_config/wan_auth"
+          services:
+            httpsInLan:
+              loadBalancer:
+                passHostHeader: true
+                servers:
+                  - url: "https://zhaohai.li"
+      TRAEFIK_CONFIG: |
+        global:
+          checkNewVersion: false
+          sendAnonymousUsage: false
+        api:
+          insecure: false
+          dashboard: true
+          debug: false
+        # log:
+          # level: "debug"
+        accessLog: {}
+        ping:
+          manualRouting: true
+        providers:
+          docker:
+            endpoint: "unix:///var/run/docker.sock"
+          file:
+            directory: "/etc/traefik/"
+            watch: false
+            filename: "routes.yaml"
+        entryPoints:
+          lan:
+            address: ":80"
+            http:
+              redirections:
+                entryPoint:
+                  to: lansecure
+                  scheme: https
+          lansecure:
+            address: ":443"
+            http:
+              tls:
+                certResolver: letsencrypt
+                domains:
+                  - main: "zhaohai.li"
+                    sans: 
+                      - "*.zhaohai.li"
+          wan:
+            address: ":880"
+            http:
+              redirections:
+                entryPoint:
+                  to: lansecure
+                  scheme: https
+          wansecure:
+            address: ":8443"
+            http:
+              tls:
+                certResolver: letsencrypt
+                domains:
+                  - main: "zhaohai.li"
+                    sans:
+                      - "*.zhaohai.li"
+        certificatesResolvers:
+          letsencrypt:
+            acme:
+              email: "i@googol.im"
+              storage: "/etc/host_config/acme.json"
+              caServer: "https://acme-v02.api.letsencrypt.org/directory"
+              dnsChallenge:
+                provider: cloudflare
+                resolvers: 
+                  - "1.1.1.1:53"
+                  - "8.8.8.8:53"
+
+  inadyn:
+    image: alpine:3.18
+    container_name: inadyn
+    hostname: inadyn
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        export CF_DNS_API_TOKEN=$$(cat /etc/host_config/cloudflare_token)
+        apk add inadyn
+        echo "$${INADYN_CONFIG}" | sed "s/cloudflare-token/$${CF_DNS_API_TOKEN}/g" > /root/config.conf
+        exec inadyn --foreground --no-pidfile -f /root/config.conf
+    volumes:
+      - type: bind
+        source: /share/Multimedia/.config/cloudflare_token
+        target: /etc/host_config/cloudflare_token
+    environment:
+      INADYN_CONFIG: |
+        period     = 300
+        user-agent = Mozilla/5.0
+        provider cloudflare.com:1 {
+            username = zhaohai.li
+            password = cloudflare-token
+            hostname = "*.zhaohai.li"
+            ttl = 1 # optional, value of 1 is 'automatic'.
+            proxied = true # optional.
+        }
+        provider cloudflare.com:2 {
+            username = zhaohai.li
+            password = cloudflare-token
+            hostname = "zhaohai.li"
+            ttl = 1 # optional, value of 1 is 'automatic'.
+            proxied = true # optional.
+        }
+
+  tinyfilemanager:
+    image: tinyfilemanager/tinyfilemanager:2.4.7
+    container_name: tinyfilemanager
+    hostname: tinyfilemanager
+    labels:
+      - "traefik.http.routers.tinyfilemanager.rule=Host(`fs.zhaohai.li`)"
+      - "traefik.http.routers.tinyfilemanager.entrypoints=lansecure"
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        echo "$${TINYFILEMANAGER_CONFIG}" > /var/www/html/config.php
+        exec php -S 0.0.0.0:80
+    volumes:
+      - type: bind
+        source: /share/Multimedia
+        target: /share/Multimedia
+    expose:
+      - "80"
+    environment:
+      TINYFILEMANAGER_CONFIG: |
+        <?php
+        $$root_path = "/share/Multimedia";
+        $$use_auth = false;
+        ?>
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:4.5.2
+    container_name: qbittorrent
+    hostname: qbittorrent
+    labels:
+      - "traefik.http.routers.qbittorrent.rule=Host(`bt.zhaohai.li`)"
+      - "traefik.http.routers.qbittorrent.entrypoints=lansecure"
+      - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
+    volumes:
+      - type: bind
+        source: /share/Multimedia
+        target: /mnt/Multimedia
+      - type: bind
+        source: /share/Multimedia/.config/qbittorrent
+        target: /config
+    expose:
+      - "8080"
+    ports:
+      - 16881:16881/tcp
+      - 16881:16881/udp
+    environment:
+      WEBUI_PORT: "8080"
+      TZ: "Europe/Berlin"
+      PUID: "1000"
+      PGID: "100"
+
+  jellyfin:
+    image: jellyfin/jellyfin:10.8.10
+    container_name: jellyfin
+    hostname: jellyfin
+    labels:
+      - "traefik.http.routers.media.rule=Host(`media.zhaohai.li`)"
+      - "traefik.http.routers.media.entrypoints=lansecure"
+      - "traefik.http.services.media.loadbalancer.server.port=8096"
+    volumes:
+      - type: bind
+        source: /share/Multimedia
+        target: /media
+      - type: bind
+        source: /share/Multimedia/.config/jellyfin
+        target: /config
+      - type: bind
+        source: /share/Multimedia/.config/jellyfin/cache
+        target: /cache
+    expose:
+      - "8096"
+    ports:
+      - 1900:1900/udp
+      - 7359:7359/udp
+    environment:
+      JELLYFIN_PublishedServerUrl: https://media.zhaohai.li
