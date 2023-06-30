@@ -5,6 +5,11 @@ services:
     image: traefik:v2.10
     container_name: traefik
     hostname: traefik
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
     command:
       - "/bin/sh"
       - "-c"
@@ -31,7 +36,6 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 880:880
       - 8443:8443
     healthcheck:
       test:
@@ -50,17 +54,17 @@ services:
           routers:
             dashboard:
               entryPoints:
-                - lansecure
+                - https
               rule: "Host(`gateway.zhaohai.li`)"
               service: "api@internal"
             ping:
               entryPoints:
-                - lansecure
+                - https
               rule: "Host(`health.zhaohai.li`) && Path(`/ping`)"
               service: "ping@internal"
             wan-to-lan:
               entryPoints:
-                - wansecure
+                - wan
               rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
               middlewares:
                 - wan-auth
@@ -96,14 +100,14 @@ services:
             watch: false
             filename: "routes.yaml"
         entryPoints:
-          lan:
+          http:
             address: ":80"
             http:
               redirections:
                 entryPoint:
-                  to: lansecure
+                  to: https
                   scheme: https
-          lansecure:
+          https:
             address: ":443"
             http:
               tls:
@@ -113,13 +117,6 @@ services:
                     sans: 
                       - "*.zhaohai.li"
           wan:
-            address: ":880"
-            http:
-              redirections:
-                entryPoint:
-                  to: lansecure
-                  scheme: https
-          wansecure:
             address: ":8443"
             http:
               tls:
@@ -144,6 +141,11 @@ services:
     image: alpine:3.18
     container_name: inadyn
     hostname: inadyn
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
     command:
       - "/bin/sh"
       - "-c"
@@ -179,9 +181,14 @@ services:
     image: tinyfilemanager/tinyfilemanager:2.4.7
     container_name: tinyfilemanager
     hostname: tinyfilemanager
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 128M
     labels:
       - "traefik.http.routers.tinyfilemanager.rule=Host(`fs.zhaohai.li`)"
-      - "traefik.http.routers.tinyfilemanager.entrypoints=lansecure"
+      - "traefik.http.routers.tinyfilemanager.entrypoints=https"
     command:
       - "/bin/sh"
       - "-c"
@@ -204,9 +211,14 @@ services:
     image: linuxserver/qbittorrent:4.5.4
     container_name: qbittorrent
     hostname: qbittorrent
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
     labels:
       - "traefik.http.routers.qbittorrent.rule=Host(`bt.zhaohai.li`)"
-      - "traefik.http.routers.qbittorrent.entrypoints=lansecure"
+      - "traefik.http.routers.qbittorrent.entrypoints=https"
       - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
     volumes:
       - type: bind
@@ -230,9 +242,14 @@ services:
     image: jellyfin/jellyfin:10.8.10
     container_name: jellyfin
     hostname: jellyfin
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
     labels:
       - "traefik.http.routers.media.rule=Host(`media.zhaohai.li`)"
-      - "traefik.http.routers.media.entrypoints=lansecure"
+      - "traefik.http.routers.media.entrypoints=https"
       - "traefik.http.services.media.loadbalancer.server.port=8096"
     volumes:
       - type: bind
