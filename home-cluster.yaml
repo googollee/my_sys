@@ -22,13 +22,13 @@ services:
         exec /usr/local/bin/traefik --configfile /etc/traefik/config.yaml
     volumes:
       - type: bind
-        source: /share/Multimedia/.config/acme.json
+        source: /share/System/config/acme.json
         target: /etc/host_config/acme.json
       - type: bind
-        source: /share/Multimedia/.config/cloudflare_token
+        source: /share/System/config/cloudflare_token
         target: /etc/host_config/cloudflare_token
       - type: bind
-        source: /share/Multimedia/.config/wan_auth
+        source: /share/System/config/wan_auth
         target: /etc/host_config/wan_auth
       - type: bind
         source: /var/run/docker.sock
@@ -156,7 +156,7 @@ services:
         exec inadyn --foreground --no-pidfile -f /root/config.conf
     volumes:
       - type: bind
-        source: /share/Multimedia/.config/cloudflare_token
+        source: /share/System/config/cloudflare_token
         target: /etc/host_config/cloudflare_token
     environment:
       INADYN_CONFIG: |
@@ -225,7 +225,7 @@ services:
         source: /share/Multimedia
         target: /mnt/Multimedia
       - type: bind
-        source: /share/Multimedia/.config/qbittorrent
+        source: /share/System/config/qbittorrent
         target: /config
     expose:
       - "8080"
@@ -256,10 +256,10 @@ services:
         source: /share/Multimedia
         target: /Multimedia
       - type: bind
-        source: /share/Multimedia/.config/jellyfin
+        source: /share/System/config/jellyfin
         target: /config
       - type: bind
-        source: /share/Multimedia/.config/jellyfin/cache
+        source: /share/System/config/jellyfin/cache
         target: /cache
     expose:
       - "8096"
