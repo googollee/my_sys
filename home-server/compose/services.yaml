@@ -237,7 +237,7 @@ services:
     volumes:
       - type: bind
         source: /share/Multimedia
-        target: /share/Multimedia
+        target: /Multimedia
       - type: bind
         source: /share/Multimedia/.config/jellyfin
         target: /config
