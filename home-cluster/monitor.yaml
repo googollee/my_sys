@@ -1,0 +1,66 @@
+version: "3"
+
+networks:
+  default:
+    external:
+      name: gateway_default
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    hostname: prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    labels:
+      - "traefik.http.routers.prometheus.rule=Host(`monitor.zhaohai.li`)"
+      - "traefik.http.routers.prometheus.entrypoints=https"
+    user: root:root
+    entrypoint: []
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        ls -lhad /prometheus/data
+        echo "$${PROMETHEUS_CONFIG}" > /etc/prometheus/prometheus.yml
+        exec /bin/prometheus --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - type: bind
+        source: /share/System/config/prometheus/data
+        target: /prometheus/data
+    expose:
+      - 9090
+    environment:
+      PROMETHEUS_CONFIG: |
+        global:
+          scrape_interval: 15s
+          external_labels:
+            monitor: 'codelab-monitor'
+        scrape_configs:
+          - job_name: 'prometheus'
+            static_configs:
+              - targets: ['localhost:9090']
+          - job_name: 'node'
+            static_configs:
+              - targets: ['node-exporter:9100']
+
+  node-exporter:
+    image: prom/node-exporter:v1.6.0
+    container_name: node-exporter
+    hostname: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /host/run/udev/data:/run/udev/data:ro
+      - /share/Multimedia:/rootfs:ro
+    expose:
+      - 9100
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--path.udev.data=/host/run/udev/data'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
