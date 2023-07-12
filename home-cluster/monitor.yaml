@@ -26,7 +26,9 @@ services:
       - |
         ls -lhad /prometheus/data
         echo "$${PROMETHEUS_CONFIG}" > /etc/prometheus/prometheus.yml
-        exec /bin/prometheus --config.file=/etc/prometheus/prometheus.yml
+        exec /bin/prometheus \
+          --config.file=/etc/prometheus/prometheus.yml \
+          --storage.tsdb.retention.time=7d
     volumes:
       - type: bind
         source: /share/System/config/prometheus/data
@@ -46,6 +48,28 @@ services:
           - job_name: 'node'
             static_configs:
               - targets: ['node-exporter:9100']
+
+  grafana:
+    image: grafana/grafana-enterprise:main
+    container_name: grafana
+    hostname: grafana
+    user: root:root
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+    labels:
+      - "traefik.http.routers.grafana.rule=Host(`graph.zhaohai.li`)"
+      - "traefik.http.routers.grafana.entrypoints=https"
+    volumes:
+      - type: bind
+        source: /share/System/config/grafana/data
+        target: /var/lib/grafana
+    expose:
+     - 3000
+    environment:
+     - GF_SERVER_ROOT_URL=https://graph.zhaohai.li/
 
   node-exporter:
     image: prom/node-exporter:v1.6.0
