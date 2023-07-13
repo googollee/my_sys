@@ -10,6 +10,9 @@ services:
         limits:
           cpus: '1'
           memory: 256M
+    labels:
+      - "traefik.http.routers.traefik.role=``"
+      - "traefik.http.routers.traefik.entrypoints=``"
     command:
       - "/bin/sh"
       - "-c"
@@ -62,6 +65,11 @@ services:
                 - https
               rule: "Host(`health.zhaohai.li`) && Path(`/ping`)"
               service: "ping@internal"
+            traefik:
+              entryPoints:
+                - https
+              rule: "Host(`gateway.zhaohai.li`) && Path(`/metrics`)"
+              service: "prometheus@internal"
             wan-to-lan:
               entryPoints:
                 - wan
@@ -125,6 +133,10 @@ services:
                   - main: "zhaohai.li"
                     sans:
                       - "*.zhaohai.li"
+        metrics:
+          prometheus:
+            entryPoint: https
+            manualRouting: true
         certificatesResolvers:
           letsencrypt:
             acme:
