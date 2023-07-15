@@ -198,6 +198,30 @@ interfaces {
         }
     }
 }
+port-forward {
+    auto-firewall enable
+    hairpin-nat enable
+    lan-interface switch0
+    rule 1 {
+        description http
+        forward-to {
+            address 192.168.10.2
+            port 80
+        }
+        original-port 80
+        protocol tcp
+    }
+    rule 2 {
+        description https
+        forward-to {
+            address 192.168.10.2
+            port 8443
+        }
+        original-port 443
+        protocol tcp
+    }
+    wan-interface pppoe0
+}
 service {
     dhcp-server {
         disabled false
@@ -212,13 +236,9 @@ service {
                 start 192.168.10.38 {
                     stop 192.168.10.243
                 }
-                static-mapping coreos {
-                    ip-address 192.168.10.3
-                    mac-address 52:54:00:cd:52:56
-                }
                 static-mapping nas {
                     ip-address 192.168.10.2
-                    mac-address 24:5e:be:3f:2d:22
+                    mac-address 24:5E:BE:66:93:12
                 }
             }
         }
@@ -230,7 +250,8 @@ service {
             cache-size 150
             listen-on switch0
             options address=/router.local/192.168.10.1
-            options address=/zhaohai.li/192.168.10.3
+            options address=/nas.local/192.168.10.2
+            options address=/zhaohai.li/192.168.10.2
         }
     }
     gui {
