@@ -38,6 +38,7 @@ fi
 # macOS
 if [ `uname` = "Darwin" ]; then
   export DOCKER_DEFAULT_PLATFORM=linux/amd64
+  alias tf='terraform'
 fi
 
 # Google Env
