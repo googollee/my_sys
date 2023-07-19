@@ -41,8 +41,11 @@ if [ `uname` = "Darwin" ]; then
 fi
 
 # Google Env
-if [ "`lsb_release -cs 2>/dev/null`" = "rodete" ]; then
-  true;
+if which lsb_release >/dev/null; then
+  if [ $(lsb_release -rs) = "rodete" ]; then
+    alias txa='tmx2 attach'
+    alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
+  fi
 fi
 
 # Homebrew
@@ -56,17 +59,10 @@ fi
 
 # Go
 export GOPATH=~/.local
-export PATH=$PATH:$GOPATH/bin
 
+# nvim
 if [ "$(which nvim)" != "nvim not found" ]; then
   export EDITOR=nvim
   alias vi='nvim'
   alias nv='nvim'
-fi
-
-if [ "$(which lsb_release)" != "lsb_release not found" ]; then
-  if [ $(lsb_release -rs) = "rodete" ]; then
-    alias txa='tmx2 attach'
-    alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
-  fi
 fi
