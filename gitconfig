@@ -19,7 +19,6 @@
 	sl = shortlog -sn
 [github]
 	user = googollee
-	token = 39c10771cd110b8929f8240535d2e1e7
 [merge]
 	tool = vimdiff
 [diff]
