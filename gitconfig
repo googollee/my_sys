@@ -28,3 +28,5 @@
 	default = current
 [http]
 	cookiefile = /Users/googol/.gitcookies
+[tag]
+	sort = version:refname
