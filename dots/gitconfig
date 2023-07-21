@@ -29,3 +29,5 @@
 	cookiefile = /Users/googol/.gitcookies
 [tag]
 	sort = version:refname
+[pull]
+	rebase = true
