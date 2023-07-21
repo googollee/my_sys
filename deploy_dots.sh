@@ -1,12 +1,29 @@
 #!/bin/sh
 
-for f in dots/*
-do
+for f in dots/*; do
+  if [ "${f}" = "dots/mac" ]; then
+     continue
+  fi
+  echo linking ${f}
   name=$(basename ${f})
-  test -e ~/.${name} && (echo "backup ~/.${name} to ~/${name}.bak"; mv ~/.${name} ~/${name}.bak;)
+  rm -f ~/.${name}
   ln -s `realpath ./${f}` ~/.${name}
 done
 
-test -e ~/.config/nvim && (echo "backup ~/.config/nvim to ~/nvim.bak"; mv ~/.config/nvim ~/nvim.bak;)
+echo linking nvim
 mkdir -p ~/.config
+rm -f ~/.config/nvim
 ln -s `realpath nvim` ~/.config/nvim
+
+# macOS
+if [ `uname` = "Darwin" ]; then
+  rm -f ~/.zshrc
+  ln -s ~/.profile ~/.zshrc
+
+  for f in dots/mac/*; do
+    echo linking ${f}
+    name=$(basename ${f})
+    rm -f ~/.${name}
+    ln -s `realpath ./${f}` ~/.${name}
+  done
+fi
