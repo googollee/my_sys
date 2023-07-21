@@ -1,8 +1,12 @@
 #!/bin/sh
 
-for f in gitconfig gitconfig tmux.conf profile
+for f in dots/*
 do
-  test -e "${HOME}/.$f" && echo "$f exists" || ln -s `realpath ./$f` "${HOME}/.$f"
+  name=$(basename ${f})
+  test -e ~/.${name} && (echo "backup ~/.${name} to ~/${name}.bak"; mv ~/.${name} ~/${name}.bak;)
+  ln -s `realpath ./${f}` ~/.${name}
 done
 
-test -e "${HOME}/.config/nvim" && echo "nvim exists" || ln -s `realpath nvim` ~/.config/nvim
+test -e ~/.config/nvim && (echo "backup ~/.config/nvim to ~/nvim.bak"; mv ~/.config/nvim ~/nvim.bak;)
+mkdir -p ~/.config
+ln -s `realpath nvim` ~/.config/nvim
