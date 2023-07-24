@@ -40,12 +40,16 @@ return function(packer)
   }
 
   packer {
-    'vim-airline/vim-airline',
-    requires = {
-      'vim-airline/vim-airline-themes',
-    },
-    config = function() 
-      vim.g.airline_theme = 'lucius'
+    'nvim-lualine/lualine.nvim',
+    config = function()
+      require('lualine').setup {
+        options = {
+          icons_enabled = false,
+          theme = 'auto',
+          component_separators = { left = '', right = ''},
+          section_separators = { left = '', right = ''},
+        },
+      }
     end,
   }
 
