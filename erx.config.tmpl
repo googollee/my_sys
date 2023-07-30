@@ -266,6 +266,11 @@ service {
             type masquerade
         }
     }
+    snmp {
+        community public {
+            authorization ro
+        }
+    }
     ssh {
         port 22
         protocol-version v2
