@@ -1,0 +1,31 @@
+modules:
+  qnap:
+    walk:
+      - cpuUsage
+      - systemCPU-UsageEX
+      - cpu-TemperatureEX
+      - systemTemperatureEX
+      - enclosureSystemTemp
+      - hdTemperatureEX
+      - diskSmartInfo
+      - ifPacketsReceivedEX
+      - ifPacketsSentEX
+      - sysVolumeTotalSizeEX
+      - sysVolumeFreeSizeEX
+      - systemTotalMemEX
+      - systemFreeMemEX
+      - availablePercent
+      - readHitRate
+      - writeHitRate
+  edgerouterx:
+    walk:
+      - ifHCInOctets
+      - ifHCOutOctets
+      - ssCpuIdle
+      - memTotalFree
+      - memTotalReal
+      - hrSystemUptime
+    lookups:
+      - source_indexes: ["ifIndex"]
+        # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
+        lookup: 1.3.6.1.2.1.31.1.1.1.1 # ifName
