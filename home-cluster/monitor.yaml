@@ -38,16 +38,13 @@ services:
     environment:
       PROMETHEUS_CONFIG: |
         global:
-          scrape_interval: 15s
+          scrape_interval: 10s
           external_labels:
             monitor: 'codelab-monitor'
         scrape_configs:
           - job_name: 'prometheus'
             static_configs:
               - targets: ['localhost:9090']
-          - job_name: 'nas-node'
-            static_configs:
-              - targets: ['nas-exporter:9100']
           - job_name: 'traefik'
             static_configs:
               - targets: ['gateway.zhaohai.li']
@@ -102,27 +99,6 @@ services:
     environment:
      - GF_SERVER_ROOT_URL=https://graph.zhaohai.li/
 
-  nas-exporter:
-    image: prom/node-exporter:v1.6.0
-    container_name: nas-exporter
-    hostname: nas-exporter
-    labels:
-      - "traefik.http.routers.nas-exporter.role=``"
-      - "traefik.http.routers.nas-exporter.entrypoints=``"
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /host/run/udev/data:/run/udev/data:ro
-      - /share/Multimedia:/rootfs:ro
-    expose:
-      - 9100
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--path.udev.data=/host/run/udev/data'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-
   snmp-exporter:
     image: prom/snmp-exporter:v0.22.0
     container_name: snmp-exporter
@@ -142,173 +118,231 @@ services:
     environment:
       SNMP_YAML: |
         # WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
-        modules:
-          edgerouterx:
-            walk:
-            - 1.3.6.1.2.1.31.1.1.1.1
-            - 1.3.6.1.2.1.31.1.1.1.10
-            - 1.3.6.1.2.1.31.1.1.1.6
-            get:
-            - 1.3.6.1.2.1.25.1.1.0
-            - 1.3.6.1.4.1.2021.11.11.0
-            - 1.3.6.1.4.1.2021.4.11.0
-            - 1.3.6.1.4.1.2021.4.5.0
-            metrics:
-            - name: hrSystemUptime
-              oid: 1.3.6.1.2.1.25.1.1
+        edgerouterx:
+          walk:
+          - 1.3.6.1.2.1.31.1.1.1.1
+          - 1.3.6.1.2.1.31.1.1.1.10
+          - 1.3.6.1.2.1.31.1.1.1.15
+          - 1.3.6.1.2.1.31.1.1.1.6
+          get:
+          - 1.3.6.1.2.1.25.1.1.0
+          - 1.3.6.1.4.1.2021.11.11.0
+          - 1.3.6.1.4.1.2021.4.11.0
+          - 1.3.6.1.4.1.2021.4.5.0
+          metrics:
+          - name: hrSystemUptime
+            oid: 1.3.6.1.2.1.25.1.1
+            type: gauge
+            help: The amount of time since this host was last initialized - 1.3.6.1.2.1.25.1.1
+          - name: ifHCOutOctets
+            oid: 1.3.6.1.2.1.31.1.1.1.10
+            type: counter
+            help: The total number of octets transmitted out of the interface, including
+              framing characters - 1.3.6.1.2.1.31.1.1.1.10
+            indexes:
+            - labelname: ifIndex
               type: gauge
-              help: The amount of time since this host was last initialized - 1.3.6.1.2.1.25.1.1
-            - name: ifHCOutOctets
-              oid: 1.3.6.1.2.1.31.1.1.1.10
-              type: counter
-              help: The total number of octets transmitted out of the interface, including
-                framing characters - 1.3.6.1.2.1.31.1.1.1.10
-              indexes:
-              - labelname: ifIndex
-                type: gauge
-              lookups:
-              - labels:
-                - ifIndex
-                labelname: ifName
-                oid: 1.3.6.1.2.1.31.1.1.1.1
-                type: DisplayString
-            - name: ifHCInOctets
-              oid: 1.3.6.1.2.1.31.1.1.1.6
-              type: counter
-              help: The total number of octets received on the interface, including framing
-                characters - 1.3.6.1.2.1.31.1.1.1.6
-              indexes:
-              - labelname: ifIndex
-                type: gauge
-              lookups:
-              - labels:
-                - ifIndex
-                labelname: ifName
-                oid: 1.3.6.1.2.1.31.1.1.1.1
-                type: DisplayString
-            - name: ssCpuIdle
-              oid: 1.3.6.1.4.1.2021.11.11
+            lookups:
+            - labels:
+              - ifIndex
+              labelname: ifName
+              oid: 1.3.6.1.2.1.31.1.1.1.1
+              type: DisplayString
+          - name: ifHighSpeed
+            oid: 1.3.6.1.2.1.31.1.1.1.15
+            type: gauge
+            help: An estimate of the interface's current bandwidth in units of 1,000,000
+              bits per second - 1.3.6.1.2.1.31.1.1.1.15
+            indexes:
+            - labelname: ifIndex
               type: gauge
-              help: The percentage of processor time spent idle, calculated over the last
-                minute - 1.3.6.1.4.1.2021.11.11
-            - name: memTotalFree
-              oid: 1.3.6.1.4.1.2021.4.11
+            lookups:
+            - labels:
+              - ifIndex
+              labelname: ifName
+              oid: 1.3.6.1.2.1.31.1.1.1.1
+              type: DisplayString
+          - name: ifHCInOctets
+            oid: 1.3.6.1.2.1.31.1.1.1.6
+            type: counter
+            help: The total number of octets received on the interface, including framing
+              characters - 1.3.6.1.2.1.31.1.1.1.6
+            indexes:
+            - labelname: ifIndex
               type: gauge
-              help: The total amount of memory free or available for use on this host - 1.3.6.1.4.1.2021.4.11
-            - name: memTotalReal
-              oid: 1.3.6.1.4.1.2021.4.5
+            lookups:
+            - labels:
+              - ifIndex
+              labelname: ifName
+              oid: 1.3.6.1.2.1.31.1.1.1.1
+              type: DisplayString
+          - name: ssCpuIdle
+            oid: 1.3.6.1.4.1.2021.11.11
+            type: gauge
+            help: The percentage of processor time spent idle, calculated over the last
+              minute - 1.3.6.1.4.1.2021.11.11
+          - name: memTotalFree
+            oid: 1.3.6.1.4.1.2021.4.11
+            type: gauge
+            help: The total amount of memory free or available for use on this host - 1.3.6.1.4.1.2021.4.11
+          - name: memTotalReal
+            oid: 1.3.6.1.4.1.2021.4.5
+            type: gauge
+            help: The total amount of real/physical memory installed on this host. - 1.3.6.1.4.1.2021.4.5
+        qnap:
+          walk:
+          - 1.3.6.1.4.1.24681.1.3.11.1.3
+          - 1.3.6.1.4.1.24681.1.3.15.1.3
+          - 1.3.6.1.4.1.24681.1.3.17.1.4
+          - 1.3.6.1.4.1.24681.1.3.17.1.5
+          - 1.3.6.1.4.1.24681.1.3.9.1.3
+          - 1.3.6.1.4.1.24681.1.3.9.1.4
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
+          - 1.3.6.1.4.1.55062.1.10.34.1.7
+          - 1.3.6.1.4.1.55062.1.10.9.1.3
+          - 1.3.6.1.4.1.55062.1.10.9.1.5
+          get:
+          - 1.3.6.1.4.1.24681.1.3.1.0
+          - 1.3.6.1.4.1.24681.1.3.2.0
+          - 1.3.6.1.4.1.24681.1.3.3.0
+          - 1.3.6.1.4.1.24681.1.3.4.0
+          - 1.3.6.1.4.1.24681.1.3.5.0
+          - 1.3.6.1.4.1.24681.1.3.6.0
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.3.2.0
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.3.3.0
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4.0
+          - 1.3.6.1.4.1.55062.1.12.13.0
+          - 1.3.6.1.4.1.55062.1.12.15.0
+          - 1.3.6.1.4.1.55062.1.12.7.0
+          metrics:
+          - name: systemCPU_UsageEX
+            oid: 1.3.6.1.4.1.24681.1.3.1
+            type: gauge
+            help: system CPU usage - 1.3.6.1.4.1.24681.1.3.1
+          - name: hdTemperatureEX
+            oid: 1.3.6.1.4.1.24681.1.3.11.1.3
+            type: gauge
+            help: Hard disk temperature in centigrade. - 1.3.6.1.4.1.24681.1.3.11.1.3
+            indexes:
+            - labelname: hdIndex
               type: gauge
-              help: The total amount of real/physical memory installed on this host. - 1.3.6.1.4.1.2021.4.5
-          qnap:
-            walk:
-            - 1.3.6.1.4.1.24681.1.3.11.1.3
-            - 1.3.6.1.4.1.24681.1.3.17.1.4
-            - 1.3.6.1.4.1.24681.1.3.17.1.5
-            - 1.3.6.1.4.1.24681.1.3.9.1.3
-            - 1.3.6.1.4.1.24681.1.3.9.1.4
-            - 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
-            - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
-            - 1.3.6.1.4.1.55062.1.10.34.1.7
-            get:
-            - 1.3.6.1.4.1.24681.1.3.1.0
-            - 1.3.6.1.4.1.24681.1.3.2.0
-            - 1.3.6.1.4.1.24681.1.3.3.0
-            - 1.3.6.1.4.1.24681.1.3.5.0
-            - 1.3.6.1.4.1.24681.1.3.6.0
-            - 1.3.6.1.4.1.24681.1.4.1.1.1.3.2.0
-            - 1.3.6.1.4.1.24681.1.4.1.1.1.3.3.0
-            - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4.0
-            metrics:
-            - name: systemCPU_UsageEX
-              oid: 1.3.6.1.4.1.24681.1.3.1
+          - name: sysFanSpeedEX
+            oid: 1.3.6.1.4.1.24681.1.3.15.1.3
+            type: gauge
+            help: System fan speed (RPM). - 1.3.6.1.4.1.24681.1.3.15.1.3
+            indexes:
+            - labelname: sysFanIndexEX
               type: gauge
-              help: system CPU usage - 1.3.6.1.4.1.24681.1.3.1
-            - name: hdTemperatureEX
-              oid: 1.3.6.1.4.1.24681.1.3.11.1.3
+          - name: sysVolumeTotalSizeEX
+            oid: 1.3.6.1.4.1.24681.1.3.17.1.4
+            type: counter
+            help: System Volume total size in byte. - 1.3.6.1.4.1.24681.1.3.17.1.4
+            indexes:
+            - labelname: sysVolumeIndexEX
               type: gauge
-              help: Hard disk temperature in centigrade. - 1.3.6.1.4.1.24681.1.3.11.1.3
-              indexes:
-              - labelname: hdIndex
-                type: gauge
-            - name: sysVolumeTotalSizeEX
-              oid: 1.3.6.1.4.1.24681.1.3.17.1.4
-              type: counter
-              help: System Volume total size in byte. - 1.3.6.1.4.1.24681.1.3.17.1.4
-              indexes:
-              - labelname: sysVolumeIndexEX
-                type: gauge
-            - name: sysVolumeFreeSizeEX
-              oid: 1.3.6.1.4.1.24681.1.3.17.1.5
-              type: counter
-              help: System Volume free size in byte. - 1.3.6.1.4.1.24681.1.3.17.1.5
-              indexes:
-              - labelname: sysVolumeIndexEX
-                type: gauge
-            - name: systemTotalMemEX
-              oid: 1.3.6.1.4.1.24681.1.3.2
-              type: counter
-              help: System total memory in byte - 1.3.6.1.4.1.24681.1.3.2
-            - name: systemFreeMemEX
-              oid: 1.3.6.1.4.1.24681.1.3.3
-              type: counter
-              help: System free memory in byte - 1.3.6.1.4.1.24681.1.3.3
-            - name: cpu_TemperatureEX
-              oid: 1.3.6.1.4.1.24681.1.3.5
+          - name: sysVolumeFreeSizeEX
+            oid: 1.3.6.1.4.1.24681.1.3.17.1.5
+            type: counter
+            help: System Volume free size in byte. - 1.3.6.1.4.1.24681.1.3.17.1.5
+            indexes:
+            - labelname: sysVolumeIndexEX
               type: gauge
-              help: CPU temperature in centigrade - 1.3.6.1.4.1.24681.1.3.5
-            - name: systemTemperatureEX
-              oid: 1.3.6.1.4.1.24681.1.3.6
+          - name: systemTotalMemEX
+            oid: 1.3.6.1.4.1.24681.1.3.2
+            type: counter
+            help: System total memory in byte - 1.3.6.1.4.1.24681.1.3.2
+          - name: systemFreeMemEX
+            oid: 1.3.6.1.4.1.24681.1.3.3
+            type: counter
+            help: System free memory in byte - 1.3.6.1.4.1.24681.1.3.3
+          - name: systemUptimeEX
+            oid: 1.3.6.1.4.1.24681.1.3.4
+            type: gauge
+            help: The amount of time since this host was last initialized - 1.3.6.1.4.1.24681.1.3.4
+          - name: cpu_TemperatureEX
+            oid: 1.3.6.1.4.1.24681.1.3.5
+            type: gauge
+            help: CPU temperature in centigrade - 1.3.6.1.4.1.24681.1.3.5
+          - name: systemTemperatureEX
+            oid: 1.3.6.1.4.1.24681.1.3.6
+            type: gauge
+            help: System temperature in centigrade - 1.3.6.1.4.1.24681.1.3.6
+          - name: ifPacketsReceivedEX
+            oid: 1.3.6.1.4.1.24681.1.3.9.1.3
+            type: counter
+            help: System packets received. - 1.3.6.1.4.1.24681.1.3.9.1.3
+            indexes:
+            - labelname: ifIndexEX
               type: gauge
-              help: System temperature in centigrade - 1.3.6.1.4.1.24681.1.3.6
-            - name: ifPacketsReceivedEX
-              oid: 1.3.6.1.4.1.24681.1.3.9.1.3
-              type: counter
-              help: System packets received. - 1.3.6.1.4.1.24681.1.3.9.1.3
-              indexes:
-              - labelname: ifIndexEX
-                type: gauge
-            - name: ifPacketsSentEX
-              oid: 1.3.6.1.4.1.24681.1.3.9.1.4
-              type: counter
-              help: System packets sent. - 1.3.6.1.4.1.24681.1.3.9.1.4
-              indexes:
-              - labelname: ifIndexEX
-                type: gauge
-            - name: cpuUsage
-              oid: 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
+          - name: ifPacketsSentEX
+            oid: 1.3.6.1.4.1.24681.1.3.9.1.4
+            type: counter
+            help: System packets sent. - 1.3.6.1.4.1.24681.1.3.9.1.4
+            indexes:
+            - labelname: ifIndexEX
               type: gauge
-              help: CPUUsage. - 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
-              indexes:
-              - labelname: cpuIndex
-                type: gauge
-            - name: diskSmartInfo
-              oid: 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
+          - name: cpuUsage
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
+            type: gauge
+            help: CPUUsage. - 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
+            indexes:
+            - labelname: cpuIndex
               type: gauge
-              help: DiskSmartInfo. - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
-              indexes:
-              - labelname: diskIndex
-                type: gauge
-              enum_values:
-                -1: error
-                0: good
-                1: warning
-                2: abnormal
-            - name: availablePercent
-              oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.2
+          - name: diskSmartInfo
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
+            type: gauge
+            help: DiskSmartInfo. - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
+            indexes:
+            - labelname: diskIndex
               type: gauge
-              help: Available percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.2
-            - name: readHitRate
-              oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.3
+            enum_values:
+              -1: error
+              0: good
+              1: warning
+              2: abnormal
+          - name: availablePercent
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.2
+            type: gauge
+            help: Available percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.2
+          - name: readHitRate
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.3
+            type: gauge
+            help: Read hit rate percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.3
+          - name: writeHitRate
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
+            type: gauge
+            help: Write hit rate percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
+          - name: enclosureSystemTemp
+            oid: 1.3.6.1.4.1.55062.1.10.34.1.7
+            type: gauge
+            help: Enclosure System temperature in centigrade. - 1.3.6.1.4.1.55062.1.10.34.1.7
+            indexes:
+            - labelname: enclosureIndex
               type: gauge
-              help: Read hit rate percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.3
-            - name: writeHitRate
-              oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
+          - name: volumeCapacity
+            oid: 1.3.6.1.4.1.55062.1.10.9.1.3
+            type: counter
+            help: System Volume total size in byte. - 1.3.6.1.4.1.55062.1.10.9.1.3
+            indexes:
+            - labelname: volumeIndex
               type: gauge
-              help: Write hit rate percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
-            - name: enclosureSystemTemp
-              oid: 1.3.6.1.4.1.55062.1.10.34.1.7
+          - name: volumeStatus
+            oid: 1.3.6.1.4.1.55062.1.10.9.1.5
+            type: OctetString
+            help: Volume status - 1.3.6.1.4.1.55062.1.10.9.1.5
+            indexes:
+            - labelname: volumeIndex
               type: gauge
-              help: Enclosure System temperature in centigrade. - 1.3.6.1.4.1.55062.1.10.34.1.7
-              indexes:
-              - labelname: enclosureIndex
-                type: gauge
+          - name: systemTotalMem
+            oid: 1.3.6.1.4.1.55062.1.12.13
+            type: counter
+            help: System total memory - 1.3.6.1.4.1.55062.1.12.13
+          - name: systemAvailableMem
+            oid: 1.3.6.1.4.1.55062.1.12.15
+            type: counter
+            help: System available memory - 1.3.6.1.4.1.55062.1.12.15
+          - name: firmwareUpgradeAvailable
+            oid: 1.3.6.1.4.1.55062.1.12.7
+            type: gauge
+            help: Firmware can upgrade or not - 1.3.6.1.4.1.55062.1.12.7

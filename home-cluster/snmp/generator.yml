@@ -10,17 +10,25 @@ modules:
       - diskSmartInfo
       - ifPacketsReceivedEX
       - ifPacketsSentEX
+      - sysFanSpeedEX
       - sysVolumeTotalSizeEX
       - sysVolumeFreeSizeEX
+      - systemAvailableMem
+      - systemTotalMem
       - systemTotalMemEX
       - systemFreeMemEX
+      - systemUptimeEX
       - availablePercent
       - readHitRate
       - writeHitRate
+      - firmwareUpgradeAvailable
+      - volumeStatus
+      - volumeCapacity
   edgerouterx:
     walk:
       - ifHCInOctets
       - ifHCOutOctets
+      - ifHighSpeed
       - ssCpuIdle
       - memTotalFree
       - memTotalReal
