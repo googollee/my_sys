@@ -1,29 +1,48 @@
 modules:
   qnap:
     walk:
-      - cpuUsage
-      - systemCPU-UsageEX
+      - availablePercent
       - cpu-TemperatureEX
-      - systemTemperatureEX
-      - enclosureSystemTemp
-      - hdTemperatureEX
+      - cpuUsage
+      - diskCapacity
+      - diskModel
       - diskSmartInfo
+      - diskTemperture
+      - enclosureSystemTemp
+      - firmwareUpgradeAvailable
+      - firmwareVersion
+      - hostNameEX
+      - hdTemperatureEX
+      - ifNumberEX
+      - ifEntryEX
+      - ifEntryDefEX
+      - ifIndexEX
+      - ifDescrEX
       - ifPacketsReceivedEX
       - ifPacketsSentEX
+      - iops
+      - latency
+      - modelNameEX
+      - readHitRate
       - sysFanSpeedEX
-      - sysVolumeTotalSizeEX
-      - sysVolumeFreeSizeEX
       - systemAvailableMem
+      - systemCPU-UsageEX
+      - systemFreeMem
+      - systemFreeMemEX
+      - systemTemperatureEX
       - systemTotalMem
       - systemTotalMemEX
-      - systemFreeMemEX
       - systemUptimeEX
-      - availablePercent
-      - readHitRate
+      - systemUsedMemory
+      - sysVolumeDescrEX
+      - sysVolumeFreeSizeEX
+      - sysVolumeStatusEX
+      - sysVolumeTotalSizeEX
       - writeHitRate
-      - firmwareUpgradeAvailable
-      - volumeStatus
-      - volumeCapacity
+    max_repetitions: 1
+    version: 2
+    retries: 3
+    timeout: 30s
   edgerouterx:
     walk:
       - ifHCInOctets

@@ -38,7 +38,7 @@ services:
     environment:
       PROMETHEUS_CONFIG: |
         global:
-          scrape_interval: 10s
+          scrape_interval: 1m
           external_labels:
             monitor: 'codelab-monitor'
         scrape_configs:
@@ -51,13 +51,27 @@ services:
           - job_name: 'nas'
             static_configs:
               - targets: ['nas-exporter:9100']
-          - job_name: erx
+          - job_name: 'erx'
             static_configs:
               - targets: ['192.168.10.1']
             metrics_path: /snmp
             params:
               module:
                 - edgerouterx
+            relabel_configs:
+              - source_labels: [__address__]
+                target_label: __param_target
+              - source_labels: [__param_target]
+                target_label: instance
+              - target_label: __address__
+                replacement: snmp-exporter:9116
+          - job_name: nas
+            static_configs:
+              - targets: ['192.168.10.2']
+            metrics_path: /snmp
+            params:
+              module:
+                - qnap
             relabel_configs:
               - source_labels: [__address__]
                 target_label: __param_target
@@ -147,8 +161,8 @@ services:
           - name: ifHCOutOctets
             oid: 1.3.6.1.2.1.31.1.1.1.10
             type: counter
-            help: The total number of octets transmitted out of the interface, including
-              framing characters - 1.3.6.1.2.1.31.1.1.1.10
+            help: The total number of octets transmitted out of the interface, including framing
+              characters - 1.3.6.1.2.1.31.1.1.1.10
             indexes:
             - labelname: ifIndex
               type: gauge
@@ -161,8 +175,8 @@ services:
           - name: ifHighSpeed
             oid: 1.3.6.1.2.1.31.1.1.1.15
             type: gauge
-            help: An estimate of the interface's current bandwidth in units of 1,000,000
-              bits per second - 1.3.6.1.2.1.31.1.1.1.15
+            help: An estimate of the interface's current bandwidth in units of 1,000,000 bits
+              per second - 1.3.6.1.2.1.31.1.1.1.15
             indexes:
             - labelname: ifIndex
               type: gauge
@@ -189,8 +203,8 @@ services:
           - name: ssCpuIdle
             oid: 1.3.6.1.4.1.2021.11.11
             type: gauge
-            help: The percentage of processor time spent idle, calculated over the last
-              minute - 1.3.6.1.4.1.2021.11.11
+            help: The percentage of processor time spent idle, calculated over the last minute
+              - 1.3.6.1.4.1.2021.11.11
           - name: memTotalFree
             oid: 1.3.6.1.4.1.2021.4.11
             type: gauge
@@ -201,19 +215,28 @@ services:
             help: The total amount of real/physical memory installed on this host. - 1.3.6.1.4.1.2021.4.5
         qnap:
           walk:
+          - 1.3.6.1.4.1.24681.1.2.9.1.1
+          - 1.3.6.1.4.1.24681.1.2.9.1.2
           - 1.3.6.1.4.1.24681.1.3.11.1.3
           - 1.3.6.1.4.1.24681.1.3.15.1.3
+          - 1.3.6.1.4.1.24681.1.3.17.1.2
           - 1.3.6.1.4.1.24681.1.3.17.1.4
           - 1.3.6.1.4.1.24681.1.3.17.1.5
+          - 1.3.6.1.4.1.24681.1.3.17.1.6
           - 1.3.6.1.4.1.24681.1.3.9.1.3
           - 1.3.6.1.4.1.24681.1.3.9.1.4
           - 1.3.6.1.4.1.24681.1.4.1.1.1.1.4.3.1.3
           - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.5
+          - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6
+          - 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3
+          - 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4
+          - 1.3.6.1.4.1.55062.1.10.2.1.4
+          - 1.3.6.1.4.1.55062.1.10.2.1.9
           - 1.3.6.1.4.1.55062.1.10.34.1.7
-          - 1.3.6.1.4.1.55062.1.10.9.1.3
-          - 1.3.6.1.4.1.55062.1.10.9.1.5
           get:
           - 1.3.6.1.4.1.24681.1.3.1.0
+          - 1.3.6.1.4.1.24681.1.3.12.0
+          - 1.3.6.1.4.1.24681.1.3.13.0
           - 1.3.6.1.4.1.24681.1.3.2.0
           - 1.3.6.1.4.1.24681.1.3.3.0
           - 1.3.6.1.4.1.24681.1.3.4.0
@@ -223,9 +246,26 @@ services:
           - 1.3.6.1.4.1.24681.1.4.1.1.1.3.3.0
           - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4.0
           - 1.3.6.1.4.1.55062.1.12.13.0
+          - 1.3.6.1.4.1.55062.1.12.14.0
           - 1.3.6.1.4.1.55062.1.12.15.0
+          - 1.3.6.1.4.1.55062.1.12.16.0
+          - 1.3.6.1.4.1.55062.1.12.6.0
           - 1.3.6.1.4.1.55062.1.12.7.0
           metrics:
+          - name: ifIndex
+            oid: 1.3.6.1.4.1.24681.1.2.9.1.1
+            type: gauge
+            help: A unique value for each interface - 1.3.6.1.4.1.24681.1.2.9.1.1
+            indexes:
+            - labelname: ifIndex
+              type: gauge
+          - name: ifDescr
+            oid: 1.3.6.1.4.1.24681.1.2.9.1.2
+            type: OctetString
+            help: A textual string containing information about the interface - 1.3.6.1.4.1.24681.1.2.9.1.2
+            indexes:
+            - labelname: ifIndex
+              type: gauge
           - name: systemCPU_UsageEX
             oid: 1.3.6.1.4.1.24681.1.3.1
             type: gauge
@@ -237,12 +277,27 @@ services:
             indexes:
             - labelname: hdIndex
               type: gauge
+          - name: modelNameEX
+            oid: 1.3.6.1.4.1.24681.1.3.12
+            type: OctetString
+            help: Model name - 1.3.6.1.4.1.24681.1.3.12
+          - name: hostNameEX
+            oid: 1.3.6.1.4.1.24681.1.3.13
+            type: OctetString
+            help: Model name - 1.3.6.1.4.1.24681.1.3.13
           - name: sysFanSpeedEX
             oid: 1.3.6.1.4.1.24681.1.3.15.1.3
             type: gauge
             help: System fan speed (RPM). - 1.3.6.1.4.1.24681.1.3.15.1.3
             indexes:
             - labelname: sysFanIndexEX
+              type: gauge
+          - name: sysVolumeDescrEX
+            oid: 1.3.6.1.4.1.24681.1.3.17.1.2
+            type: OctetString
+            help: A textual string containing information about the volume. - 1.3.6.1.4.1.24681.1.3.17.1.2
+            indexes:
+            - labelname: sysVolumeIndexEX
               type: gauge
           - name: sysVolumeTotalSizeEX
             oid: 1.3.6.1.4.1.24681.1.3.17.1.4
@@ -255,6 +310,13 @@ services:
             oid: 1.3.6.1.4.1.24681.1.3.17.1.5
             type: counter
             help: System Volume free size in byte. - 1.3.6.1.4.1.24681.1.3.17.1.5
+            indexes:
+            - labelname: sysVolumeIndexEX
+              type: gauge
+          - name: sysVolumeStatusEX
+            oid: 1.3.6.1.4.1.24681.1.3.17.1.6
+            type: OctetString
+            help: System Volume status. - 1.3.6.1.4.1.24681.1.3.17.1.6
             indexes:
             - labelname: sysVolumeIndexEX
               type: gauge
@@ -311,6 +373,13 @@ services:
               0: good
               1: warning
               2: abnormal
+          - name: diskTemperture
+            oid: 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6
+            type: gauge
+            help: DiskTemperture. - 1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6
+            indexes:
+            - labelname: diskIndex
+              type: gauge
           - name: availablePercent
             oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.2
             type: gauge
@@ -323,6 +392,34 @@ services:
             oid: 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
             type: gauge
             help: Write hit rate percent of cache. - 1.3.6.1.4.1.24681.1.4.1.1.1.3.4
+          - name: iops
+            oid: 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3
+            type: gauge
+            help: IOPS. - 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.3
+            indexes:
+            - labelname: diskPerformanceIndex
+              type: gauge
+          - name: latency
+            oid: 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4
+            type: gauge
+            help: Latency. - 1.3.6.1.4.1.24681.1.4.1.11.5.6.2.1.4
+            indexes:
+            - labelname: diskPerformanceIndex
+              type: gauge
+          - name: diskModel
+            oid: 1.3.6.1.4.1.55062.1.10.2.1.4
+            type: OctetString
+            help: Hard disk Model - 1.3.6.1.4.1.55062.1.10.2.1.4
+            indexes:
+            - labelname: diskIndex
+              type: gauge
+          - name: diskCapacity
+            oid: 1.3.6.1.4.1.55062.1.10.2.1.9
+            type: counter
+            help: The capacity in byte of hard drive. - 1.3.6.1.4.1.55062.1.10.2.1.9
+            indexes:
+            - labelname: diskIndex
+              type: gauge
           - name: enclosureSystemTemp
             oid: 1.3.6.1.4.1.55062.1.10.34.1.7
             type: gauge
@@ -330,29 +427,31 @@ services:
             indexes:
             - labelname: enclosureIndex
               type: gauge
-          - name: volumeCapacity
-            oid: 1.3.6.1.4.1.55062.1.10.9.1.3
-            type: counter
-            help: System Volume total size in byte. - 1.3.6.1.4.1.55062.1.10.9.1.3
-            indexes:
-            - labelname: volumeIndex
-              type: gauge
-          - name: volumeStatus
-            oid: 1.3.6.1.4.1.55062.1.10.9.1.5
-            type: OctetString
-            help: Volume status - 1.3.6.1.4.1.55062.1.10.9.1.5
-            indexes:
-            - labelname: volumeIndex
-              type: gauge
           - name: systemTotalMem
             oid: 1.3.6.1.4.1.55062.1.12.13
             type: counter
             help: System total memory - 1.3.6.1.4.1.55062.1.12.13
+          - name: systemFreeMem
+            oid: 1.3.6.1.4.1.55062.1.12.14
+            type: counter
+            help: System free memory - 1.3.6.1.4.1.55062.1.12.14
           - name: systemAvailableMem
             oid: 1.3.6.1.4.1.55062.1.12.15
             type: counter
             help: System available memory - 1.3.6.1.4.1.55062.1.12.15
+          - name: systemUsedMemory
+            oid: 1.3.6.1.4.1.55062.1.12.16
+            type: counter
+            help: System used memory - 1.3.6.1.4.1.55062.1.12.16
+          - name: firmwareVersion
+            oid: 1.3.6.1.4.1.55062.1.12.6
+            type: OctetString
+            help: Firmware Version - 1.3.6.1.4.1.55062.1.12.6
           - name: firmwareUpgradeAvailable
             oid: 1.3.6.1.4.1.55062.1.12.7
             type: gauge
             help: Firmware can upgrade or not - 1.3.6.1.4.1.55062.1.12.7
+          version: 2
+          max_repetitions: 1
+          retries: 3
+          timeout: 30s
