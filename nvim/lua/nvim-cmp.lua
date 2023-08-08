@@ -1,14 +1,14 @@
 local M = {}
 
-function M.init(packer)
-  packer 'hrsh7th/cmp-nvim-lsp'
-  packer 'hrsh7th/cmp-nvim-lua'
-  packer 'hrsh7th/cmp-buffer'
-  packer 'hrsh7th/cmp-path'
-  packer 'hrsh7th/cmp-cmdline'
-  packer 'onsails/lspkind.nvim'
+function M.init(use)
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-nvim-lua'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+  use 'onsails/lspkind.nvim'
 
-  packer {
+  use {
     'hrsh7th/nvim-cmp',
 
     config = function()

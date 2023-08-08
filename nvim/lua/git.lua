@@ -1,7 +1,9 @@
-return function(packer)
-  packer 'tpope/vim-fugitive' -- git
-  packer 'junegunn/gv.vim' -- git log
-  packer { -- git diff
+return function(use)
+  use 'tpope/vim-fugitive' -- git
+
+  use 'junegunn/gv.vim' -- git log
+
+  use { -- git diff
     'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup({

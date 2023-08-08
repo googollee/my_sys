@@ -1,15 +1,15 @@
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    vim.cmd [[packadd packer.nvim]]
-    return true
-  end
-  return false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
-
-local packer_bootstrap = ensure_packer()
+vim.opt.rtp:prepend(lazypath)
 
 vim.cmd([[
 let g:loaded_perl_provider = 0
@@ -19,24 +19,24 @@ let g:loaded_python_provider = 0
 let g:loaded_python3_provider = 0
 ]])
 
-require('packer').startup(function(p)
-  p 'wbthomason/packer.nvim'
+vim.g.mapleader = ","
 
-  require('treesitter')(p)
-  require('lsp').init(p)
-  require('nvim-cmp').init(p)
-  require('editor')(p)
-  require('telescope')(p)
-  require('git')(p)
+local pkgs = {}
 
-  require('lang/markdown')(p)
-  require('lang/go')(p)
-  require('lang/cider')(p)
+function use(pkg)
+  table.insert(pkgs, pkg)
+end
 
-  -- Automatically set up your configuration after cloning packer.nvim
-  -- Put this at the end after all plugins
-  if packer_bootstrap then
-    require('packer').sync()
-  end
-end)
+require('editor')(use)
+require('telescope')(use)
+require('git')(use)
 
+require('treesitter')(use)
+require('lsp').init(use)
+require('nvim-cmp').init(use)
+
+require('lang/markdown')(use)
+require('lang/go')(use)
+require('lang/cider')(use)
+
+require("lazy").setup(pkgs)

@@ -1,9 +1,9 @@
-return function(packer)
+return function(use)
   util = require('util')
 
-  packer 'tpope/vim-sensible'
+  use 'tpope/vim-sensible'
 
-  packer {
+  use {
     'Raimondi/delimitMate',
     config = function()
       vim.g.delimitMate_expand_cr = 1
@@ -12,7 +12,7 @@ return function(packer)
     end,
   }
 
-  packer {
+  use {
     'ggandor/leap.nvim',
     config = function()
       local leap = require('leap')
@@ -27,7 +27,7 @@ return function(packer)
     end
   }
 
-  packer {
+  use {
     'nathanaelkane/vim-indent-guides',
     config = function()
       vim.cmd([[
@@ -39,7 +39,7 @@ return function(packer)
     end
   }
 
-  packer {
+  use {
     'nvim-lualine/lualine.nvim',
     config = function()
       require('lualine').setup {
@@ -53,7 +53,7 @@ return function(packer)
     end,
   }
 
-  packer {
+  use {
     'chriskempson/vim-tomorrow-theme',
     config = function()
       -- vim.cmd 'set termguicolors'
@@ -62,7 +62,7 @@ return function(packer)
     end,
   }
 
-  packer {
+  use {
     'scrooloose/nerdcommenter',
     config = function()
       vim.g.NERDSpaceDelims = 1
@@ -72,7 +72,7 @@ return function(packer)
     end,
   }
 
-  packer {
+  use {
     'folke/trouble.nvim',
     config = function()
       require("trouble").setup({

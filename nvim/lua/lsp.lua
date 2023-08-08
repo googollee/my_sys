@@ -1,9 +1,15 @@
 local M = {}
 
-function M.init(packer)
-  packer {
-    'neovim/nvim-lspconfig',
+local langs = {}
 
+function M.config_lsp(fn)
+  table.insert(langs, fn)
+end
+
+function M.init(use)
+  use {
+    'neovim/nvim-lspconfig',
+    dependencies = { 'hrsh7th/nvim-cmp' },
     config = function()
       local function vim_kv_args(args)
         local arg_strs = {}
@@ -26,12 +32,16 @@ function M.init(packer)
         {text='~', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
       sign_define('LspDiagnosticsSignHint',
         {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+
+      for _, fn in ipairs(langs) do
+        fn()
+      end
     end,
   }
 
-  packer "ray-x/lsp_signature.nvim"
+  use "ray-x/lsp_signature.nvim"
 
-  packer {
+  use {
     'simrat39/symbols-outline.nvim',
     config = function()
       local util = require('util')
