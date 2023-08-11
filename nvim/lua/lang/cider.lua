@@ -59,16 +59,11 @@ return function(use)
       autocmd FileType python AutoFormatBuffer pyformat
       autocmd FileType sql AutoFormatBuffer format_sql
       autocmd FileType textpb AutoFormatBuffer text-proto-format
+
+      let b:codefmt_auto_format_buffer = 1 
+      setlocal noexpandtab tabstop=2 shiftwidth=2
     augroup END
     ]])
-
-    local util = require('util')
-    local augroup = util.augroup
-    local autocmd = util.autocmd
-
-    augroup('fmt', {
-      autocmd('BufNewFile,BufRead', 'go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-    })
 
     local nvim_lsp = require('lspconfig')
     local configs = require('lspconfig.configs')
