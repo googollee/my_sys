@@ -40,7 +40,6 @@ return function(use)
     util.noremap('n', "<leader>r", ":RelatedFilesWindow<cr>")
   end)
 
-
   require("lsp").config_lsp(function()
     local util = require('util')
     local augroup = util.augroup
@@ -48,8 +47,6 @@ return function(use)
 
     augroup('fmt', {
       autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-      autocmd('BufWritePost,FileWritePost', '*.go', 'silent! %!goimports'),
-      autocmd('BufWritePost,FileWritePost', '*.go', 'silent! !glaze .'),
     })
 
     local nvim_lsp = require('lspconfig')
