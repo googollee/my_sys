@@ -47,6 +47,12 @@ if which lsb_release >/dev/null; then
     alias txa='tmx2 attach'
     alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
   fi
+
+  # Source the common XManager bashrc, only adds convenience functions for
+  # XManager.
+  if [ -r /google/data/ro/teams/dmgi/configs/google_xm_bashrc ] ; then
+    source /google/data/ro/teams/dmgi/configs/google_xm_bashrc
+  fi
 fi
 
 # Homebrew
