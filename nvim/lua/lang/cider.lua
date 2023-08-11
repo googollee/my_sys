@@ -32,6 +32,7 @@ return function(use)
   goog("ultisnips-google")
   goog("autogen")
   goog("blaze")
+  goog("blazedeps")
   goog("codefmt")
   goog("codefmt-google")
   goog("googlestyle")
@@ -41,12 +42,32 @@ return function(use)
   end)
 
   require("lsp").config_lsp(function()
+    vim.cmd([[
+    augroup autoformat_settings
+      autocmd FileType borg,gcl,patchpanel AutoFormatBuffer gclfmt
+      autocmd FileType bzl AutoFormatBuffer buildifier
+      autocmd FileType c,cpp,javascript AutoFormatBuffer clang-format
+      autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+      autocmd FileType dart AutoFormatBuffer dartfmt
+      autocmd FileType go AutoFormatBuffer gofmt
+      autocmd FileType html,css,json AutoFormatBuffer js-beautify
+      autocmd FileType java AutoFormatBuffer google-java-format
+      autocmd FileType jslayout AutoFormatBuffer jslfmt
+      autocmd FileType markdown AutoFormatBuffer mdformat
+      autocmd FileType ncl AutoFormatBuffer nclfmt
+      autocmd FileType proto AutoFormatBuffer protofmt
+      autocmd FileType python AutoFormatBuffer pyformat
+      autocmd FileType sql AutoFormatBuffer format_sql
+      autocmd FileType textpb AutoFormatBuffer text-proto-format
+    augroup END
+    ]])
+
     local util = require('util')
     local augroup = util.augroup
     local autocmd = util.autocmd
 
     augroup('fmt', {
-      autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
+      autocmd('BufNewFile,BufRead', 'go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
     })
 
     local nvim_lsp = require('lspconfig')
