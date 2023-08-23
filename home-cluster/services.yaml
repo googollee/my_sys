@@ -6,15 +6,43 @@ networks:
       name: gateway_default
 
 services:
+  gpt:
+    image: ghcr.io/binary-husky/gpt_academic_nolocal:master
+    container_name: gpt
+    hostname: gpt
+    labels:
+      - "traefik.http.routers.gpt.rule=Host(`gpt.zhaohai.li`)"
+      - "traefik.http.routers.gpt.entrypoints=https"
+    command:
+      - "/bin/bash"
+      - "-c"
+      - |
+        export API_KEY=$$(cat /etc/openai_token)
+        exec python3 -u main.py
+    volumes:
+      - type: bind
+        source: /share/System/config/gpt_academic/uploads
+        target: /gpt/private_upload
+      - type: bind
+        source: /share/System/config/gpt_academic/generates
+        target: /gpt/gpt_log
+      - type: bind
+        source: /share/System/config/openai_token
+        target: /etc/openai_token
+    environment:
+      USE_PROXY: 'False'
+      LLM_MODEL: 'gpt-3.5-turbo'
+      AVAIL_LLM_MODELS: '["gpt-3.5-turbo", "api2d-gpt-3.5-turbo", "gpt-4", "api2d-gpt-4", "newbing"]'
+      WEB_PORT: '22303'
+      ADD_WAIFU: 'False'
+      DEFAULT_WORKER_NUM: '3'
+    expose:
+      - "22303"
+
   tinyfilemanager:
     image: tinyfilemanager/tinyfilemanager:2.4.7
     container_name: tinyfilemanager
     hostname: tinyfilemanager
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 128M
     labels:
       - "traefik.http.routers.tinyfilemanager.rule=Host(`fs.zhaohai.li`)"
       - "traefik.http.routers.tinyfilemanager.entrypoints=https"
@@ -40,11 +68,6 @@ services:
     image: linuxserver/qbittorrent:4.5.4
     container_name: qbittorrent
     hostname: qbittorrent
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
     labels:
       - "traefik.http.routers.qbittorrent.rule=Host(`bt.zhaohai.li`)"
       - "traefik.http.routers.qbittorrent.entrypoints=https"
@@ -71,11 +94,6 @@ services:
     image: jellyfin/jellyfin:10.8.10
     container_name: jellyfin
     hostname: jellyfin
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 512M
     labels:
       - "traefik.http.routers.media.rule=Host(`media.zhaohai.li`)"
       - "traefik.http.routers.media.entrypoints=https"
