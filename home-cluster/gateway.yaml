@@ -65,6 +65,11 @@ services:
                 - https
               rule: "Host(`gateway.zhaohai.li`) && Path(`/metrics`)"
               service: "prometheus@internal"
+            nas:
+              entryPoints:
+                - https
+              rule: "Host(`nas.zhaohai.li`)"
+              service: "nas"
             wan-to-lan-public:
               entryPoints:
                 - wan
@@ -87,6 +92,11 @@ services:
                 passHostHeader: true
                 servers:
                   - url: "https://zhaohai.li"
+            nas:
+              loadBalancer:
+                passHostHeader: true
+                servers:
+                  - url: "http://192.168.10.2:8080"
       TRAEFIK_CONFIG: |
         global:
           checkNewVersion: false
