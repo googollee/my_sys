@@ -5,11 +5,6 @@ services:
     image: traefik:v2.10
     container_name: traefik
     hostname: traefik
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256M
     labels:
       - "traefik.http.routers.traefik.role=``"
       - "traefik.http.routers.traefik.entrypoints=``"
@@ -70,6 +65,11 @@ services:
                 - https
               rule: "Host(`gateway.zhaohai.li`) && Path(`/metrics`)"
               service: "prometheus@internal"
+            wan-to-lan-public:
+              entryPoints:
+                - wan
+              rule: "HostRegexp(`{subdomain:[a-z]+}.w.zhaohai.li`)"
+              service: "https-in-lan"
             wan-to-lan:
               entryPoints:
                 - wan
@@ -124,6 +124,7 @@ services:
                   - main: "zhaohai.li"
                     sans: 
                       - "*.zhaohai.li"
+                      - "*.w.zhaohai.li"
           wan:
             address: ":8443"
             http:
@@ -153,11 +154,6 @@ services:
     image: alpine:3.18
     container_name: inadyn
     hostname: inadyn
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 64M
     command:
       - "/bin/sh"
       - "-c"
