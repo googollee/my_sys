@@ -45,7 +45,7 @@ fi
 if which lsb_release >/dev/null; then
   if [ $(lsb_release -rs) = "rodete" ]; then
     alias txa='tmx2 attach'
-    alias cpl-dev='cpl --server="blade:cpl-lab-service-dev"'
+    alias sandman='/google/data/ro/projects/sandman/sandman'
   fi
 
   # Source the common XManager bashrc, only adds convenience functions for

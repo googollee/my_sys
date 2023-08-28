@@ -29,27 +29,31 @@ return function(use)
   goog("ft-proto")
   goog("ft-python")
 
-  goog("ultisnips-google")
+  -- goog("ultisnips-google")
   goog("autogen")
-  goog("blaze")
-  goog("blazedeps")
+  -- goog("blaze")
+  -- goog("blazedeps")
   goog("codefmt")
   goog("codefmt-google")
   goog("googlestyle")
-  goog("relatedfiles", function()
-    util = require('util')
-    util.noremap('n', "<leader>r", ":RelatedFilesWindow<cr>")
-  end)
+  -- goog("relatedfiles", function()
+    -- util = require('util')
+    -- util.noremap('n', "<leader>r", ":RelatedFilesWindow<cr>")
+  -- end)
 
   require("lsp").config_lsp(function()
     vim.cmd([[
     augroup autoformat_settings
+      let b:codefmt_auto_format_buffer = 0
+
       autocmd FileType borg,gcl,patchpanel AutoFormatBuffer gclfmt
       autocmd FileType bzl AutoFormatBuffer buildifier
       autocmd FileType c,cpp,javascript AutoFormatBuffer clang-format
       autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
       autocmd FileType dart AutoFormatBuffer dartfmt
       autocmd FileType go AutoFormatBuffer gofmt
+      autocmd FileType go setlocal noexpandtab tabstop=2 shiftwidth=2
+      autocmd FileType go let b:codefmt_auto_format_buffer = 1
       autocmd FileType html,css,json AutoFormatBuffer js-beautify
       autocmd FileType java AutoFormatBuffer google-java-format
       autocmd FileType jslayout AutoFormatBuffer jslfmt
@@ -59,9 +63,6 @@ return function(use)
       autocmd FileType python AutoFormatBuffer pyformat
       autocmd FileType sql AutoFormatBuffer format_sql
       autocmd FileType textpb AutoFormatBuffer text-proto-format
-
-      let b:codefmt_auto_format_buffer = 1 
-      setlocal noexpandtab tabstop=2 shiftwidth=2
     augroup END
     ]])
 
