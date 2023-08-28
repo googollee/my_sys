@@ -73,7 +73,7 @@ services:
             wan-to-lan-public:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`{subdomain:[a-z]+}.w.zhaohai.li`)"
+              rule: "HostRegexp(`{subdomain:[a-z]+}-w.zhaohai.li`)"
               service: "https-in-lan"
             wan-to-lan:
               entryPoints:
@@ -134,7 +134,6 @@ services:
                   - main: "zhaohai.li"
                     sans: 
                       - "*.zhaohai.li"
-                      - "*.w.zhaohai.li"
           wan:
             address: ":8443"
             http:
@@ -144,7 +143,6 @@ services:
                   - main: "zhaohai.li"
                     sans:
                       - "*.zhaohai.li"
-                      - "*.w.zhaohai.li"
         metrics:
           prometheus:
             entryPoint: https
@@ -192,13 +190,6 @@ services:
             username = zhaohai.li
             password = cloudflare-token
             hostname = "*.zhaohai.li"
-            ttl = 1 # optional, value of 1 is 'automatic'.
-            proxied = true # optional.
-        }
-        provider cloudflare.com:3 {
-            username = zhaohai.li
-            password = cloudflare-token
-            hostname = "*.w.zhaohai.li"
             ttl = 1 # optional, value of 1 is 'automatic'.
             proxied = true # optional.
         }

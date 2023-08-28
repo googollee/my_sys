@@ -11,10 +11,10 @@ services:
     container_name: gotosocial
     hostname: gotosocial
     labels:
-      - "traefik.http.routers.gotosocial.rule=Host(`gts.w.zhaohai.li`)"
+      - "traefik.http.routers.gotosocial.rule=Host(`gts-w.zhaohai.li`)"
       - "traefik.http.routers.gotosocial.entrypoints=https"
     environment:
-      GTS_HOST: gts.w.zhaohai.li
+      GTS_HOST: gts-w.zhaohai.li
       GTS_DB_TYPE: sqlite
       GTS_DB_ADDRESS: /gotosocial/storage/sqlite.db
       GTS_LETSENCRYPT_ENABLED: "false"
