@@ -52,6 +52,14 @@ if which lsb_release >/dev/null; then
   # XManager.
   if [ -r /google/data/ro/teams/dmgi/configs/google_xm_bashrc ] ; then
     source /google/data/ro/teams/dmgi/configs/google_xm_bashrc
+
+    function sandbox_experiment_args() {
+      local sandbox_name=$1
+      for component in state data resource; do
+        echo "--xm_experiment_${component}_api_endpoint=/abns/deepmind-xmanager-test-jobs/dev-test.experiment-${component}-server-${sandbox_name} "
+      done
+      echo --xm_deployment_env=sandbox --xm_thinmint_delegate=deepmind-xmanager-test-jobs --xm_evaluator_job_accounting_user=deepmind-resources-xmanager-test-borg
+    }
   fi
 fi
 
