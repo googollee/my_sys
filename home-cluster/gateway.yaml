@@ -144,6 +144,7 @@ services:
                   - main: "zhaohai.li"
                     sans:
                       - "*.zhaohai.li"
+                      - "*.w.zhaohai.li"
         metrics:
           prometheus:
             entryPoint: https
@@ -183,14 +184,21 @@ services:
         provider cloudflare.com:1 {
             username = zhaohai.li
             password = cloudflare-token
-            hostname = "*.zhaohai.li"
+            hostname = "zhaohai.li"
             ttl = 1 # optional, value of 1 is 'automatic'.
             proxied = true # optional.
         }
         provider cloudflare.com:2 {
             username = zhaohai.li
             password = cloudflare-token
-            hostname = "zhaohai.li"
+            hostname = "*.zhaohai.li"
+            ttl = 1 # optional, value of 1 is 'automatic'.
+            proxied = true # optional.
+        }
+        provider cloudflare.com:3 {
+            username = zhaohai.li
+            password = cloudflare-token
+            hostname = "*.w.zhaohai.li"
             ttl = 1 # optional, value of 1 is 'automatic'.
             proxied = true # optional.
         }
