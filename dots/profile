@@ -43,7 +43,7 @@ fi
 
 # Google Env
 if which lsb_release >/dev/null; then
-  if [ $(lsb_release -rs) = "rodete" ]; then
+  if [ $(lsb_release -cs) = "rodete" ]; then
     alias txa='tmx2 attach'
     alias sandman='/google/data/ro/projects/sandman/sandman'
   fi
