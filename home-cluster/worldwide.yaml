@@ -18,10 +18,11 @@ services:
       GTS_DB_TYPE: sqlite
       GTS_DB_ADDRESS: /gotosocial/storage/sqlite.db
       GTS_LETSENCRYPT_ENABLED: "false"
-      GTS_LETSENCRYPT_EMAIL_ADDRESS: ""
       TZ: Europe/Berlin
     user: "0:0"
     expose:
       - "8080"
     volumes:
-      - /share/System/config/gotosocial:/gotosocial/storage
+      - type: bind
+        source: /share/System/config/gotosocial
+        target: /gotosocial/storage
