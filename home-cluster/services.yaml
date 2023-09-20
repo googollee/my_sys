@@ -115,17 +115,3 @@ services:
       - 7359:7359/udp
     environment:
       JELLYFIN_PublishedServerUrl: https://media.zhaohai.li
-
-  nocodb:
-    image: nocodb/nocodb
-    container_name: nocodb
-    hostname: nocodb
-    labels:
-      - "traefik.http.routers.forms.rule=Host(`forms.zhaohai.li`)"
-      - "traefik.http.routers.forms.entrypoints=https"
-    volumes:
-      - type: bind
-        source: /share/System/config/nocodb
-        target: /usr/app/data/
-    expose:
-      - "8080"

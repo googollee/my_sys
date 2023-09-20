@@ -26,3 +26,17 @@ services:
       - type: bind
         source: /share/System/config/gotosocial
         target: /gotosocial/storage
+
+  nocodb:
+    image: nocodb/nocodb
+    container_name: nocodb
+    hostname: nocodb
+    labels:
+      - "traefik.http.routers.forms.rule=Host(`forms-w.zhaohai.li`)"
+      - "traefik.http.routers.forms.entrypoints=https"
+    volumes:
+      - type: bind
+        source: /share/System/config/nocodb
+        target: /usr/app/data/
+    expose:
+      - "8080"
