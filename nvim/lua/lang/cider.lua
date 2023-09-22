@@ -62,7 +62,7 @@ return function(use)
       autocmd FileType proto AutoFormatBuffer protofmt
       autocmd FileType python AutoFormatBuffer pyformat
       autocmd FileType sql AutoFormatBuffer format_sql
-      autocmd FileType textpb AutoFormatBuffer text-proto-format
+      " autocmd FileType textpb AutoFormatBuffer text-proto-format
     augroup END
     ]])
 
