@@ -35,17 +35,17 @@ services:
       - 80:80
       - 443:443
       - 8443:8443
-    healthcheck:
-      test:
-        - "CMD"
-        - "/bin/sh"
-        - "-c"
-        - |
-          wget https://health.zhaohai.li/ping -O -
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-      start_period: 1m
+    # healthcheck:
+      # test:
+        # - "CMD"
+        # - "/bin/sh"
+        # - "-c"
+        # - |
+          # exec wget https://health.zhaohai.li/ping -O -
+      # interval: 1m30s
+      # timeout: 10s
+      # retries: 3
+      # start_period: 1m
     environment:
       TRAEFIK_ROUTES_CONFIG: |
         http:
