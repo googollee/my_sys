@@ -6,7 +6,7 @@ networks:
 
 services:
   prometheus:
-    image: prom/prometheus:v2.45.0
+    image: prom/prometheus:v2.47.2
     container_name: prometheus
     hostname: prometheus
     labels:
@@ -61,7 +61,7 @@ services:
                 replacement: snmp-exporter:9116
 
   grafana:
-    image: grafana/grafana-enterprise:main
+    image: grafana/grafana-enterprise:10.2.0
     container_name: grafana
     hostname: grafana
     user: root:root
@@ -78,7 +78,7 @@ services:
      - GF_SERVER_ROOT_URL=https://graph.zhaohai.li/
 
   nas-exporter:
-    image: prom/node-exporter:v1.6.0
+    image: prom/node-exporter:v1.6.1
     container_name: nas-exporter
     hostname: nas-exporter
     labels:

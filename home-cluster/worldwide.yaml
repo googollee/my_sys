@@ -6,7 +6,7 @@ networks:
 
 services:
   gotosocial:
-    image: superseriousbusiness/gotosocial:latest
+    image: superseriousbusiness/gotosocial:0.12.1
     container_name: gotosocial
     hostname: gotosocial
     labels:
@@ -27,7 +27,7 @@ services:
         target: /gotosocial/storage
 
   nocodb:
-    image: nocodb/nocodb
+    image: nocodb/nocodb:0.202.5
     container_name: nocodb
     hostname: nocodb
     labels:

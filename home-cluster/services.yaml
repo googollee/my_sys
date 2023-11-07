@@ -64,7 +64,7 @@ services:
         $$use_auth = false;
 
   qbittorrent:
-    image: linuxserver/qbittorrent:4.5.4
+    image: linuxserver/qbittorrent:4.6.0
     container_name: qbittorrent
     hostname: qbittorrent
     labels:
@@ -90,7 +90,7 @@ services:
       PGID: "100"
 
   jellyfin:
-    image: jellyfin/jellyfin:10.8.10
+    image: jellyfin/jellyfin:10.8.12
     container_name: jellyfin
     hostname: jellyfin
     labels:
