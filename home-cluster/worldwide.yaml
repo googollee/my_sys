@@ -9,6 +9,7 @@ services:
     image: superseriousbusiness/gotosocial:0.12.1
     container_name: gotosocial
     hostname: gotosocial
+    restart: always
     labels:
       - "traefik.http.routers.gotosocial.rule=Host(`gts-w.zhaohai.li`)"
       - "traefik.http.routers.gotosocial.entrypoints=https"
@@ -30,6 +31,7 @@ services:
     image: nocodb/nocodb:0.202.5
     container_name: nocodb
     hostname: nocodb
+    restart: always
     labels:
       - "traefik.http.routers.forms.rule=Host(`forms-w.zhaohai.li`)"
       - "traefik.http.routers.forms.entrypoints=https"

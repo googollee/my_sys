@@ -9,6 +9,7 @@ services:
     image: prom/prometheus:v2.47.2
     container_name: prometheus
     hostname: prometheus
+    restart: always
     labels:
       - "traefik.http.routers.prometheus.rule=Host(`monitor.zhaohai.li`)"
       - "traefik.http.routers.prometheus.entrypoints=https"
@@ -64,6 +65,7 @@ services:
     image: grafana/grafana-enterprise:10.2.0
     container_name: grafana
     hostname: grafana
+    restart: always
     user: root:root
     labels:
       - "traefik.http.routers.grafana.rule=Host(`graph.zhaohai.li`)"
@@ -81,6 +83,7 @@ services:
     image: prom/node-exporter:v1.6.1
     container_name: nas-exporter
     hostname: nas-exporter
+    restart: always
     labels:
       - "traefik.http.routers.nas-exporter.role=``"
       - "traefik.http.routers.nas-exporter.entrypoints=``"
@@ -102,6 +105,7 @@ services:
     image: prom/snmp-exporter:v0.22.0
     container_name: snmp-exporter
     hostname: snmp-exporter
+    restart: always
     labels:
       - "traefik.http.routers.snmp-exporter.role=``"
       - "traefik.http.routers.snmp-exporter.entrypoints=``"

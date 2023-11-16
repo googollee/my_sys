@@ -9,6 +9,7 @@ services:
     image: ghcr.io/binary-husky/gpt_academic_nolocal:master
     container_name: gpt
     hostname: gpt
+    restart: always
     labels:
       - "traefik.http.routers.gpt.rule=Host(`gpt.zhaohai.li`)"
       - "traefik.http.routers.gpt.entrypoints=https"
@@ -42,6 +43,7 @@ services:
     image: tinyfilemanager/tinyfilemanager:2.4.7
     container_name: tinyfilemanager
     hostname: tinyfilemanager
+    restart: always
     labels:
       - "traefik.http.routers.tinyfilemanager.rule=Host(`fs.zhaohai.li`)"
       - "traefik.http.routers.tinyfilemanager.entrypoints=https"
@@ -67,6 +69,7 @@ services:
     image: linuxserver/qbittorrent:4.6.0
     container_name: qbittorrent
     hostname: qbittorrent
+    restart: always
     labels:
       - "traefik.http.routers.qbittorrent.rule=Host(`bt.zhaohai.li`)"
       - "traefik.http.routers.qbittorrent.entrypoints=https"
@@ -93,6 +96,7 @@ services:
     image: jellyfin/jellyfin:10.8.12
     container_name: jellyfin
     hostname: jellyfin
+    restart: always
     labels:
       - "traefik.http.routers.media.rule=Host(`media.zhaohai.li`)"
       - "traefik.http.routers.media.entrypoints=https"

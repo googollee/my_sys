@@ -5,6 +5,7 @@ services:
     image: traefik:v2.10
     container_name: traefik
     hostname: traefik
+    restart: always
     labels:
       - "traefik.http.routers.traefik.role=``"
       - "traefik.http.routers.traefik.entrypoints=``"
@@ -163,6 +164,7 @@ services:
     image: alpine:3.18
     container_name: inadyn
     hostname: inadyn
+    restart: always
     command:
       - "/bin/sh"
       - "-c"
