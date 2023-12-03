@@ -4,7 +4,192 @@ networks:
   default:
     name: gateway_default
 
+volumes:
+  config:
+
 services:
+  config:
+    image: debian:12-slim
+    container_name: config
+    hostname: config
+    user: "root"
+    entrypoint: []
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        echo "$${OTEL_CONFIG}" > /otel/config.yaml
+    volumes:
+      - config:/otel
+    environment:
+      OTEL_CONFIG: |
+        receivers:
+          otlp:
+            protocols:
+              grpc:
+              http:
+
+          prometheus:
+            config:
+              scrape_configs:
+                - job_name: 'otel-collector'
+                  scrape_interval: 5s
+                  static_configs:
+                    - targets: ['localhost:8888']
+                - job_name: 'traefik'
+                  scrape_interval: 5s
+                  static_configs:
+                    - targets: ['gateway.zhaohai.li']
+                - job_name: 'erx'
+                  scrape_interval: 5s
+                  static_configs:
+                    - targets: ['192.168.10.1']
+                  metrics_path: /snmp
+                  params:
+                    module:
+                      - edgerouterx
+                  relabel_configs:
+                    - source_labels: [__address__]
+                      target_label: __param_target
+                    - source_labels: [__param_target]
+                      target_label: instance
+                    - target_label: __address__
+                      replacement: snmp-exporter:9116
+
+          hostmetrics:
+            # root_path: /hostfs
+            scrapers:
+              cpu:
+              disk:
+              filesystem:
+              load:
+              memory:
+              network:
+                include:
+                  interfaces: [br0]
+                  match_type: strict
+              process:
+                mute_process_exe_error: true
+              processes:
+              paging:
+
+        processors:
+          memory_limiter:
+            check_interval: 1s
+            limit_mib: 100
+            spike_limit_mib: 80
+          resourcedetection:
+            detectors: [docker]
+            timeout: 2s
+            override: false
+          batch:
+            timeout: 5s
+            send_batch_size: 100000
+
+        exporters:
+          clickhouse:
+            endpoint: clickhouse://clickhouse:9000?dial_timeout=10s&compress=lz4
+            username: default
+            password: ""
+            database: otel
+            ttl_days: 3
+            logs_table_name: otel_logs
+            traces_table_name: otel_traces
+            metrics_table_name: otel_metrics
+            timeout: 5s
+            retry_on_failure:
+              enabled: true
+              initial_interval: 5s
+              max_interval: 30s
+              max_elapsed_time: 300s
+
+        service:
+          # telemetry:
+            # logs:
+              # level: debug
+          pipelines:
+            traces:
+              receivers: [otlp]
+              processors: [resourcedetection]
+              exporters: [clickhouse]
+            metrics:
+              receivers: [otlp, hostmetrics, prometheus]
+              processors: [resourcedetection]
+              exporters: [clickhouse]
+            logs:
+              receivers: [otlp]
+              processors: [resourcedetection]
+              exporters: [clickhouse]
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.10.5
+    container_name: clickhouse
+    hostname: clickhouse
+    restart: always
+    user: "root:root"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1
+    volumes:
+      - type: bind
+        source: /share/System/config/clickhouse/data
+        target: /var/lib/clickhouse/
+      - type: bind
+        source: /share/System/config/clickhouse/log
+        target: /var/log/clickhouse-server
+    expose:
+      - "8123"
+      - "9000"
+    ports:
+      - 8123:8123
+      - 9000:9000
+    # environment:
+      # CLICKHOUSE_UID: "0"
+      # CLICKHOUSE_GID: "0"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    cap_add:
+      - NET_ADMIN
+      - IPC_LOCK
+      - SYS_NICE
+
+  otel:
+    image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.89.0
+    container_name: otel
+    hostname: otel
+    restart: unless-stopped
+    user: "0"
+    depends_on:
+      config:
+        condition: service_completed_successfully
+      clickhouse:
+        condition: service_healthy
+    command:
+      - "--config"
+      - "/otel/config.yaml"
+    volumes:
+      - config:/otel
+      - /:/hostfs
+      - /proc:/proc
+      - /dev:/dev
+      - /usr:/usr
+      - /mnt:/mnt
+      - /share:/share
+      - /var:/var
+      - /etc:/etc
+    expose:
+      - "1888" # pprof extension
+      - "8888" # Prometheus metrics exposed by the Collector
+      - "8889" # Prometheus exporter metrics
+      - "13133" # health_check extension
+      - "4317" # OTLP gRPC receiver
+      - "4318" # OTLP http receiver
+    ports:
+      - 55679:55679 # zpages extension
+    cap_add:
+      - SYS_PTRACE
+
   prometheus:
     image: prom/prometheus:v2.47.2
     container_name: prometheus
@@ -78,6 +263,7 @@ services:
      - 3000
     environment:
      - GF_SERVER_ROOT_URL=https://graph.zhaohai.li/
+     - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
 
   nas-exporter:
     image: prom/node-exporter:v1.6.1
