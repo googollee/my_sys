@@ -91,7 +91,7 @@ services:
           influxdb:
             endpoint: http://influxdb:8086
             timeout: 10000ms
-            org: admin
+            org: home
             bucket: home-cluster
             token: influxdb-token
             span_dimensions:
@@ -191,103 +191,6 @@ services:
       - 8006:8006 # fluentforward
     cap_add:
       - SYS_PTRACE
-
-  prometheus:
-    image: prom/prometheus:v2.47.2
-    container_name: prometheus
-    hostname: prometheus
-    restart: always
-    labels:
-      - "traefik.http.routers.prometheus.rule=Host(`monitor.zhaohai.li`)"
-      - "traefik.http.routers.prometheus.entrypoints=https"
-    user: root:root
-    entrypoint: []
-    command:
-      - "/bin/sh"
-      - "-c"
-      - |
-        ls -lhad /prometheus/data
-        echo "$${PROMETHEUS_CONFIG}" > /etc/prometheus/prometheus.yml
-        exec /bin/prometheus \
-          --config.file=/etc/prometheus/prometheus.yml \
-          --storage.tsdb.retention.time=14d
-    volumes:
-      - type: bind
-        source: /share/System/config/prometheus/data
-        target: /prometheus/data
-    expose:
-      - 9090
-    environment:
-      PROMETHEUS_CONFIG: |
-        global:
-          scrape_interval: 30s
-          external_labels:
-            monitor: 'codelab-monitor'
-        scrape_configs:
-          - job_name: 'prometheus'
-            static_configs:
-              - targets: ['localhost:9090']
-          - job_name: 'traefik'
-            static_configs:
-              - targets: ['gateway.zhaohai.li']
-          - job_name: 'nas'
-            static_configs:
-              - targets: ['nas-exporter:9100']
-          - job_name: 'erx'
-            static_configs:
-              - targets: ['192.168.10.1']
-            metrics_path: /snmp
-            params:
-              module:
-                - edgerouterx
-            relabel_configs:
-              - source_labels: [__address__]
-                target_label: __param_target
-              - source_labels: [__param_target]
-                target_label: instance
-              - target_label: __address__
-                replacement: snmp-exporter:9116
-
-  grafana:
-    image: grafana/grafana-enterprise:10.2.0
-    container_name: grafana
-    hostname: grafana
-    restart: always
-    user: root:root
-    labels:
-      - "traefik.http.routers.grafana.rule=Host(`graph.zhaohai.li`)"
-      - "traefik.http.routers.grafana.entrypoints=https"
-    volumes:
-      - type: bind
-        source: /share/System/config/grafana/data
-        target: /var/lib/grafana
-    expose:
-     - 3000
-    environment:
-     - GF_SERVER_ROOT_URL=https://graph.zhaohai.li/
-     - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
-
-  nas-exporter:
-    image: prom/node-exporter:v1.6.1
-    container_name: nas-exporter
-    hostname: nas-exporter
-    restart: always
-    labels:
-      - "traefik.http.routers.nas-exporter.role=``"
-      - "traefik.http.routers.nas-exporter.entrypoints=``"
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /host/run/udev/data:/run/udev/data:ro
-      - /share/Multimedia:/rootfs:ro
-    expose:
-      - 9100
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--path.udev.data=/host/run/udev/data'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
 
   snmp-exporter:
     image: prom/snmp-exporter:v0.22.0
