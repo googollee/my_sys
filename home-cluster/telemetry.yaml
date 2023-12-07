@@ -26,10 +26,8 @@ services:
     environment:
       OTEL_CONFIG: |
         receivers:
-          otlp:
-            protocols:
-              grpc:
-              http:
+          fluentforward:
+            endpoint: 0.0.0.0:8006
 
           prometheus:
             config:
@@ -119,16 +117,16 @@ services:
             # logs:
               # level: debug
           pipelines:
-            traces:
-              receivers: [otlp]
-              processors: [resourcedetection]
-              exporters: [influxdb]
+            # traces:
+              # receivers: []
+              # processors: [resourcedetection]
+              # exporters: [influxdb]
             metrics:
-              receivers: [otlp, hostmetrics, prometheus]
+              receivers: [hostmetrics, prometheus]
               processors: [resourcedetection]
               exporters: [influxdb]
             logs:
-              receivers: [otlp]
+              receivers: [fluentforward]
               processors: [resourcedetection]
               exporters: [influxdb]
 
@@ -176,6 +174,8 @@ services:
       - /proc:/proc
       - /dev:/dev
       - /usr:/usr
+      - /bin:/bin
+      - /lib:/lib
       - /mnt:/mnt
       - /share:/share
       - /var:/var
@@ -188,7 +188,7 @@ services:
       - "4317" # OTLP gRPC receiver
       - "4318" # OTLP http receiver
     ports:
-      - 55679:55679 # zpages extension
+      - 8006:8006 # fluentforward
     cap_add:
       - SYS_PTRACE
 
