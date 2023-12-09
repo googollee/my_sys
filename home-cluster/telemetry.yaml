@@ -82,7 +82,6 @@ services:
                 value: device
                 description: The textual name of the interface.
               direction:
-                value: direct
                 enum:
                   - receive
                   - transmit
