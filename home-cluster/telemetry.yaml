@@ -66,15 +66,256 @@ services:
               cpu:
               disk:
               filesystem:
-              load:
               memory:
               network:
-              process:
-                mute_process_exe_error: true
               processes:
-              paging:
+
+          snmp/ubnt:
+            collection_interval: 60s
+            endpoint: udp://192.168.10.1:161
+            version: v2c
+            community: public
+
+            attributes:
+              if:
+                oid: 1.3.6.1.2.1.31.1.1.1.1
+                value: device
+                description: The textual name of the interface.
+              direction:
+                value: direct
+                enum:
+                  - receive
+                  - transmit
+              memory.state:
+                value: state
+                enum:
+                  - total.swap
+                  - free.swap
+                  - total
+                  - free
+                  - shared
+                  - buffered
+                  - cached
+              cpu.state:
+                value: state
+                enum:
+                  - user
+                  - nice
+                  - system_wait  # wait + kernel
+                  - idle
+                  - wait
+                  - system
+                  - interrupt
+
+            metrics:
+              uptime:
+                description: The amount of time since this host was last initialized.
+                unit: "10ms"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.2.1.25.1.1.0"
+              system.network.io:
+                description: The total number of octets received on the interface, including framing characters.
+                unit: "byte"
+                sum:
+                  value_type: int
+                  monotonic: true
+                  aggregation: cumulative
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: receive
+                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: transmit
+              system.network.bandwidth:
+                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
+                unit: "mbps"
+                gauge:
+                  value_type: int
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
+                    attributes:
+                      - name: if
+              system.memory.usage:
+                description: The amount of memory for this host. total = used + buffered + cached + free
+                unit: "KiB"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.4.1.2021.4.3.0"
+                    attributes:
+                      - name: memory.state
+                        value: total.swap
+                  - oid: "1.3.6.1.4.1.2021.4.4.0"
+                    attributes:
+                      - name: memory.state
+                        value: free.swap
+                  - oid: "1.3.6.1.4.1.2021.4.5.0"
+                    attributes:
+                      - name: memory.state
+                        value: total
+                  - oid: "1.3.6.1.4.1.2021.4.6.0"
+                    attributes:
+                      - name: memory.state
+                        value: free
+                  - oid: "1.3.6.1.4.1.2021.4.13.0"
+                    attributes:
+                      - name: memory.state
+                        value: shared
+                  - oid: "1.3.6.1.4.1.2021.4.14.0"
+                    attributes:
+                      - name: memory.state
+                        value: buffered
+                  - oid: "1.3.6.1.4.1.2021.4.15.0"
+                    attributes:
+                      - name: memory.state
+                        value: cached
+              system.cpu.time:
+                description: The number of 'ticks' (typically 1/100s) spent processing states.
+                unit: "10ms"
+                sum:
+                  value_type: int
+                  monotonic: true
+                  aggregation: cumulative
+                scalar_oids:
+                  - oid: "1.3.6.1.4.1.2021.11.50.0"
+                    attributes:
+                      - name: cpu.state
+                        value: user
+                  - oid: "1.3.6.1.4.1.2021.11.51.0"
+                    attributes:
+                      - name: cpu.state
+                        value: nice
+                  - oid: "1.3.6.1.4.1.2021.11.52.0"
+                    attributes:
+                      - name: cpu.state
+                        value: system_wait
+                  - oid: "1.3.6.1.4.1.2021.11.53.0"
+                    attributes:
+                      - name: cpu.state
+                        value: idle
+                  - oid: "1.3.6.1.4.1.2021.11.54.0"
+                    attributes:
+                      - name: cpu.state
+                        value: wait
+                  - oid: "1.3.6.1.4.1.2021.11.55.0"
+                    attributes:
+                      - name: cpu.state
+                        value: system
+                  - oid: "1.3.6.1.4.1.2021.11.56.0"
+                    attributes:
+                      - name: cpu.state
+                        value: interrupt
+
+          snmp/qnap:
+            collection_interval: 60s
+            endpoint: udp://192.168.10.2:161
+            timeout: 10s
+            version: v2c
+            community: public
+
+            attributes:
+              if:
+                oid: 1.3.6.1.2.1.31.1.1.1.1
+                value: device
+                description: The textual name of the interface.
+              fan:
+                oid: 1.3.6.1.4.1.24681.1.3.15.1.2
+                value: name
+                description: A unique textual name for each system fan.
+              direction:
+                value: direct
+                enum:
+                  - receive
+                  - transmit
+
+            metrics:
+              uptime:
+                description: The amount of time since this host was last initialized.
+                unit: "10ms"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.2.1.25.1.1.0"
+              system.network.io:
+                description: The total number of octets received on the interface, including framing characters.
+                unit: "byte"
+                sum:
+                  value_type: int
+                  monotonic: true
+                  aggregation: cumulative
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: receive
+                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: transmit
+              system.network.bandwidth:
+                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
+                unit: "mbps"
+                gauge:
+                  value_type: int
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
+                    attributes:
+                      - name: if
+              system.temperature:
+                description: System temperature.
+                unit: "C"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.4.1.24681.1.3.6.0"
+              system.fan:
+                description: System fan speed.
+                unit: "RPM"
+                gauge:
+                  value_type: int
+                column_oids:
+                  - oid: "1.3.6.1.4.1.24681.1.3.15.1.3"
+                    attributes:
+                      - name: fan
+              system.firmware.update:
+                description: Firmware can upgrade or not.
+                unit: "bool"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.4.1.55062.1.12.7.0"
 
         processors:
+          resource/router:
+            attributes:
+              - key: host.name
+                value: router
+                action: upsert
+          resource/nas:
+            attributes:
+              - key: host.name
+                value: nas
+                action: upsert
+          metricstransform/snmp:
+            transforms:
+              - include: system.memory.usage
+                action: update
+                operations:
+                  - action: experimental_scale_value
+                    experimental_scale: 1024
+              - include: system.cpu.time
+                action: update
+                operations:
+                  - action: toggle_scalar_data_type
           memory_limiter:
             check_interval: 1s
             limit_mib: 100
@@ -121,6 +362,14 @@ services:
               # receivers: []
               # processors: [resourcedetection]
               # exporters: [influxdb]
+            metrics/nas:
+              receivers: [snmp/qnap]
+              processors: [resource/nas]
+              exporters: [influxdb]
+            metrics/router:
+              receivers: [snmp/ubnt]
+              processors: [metricstransform/snmp, resource/router]
+              exporters: [influxdb]
             metrics:
               receivers: [hostmetrics, prometheus]
               processors: [resourcedetection]
