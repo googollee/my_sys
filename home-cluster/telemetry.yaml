@@ -44,21 +44,6 @@ services:
                   scrape_interval: 5s
                   static_configs:
                     - targets: ['gateway.zhaohai.li']
-                - job_name: 'erx'
-                  scrape_interval: 5s
-                  static_configs:
-                    - targets: ['192.168.10.1']
-                  metrics_path: /snmp
-                  params:
-                    module:
-                      - edgerouterx
-                  relabel_configs:
-                    - source_labels: [__address__]
-                      target_label: __param_target
-                    - source_labels: [__param_target]
-                      target_label: instance
-                    - target_label: __address__
-                      replacement: snmp-exporter:9116
 
           hostmetrics:
             # root_path: /hostfs
@@ -121,6 +106,11 @@ services:
                   - SYN_RECV
                   - SYN_SENT
                   - TIME_WAIT
+              connection.protocol:
+                value: protocol
+                enum:
+                  - tcp
+                  - udp
               process.state:
                 value: status
                 enum:
@@ -245,6 +235,8 @@ services:
                     attributes:
                       - name: tcp.state
                         value: ESTABLISHED
+                      - name: connection.protocol
+                        value: tcp
               system.processes.count:
                 description: The number of process contexts currently loaded or running on this system.
                 unit: "-"
@@ -460,95 +452,3 @@ services:
       - 8006:8006 # fluentforward
     cap_add:
       - SYS_PTRACE
-
-  snmp-exporter:
-    image: prom/snmp-exporter:v0.22.0
-    container_name: snmp-exporter
-    hostname: snmp-exporter
-    restart: always
-    labels:
-      - "traefik.http.routers.snmp-exporter.role=``"
-      - "traefik.http.routers.snmp-exporter.entrypoints=``"
-    expose:
-      - 9116
-    entrypoint: []
-    command:
-      - '/bin/sh'
-      - '-c'
-      - |
-        echo "$${SNMP_YAML}" > /etc/snmp_exporter/snmp.yaml
-        exec /bin/snmp_exporter --config.file=/etc/snmp_exporter/snmp.yaml
-    environment:
-      SNMP_YAML: |
-        # WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
-        edgerouterx:
-          walk:
-          - 1.3.6.1.2.1.31.1.1.1.1
-          - 1.3.6.1.2.1.31.1.1.1.10
-          - 1.3.6.1.2.1.31.1.1.1.15
-          - 1.3.6.1.2.1.31.1.1.1.6
-          get:
-          - 1.3.6.1.2.1.25.1.1.0
-          - 1.3.6.1.4.1.2021.11.11.0
-          - 1.3.6.1.4.1.2021.4.11.0
-          - 1.3.6.1.4.1.2021.4.5.0
-          metrics:
-          - name: hrSystemUptime
-            oid: 1.3.6.1.2.1.25.1.1
-            type: gauge
-            help: The amount of time since this host was last initialized - 1.3.6.1.2.1.25.1.1
-          - name: ifHCOutOctets
-            oid: 1.3.6.1.2.1.31.1.1.1.10
-            type: counter
-            help: The total number of octets transmitted out of the interface, including framing
-              characters - 1.3.6.1.2.1.31.1.1.1.10
-            indexes:
-            - labelname: ifIndex
-              type: gauge
-            lookups:
-            - labels:
-              - ifIndex
-              labelname: ifName
-              oid: 1.3.6.1.2.1.31.1.1.1.1
-              type: DisplayString
-          - name: ifHighSpeed
-            oid: 1.3.6.1.2.1.31.1.1.1.15
-            type: gauge
-            help: An estimate of the interface's current bandwidth in units of 1,000,000 bits
-              per second - 1.3.6.1.2.1.31.1.1.1.15
-            indexes:
-            - labelname: ifIndex
-              type: gauge
-            lookups:
-            - labels:
-              - ifIndex
-              labelname: ifName
-              oid: 1.3.6.1.2.1.31.1.1.1.1
-              type: DisplayString
-          - name: ifHCInOctets
-            oid: 1.3.6.1.2.1.31.1.1.1.6
-            type: counter
-            help: The total number of octets received on the interface, including framing
-              characters - 1.3.6.1.2.1.31.1.1.1.6
-            indexes:
-            - labelname: ifIndex
-              type: gauge
-            lookups:
-            - labels:
-              - ifIndex
-              labelname: ifName
-              oid: 1.3.6.1.2.1.31.1.1.1.1
-              type: DisplayString
-          - name: ssCpuIdle
-            oid: 1.3.6.1.4.1.2021.11.11
-            type: gauge
-            help: The percentage of processor time spent idle, calculated over the last minute
-              - 1.3.6.1.4.1.2021.11.11
-          - name: memTotalFree
-            oid: 1.3.6.1.4.1.2021.4.11
-            type: gauge
-            help: The total amount of memory free or available for use on this host - 1.3.6.1.4.1.2021.4.11
-          - name: memTotalReal
-            oid: 1.3.6.1.4.1.2021.4.5
-            type: gauge
-            help: The total amount of real/physical memory installed on this host. - 1.3.6.1.4.1.2021.4.5
