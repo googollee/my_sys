@@ -11,7 +11,7 @@ services:
     hostname: gpt
     restart: always
     labels:
-      - "traefik.http.routers.gpt.rule=Host(`gpt.zhaohai.li`)"
+      - "traefik.http.routers.gpt.rule=Host(`gpt-p.zhaohai.li`)"
       - "traefik.http.routers.gpt.entrypoints=https"
     command:
       - "/bin/bash"
@@ -45,7 +45,7 @@ services:
     hostname: tinyfilemanager
     restart: always
     labels:
-      - "traefik.http.routers.tinyfilemanager.rule=Host(`fs.zhaohai.li`)"
+      - "traefik.http.routers.tinyfilemanager.rule=Host(`fs-p.zhaohai.li`)"
       - "traefik.http.routers.tinyfilemanager.entrypoints=https"
     command:
       - "/bin/sh"
@@ -71,7 +71,7 @@ services:
     hostname: qbittorrent
     restart: always
     labels:
-      - "traefik.http.routers.qbittorrent.rule=Host(`bt.zhaohai.li`)"
+      - "traefik.http.routers.qbittorrent.rule=Host(`bt-p.zhaohai.li`)"
       - "traefik.http.routers.qbittorrent.entrypoints=https"
       - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
     volumes:

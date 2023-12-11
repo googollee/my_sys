@@ -36,17 +36,12 @@ services:
       - 80:80
       - 443:443
       - 8443:8443
-    # healthcheck:
-      # test:
-        # - "CMD"
-        # - "/bin/sh"
-        # - "-c"
-        # - |
-          # exec wget https://health.zhaohai.li/ping -O -
-      # interval: 1m30s
-      # timeout: 10s
-      # retries: 3
-      # start_period: 1m
+    healthcheck:
+      test: "wget https://gateway-p.zhaohai.li/ping -O -"
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       TRAEFIK_ROUTES_CONFIG: |
         http:
@@ -54,17 +49,17 @@ services:
             dashboard:
               entryPoints:
                 - https
-              rule: "Host(`gateway.zhaohai.li`)"
+              rule: "Host(`gateway-p.zhaohai.li`)"
               service: "api@internal"
             ping:
               entryPoints:
                 - https
-              rule: "Host(`health.zhaohai.li`) && Path(`/ping`)"
+              rule: "Host(`gateway-p.zhaohai.li`) && Path(`/ping`)"
               service: "ping@internal"
             traefik:
               entryPoints:
                 - https
-              rule: "Host(`gateway.zhaohai.li`) && Path(`/metrics`)"
+              rule: "Host(`gateway-p.zhaohai.li`) && Path(`/metrics`)"
               service: "prometheus@internal"
             nas:
               entryPoints:
@@ -74,12 +69,12 @@ services:
             wan-to-lan-public:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`{subdomain:[a-z]+}-w.zhaohai.li`)"
+              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`)"
               service: "https-in-lan"
             wan-to-lan:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}.zhaohai.li`)"
+              rule: "HostRegexp(`zhaohai.li`, `{subdomain:[a-z]+}-p.zhaohai.li`)"
               middlewares:
                 - wan-auth
               service: "https-in-lan"

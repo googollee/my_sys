@@ -15,10 +15,10 @@ services:
       options:
         fluentd-address: localhost:8006
     labels:
-      - "traefik.http.routers.gotosocial.rule=Host(`gts-w.zhaohai.li`)"
+      - "traefik.http.routers.gotosocial.rule=Host(`mblog.zhaohai.li`)||Host(`gts-w.zhaohai.li`)"
       - "traefik.http.routers.gotosocial.entrypoints=https"
     environment:
-      GTS_HOST: gts-w.zhaohai.li
+      GTS_HOST: mblog.zhaohai.li
       GTS_DB_TYPE: sqlite
       GTS_DB_ADDRESS: /gotosocial/storage/sqlite.db
       GTS_LETSENCRYPT_ENABLED: "false"
@@ -41,7 +41,7 @@ services:
       options:
         fluentd-address: localhost:8006
     labels:
-      - "traefik.http.routers.forms.rule=Host(`forms-w.zhaohai.li`)"
+      - "traefik.http.routers.forms.rule=Host(`forms.zhaohai.li`)"
       - "traefik.http.routers.forms.entrypoints=https"
     volumes:
       - type: bind

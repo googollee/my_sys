@@ -43,7 +43,7 @@ services:
                 - job_name: 'traefik'
                   scrape_interval: 5s
                   static_configs:
-                    - targets: ['gateway.zhaohai.li']
+                    - targets: ['gateway-p.zhaohai.li']
 
           hostmetrics:
             # root_path: /hostfs
@@ -398,7 +398,7 @@ services:
     restart: always
     user: "root:root"
     labels:
-      - 'traefik.http.routers.influx.rule=Host(`telemetry-w.zhaohai.li`) && !Path(`/ping`, `/metrics`)'
+      - 'traefik.http.routers.influx.rule=Host(`telemetry.zhaohai.li`) && !Path(`/ping`, `/metrics`)'
       - "traefik.http.routers.influx.entrypoints=https"
     healthcheck:
       test: "curl -f http://localhost:8086/ping"
