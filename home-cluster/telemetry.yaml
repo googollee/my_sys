@@ -445,8 +445,7 @@ services:
     restart: unless-stopped
     user: "0"
     labels:
-      - "traefik.http.routers.otel.rule=``"
-      - "traefik.http.routers.otel.entrypoints=``"
+      - "traefik.http.routers.otel.rule=HostRegexp(`[^a-z.]*`)"
     depends_on:
       config:
         condition: service_completed_successfully

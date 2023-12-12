@@ -7,8 +7,7 @@ services:
     hostname: traefik
     restart: always
     labels:
-      - "traefik.http.routers.traefik.rule=``"
-      - "traefik.http.routers.traefik.entrypoints=``"
+      - "traefik.http.routers.traefik.rule=HostRegexp(`[^a-z.]*`)"
     command:
       - "/bin/sh"
       - "-c"
@@ -69,7 +68,7 @@ services:
             wan-to-lan-public:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`)"
+              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`, `gts-w.zhaohai.li`)"
               service: "https-in-lan"
             wan-to-lan:
               entryPoints:
