@@ -65,6 +65,11 @@ services:
                 - https
               rule: "Host(`nas.zhaohai.li`)"
               service: "nas"
+            iot:
+              entryPoints:
+                - https
+              rule: "Host(`iot.zhaohai.li`)"
+              service: "iot"
             wan-to-lan-public:
               entryPoints:
                 - wan
@@ -92,6 +97,11 @@ services:
                 passHostHeader: true
                 servers:
                   - url: "http://192.168.10.2:8080"
+            iot:
+              loadBalancer:
+                passHostHeader: true
+                servers:
+                  - url: "http://192.168.10.2:8123"
       TRAEFIK_CONFIG: |
         global:
           checkNewVersion: false

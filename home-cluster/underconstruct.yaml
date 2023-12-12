@@ -10,6 +10,7 @@ services:
     container_name: home-assistant
     hostname: home-assistant
     restart: always
+    network_mode: host
     labels:
       - "traefik.http.routers.iot.rule=Host(`iot.zhaohai.li`)"
       - "traefik.http.routers.iot.entrypoints=https"
@@ -20,7 +21,7 @@ services:
     privileged: true
     expose:
       - "8123"
-    ports:
-      - 21063:21063
+    # ports:
+      # - 21063:21063
     environment:
       TZ: Europe/Berlin
