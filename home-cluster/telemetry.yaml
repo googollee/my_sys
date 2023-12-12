@@ -128,33 +128,6 @@ services:
                   value_type: int
                 scalar_oids:
                   - oid: "1.3.6.1.2.1.25.1.1.0"
-              system.network.io:
-                description: The total number of octets received on the interface, including framing characters.
-                unit: "byte"
-                sum:
-                  value_type: int
-                  monotonic: true
-                  aggregation: cumulative
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: receive
-                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: transmit
-              system.network.bandwidth:
-                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
-                unit: "mbps"
-                gauge:
-                  value_type: int
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
-                    attributes:
-                      - name: if
               system.memory.usage:
                 description: The amount of memory for this host. total = used + buffered + cached + free
                 unit: "KiB"
@@ -225,6 +198,33 @@ services:
                     attributes:
                       - name: cpu.state
                         value: interrupt
+              system.network.io:
+                description: The total number of octets received on the interface, including framing characters.
+                unit: "byte"
+                sum:
+                  value_type: int
+                  monotonic: true
+                  aggregation: cumulative
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: receive
+                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: transmit
+              system.network.bandwidth:
+                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
+                unit: "mbps"
+                gauge:
+                  value_type: int
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
+                    attributes:
+                      - name: if
               system.network.connections:
                 description: The number of TCP connections for different states.
                 unit: "-"
@@ -260,6 +260,11 @@ services:
                 oid: 1.3.6.1.2.1.31.1.1.1.1
                 value: device
                 description: The textual name of the interface.
+              direction:
+                value: direction
+                enum:
+                  - receive
+                  - transmit
               fan:
                 oid: 1.3.6.1.4.1.24681.1.3.15.1.2
                 value: name
@@ -273,6 +278,24 @@ services:
                   value_type: int
                 scalar_oids:
                   - oid: "1.3.6.1.2.1.25.1.1.0"
+              system.network.io:
+                description: The total number of octets received on the interface, including framing characters.
+                unit: "byte"
+                sum:
+                  value_type: int
+                  monotonic: true
+                  aggregation: cumulative
+                column_oids:
+                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: receive
+                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
+                    attributes:
+                      - name: if
+                      - name: direction
+                        value: transmit
               system.network.bandwidth:
                 description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
                 unit: "mbps"
@@ -401,7 +424,7 @@ services:
       - 'traefik.http.routers.influx.rule=Host(`telemetry.zhaohai.li`) && !Path(`/ping`, `/metrics`)'
       - "traefik.http.routers.influx.entrypoints=https"
     healthcheck:
-      test: "curl -f http://localhost:8086/ping"
+      test: "curl -f http://localhost:8086/ping || exit 1"
       interval: 5s
       timeout: 10s
       retries: 5
@@ -421,6 +444,9 @@ services:
     hostname: otel
     restart: unless-stopped
     user: "0"
+    labels:
+      - "traefik.http.routers.otel.rule=``"
+      - "traefik.http.routers.otel.entrypoints=``"
     depends_on:
       config:
         condition: service_completed_successfully

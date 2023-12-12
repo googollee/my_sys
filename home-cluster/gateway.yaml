@@ -7,7 +7,7 @@ services:
     hostname: traefik
     restart: always
     labels:
-      - "traefik.http.routers.traefik.role=``"
+      - "traefik.http.routers.traefik.rule=``"
       - "traefik.http.routers.traefik.entrypoints=``"
     command:
       - "/bin/sh"
@@ -36,12 +36,12 @@ services:
       - 80:80
       - 443:443
       - 8443:8443
-    healthcheck:
-      test: "wget https://gateway-p.zhaohai.li/ping -O -"
-      interval: 5s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+    # healthcheck:
+      # test: "wget --no-verbose --spider https://gateway-p.zhaohai.li/ping || exit 1"
+      # interval: 5s
+      # timeout: 10s
+      # retries: 3
+      # start_period: 30s
     environment:
       TRAEFIK_ROUTES_CONFIG: |
         http:

@@ -118,3 +118,21 @@ services:
       - 7359:7359/udp
     environment:
       JELLYFIN_PublishedServerUrl: https://media.zhaohai.li
+
+  home-assistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home-assistant
+    hostname: home-assistant
+    restart: always
+    labels:
+      - "traefik.http.routers.iot.rule=Host(`iot.zhaohai.li`)"
+      - "traefik.http.routers.iot.entrypoints=https"
+    volumes:
+      - type: bind
+        source: /share/System/config/home-assistant
+        target: /config
+    privileged: true
+    expose:
+      - "8123"
+    environment:
+      TZ: Europe/Berlin
