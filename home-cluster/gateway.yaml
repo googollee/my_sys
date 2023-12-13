@@ -73,7 +73,7 @@ services:
             wan-to-lan-public:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`, `gts-w.zhaohai.li`) && !Path(`/ping`, '/metrics', '/api/prometheus')"
+              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`, `gts-w.zhaohai.li`) && !Path(`/ping`, `/metrics`, `/api/prometheus`)"
               service: "https-in-lan"
             wan-to-lan:
               entryPoints:
