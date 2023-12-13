@@ -271,6 +271,26 @@ services:
                 enum:
                   - receive
                   - transmit
+              tcp.state:
+                value: state
+                enum:
+                  - ESTABLISHED
+                  - LISTEN
+                  - CLOSE
+                  - CLOSE_WAIT
+                  - CLOSING
+                  - DELETE
+                  - FIN_WAIT_1
+                  - FIN_WAIT_2
+                  - LAST_ACK
+                  - SYN_RECV
+                  - SYN_SENT
+                  - TIME_WAIT
+              connection.protocol:
+                value: protocol
+                enum:
+                  - tcp
+                  - udp
               fan:
                 oid: 1.3.6.1.4.1.24681.1.3.15.1.2
                 value: name
@@ -311,6 +331,18 @@ services:
                   - oid: "1.3.6.1.2.1.31.1.1.1.15"
                     attributes:
                       - name: if
+              system.network.connections:
+                description: The number of TCP connections for different states.
+                unit: "-"
+                gauge:
+                  value_type: int
+                scalar_oids:
+                  - oid: "1.3.6.1.2.1.6.9.0"
+                    attributes:
+                      - name: tcp.state
+                        value: ESTABLISHED
+                      - name: connection.protocol
+                        value: tcp
               system.temperature:
                 description: System temperature.
                 unit: "C"
