@@ -48,7 +48,7 @@ services:
             dashboard:
               entryPoints:
                 - https
-              rule: "Host(`gateway-p.zhaohai.li`)"
+              rule: "Host(`gateway-p.zhaohai.li`) && !Path(`/ping`, `/metrics`)"
               service: "api@internal"
             ping:
               entryPoints:
@@ -73,7 +73,7 @@ services:
             wan-to-lan-public:
               entryPoints:
                 - wan
-              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`, `gts-w.zhaohai.li`)"
+              rule: "HostRegexp(`{subdomain:[a-z]+}.zhaohai.li`, `gts-w.zhaohai.li`) && !Path(`/ping`, '/metrics', '/api/prometheus')"
               service: "https-in-lan"
             wan-to-lan:
               entryPoints:

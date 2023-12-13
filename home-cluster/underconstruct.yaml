@@ -5,10 +5,10 @@ networks:
     name: gateway_default
 
 services:
-  home-assistant:
+  hass:
     image: ghcr.io/home-assistant/home-assistant:stable
-    container_name: home-assistant
-    hostname: home-assistant
+    container_name: hass 
+    hostname: hass
     restart: always
     network_mode: host
     labels:
@@ -16,7 +16,7 @@ services:
       - "traefik.http.routers.iot.entrypoints=https"
     volumes:
       - type: bind
-        source: /share/System/config/home-assistant
+        source: /share/System/config/hass
         target: /config
     privileged: true
     expose:

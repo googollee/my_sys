@@ -32,27 +32,33 @@ services:
           prometheus:
             config:
               scrape_configs:
-                - job_name: 'otel-collector'
-                  scrape_interval: 5s
+                - job_name: 'otelcol'
+                  scrape_interval: 60s
                   static_configs:
                     - targets: ['localhost:8888']
                 - job_name: 'influxdb'
-                  scrape_interval: 5s
+                  scrape_interval: 60s
                   static_configs:
                     - targets: ['influxdb:8086']
                 - job_name: 'traefik'
-                  scrape_interval: 5s
+                  scrape_interval: 60s
+                  scheme: https
                   static_configs:
                     - targets: ['gateway-p.zhaohai.li']
+                - job_name: 'hass'
+                  scrape_interval: 60s
+                  metrics_path: /api/prometheus
+                  static_configs:
+                    - targets: ['iot.zhaohai.li']
 
           hostmetrics:
+            collection_interval: 60s
             # root_path: /hostfs
             scrapers:
               cpu:
               disk:
               filesystem:
               memory:
-              network:
               processes:
 
           snmp/ubnt:
@@ -395,23 +401,23 @@ services:
           pipelines:
             # traces:
               # receivers: []
-              # processors: [resourcedetection]
+              # processors: [resourcedetection, batch]
               # exporters: [influxdb]
             metrics/nas:
               receivers: [snmp/qnap]
-              processors: [resource/nas]
+              processors: [resource/nas, batch]
               exporters: [influxdb]
             metrics/router:
               receivers: [snmp/ubnt]
-              processors: [metricstransform/snmp, resource/router]
+              processors: [metricstransform/snmp, resource/router, batch]
               exporters: [influxdb]
             metrics:
               receivers: [hostmetrics, prometheus]
-              processors: [resourcedetection]
+              processors: [resourcedetection, batch]
               exporters: [influxdb]
             logs:
               receivers: [fluentforward]
-              processors: [resourcedetection]
+              processors: [resourcedetection, batch]
               exporters: [influxdb]
 
   influxdb:
