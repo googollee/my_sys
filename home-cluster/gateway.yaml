@@ -7,7 +7,7 @@ services:
     hostname: traefik
     restart: always
     labels:
-      - "traefik.http.routers.traefik.rule=HostRegexp(`[^a-z.]*`)"
+      - "traefik.http.routers.traefik.endpoints=nonexposed"
     command:
       - "/bin/sh"
       - "-c"
@@ -35,12 +35,12 @@ services:
       - 80:80
       - 443:443
       - 8443:8443
-    # healthcheck:
-      # test: "wget --no-verbose --spider https://gateway-p.zhaohai.li/ping || exit 1"
-      # interval: 5s
-      # timeout: 10s
-      # retries: 3
-      # start_period: 30s
+    healthcheck:
+      test: "wget --no-verbose --spider http://localhost:8082/ping || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     environment:
       TRAEFIK_ROUTES_CONFIG: |
         http:
@@ -52,8 +52,8 @@ services:
               service: "api@internal"
             ping:
               entryPoints:
-                - https
-              rule: "Host(`gateway-p.zhaohai.li`) && Path(`/ping`)"
+                - nonexposed
+              rule: "Path(`/ping`)"
               service: "ping@internal"
             traefik:
               entryPoints:
@@ -123,6 +123,8 @@ services:
             watch: false
             filename: "routes.yaml"
         entryPoints:
+          nonexposed:
+            address: "127.0.0.1:8082"
           http:
             address: ":80"
             http:
