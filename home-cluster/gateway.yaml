@@ -7,7 +7,7 @@ services:
     hostname: traefik
     restart: always
     labels:
-      - "traefik.http.routers.traefik.endpoints=nonexposed"
+      - "traefik.http.routers.traefik.ignore"
     command:
       - "/bin/sh"
       - "-c"
