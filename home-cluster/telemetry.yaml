@@ -483,6 +483,7 @@ services:
     restart: unless-stopped
     user: "0"
     labels:
+      - "traefik.http.routers.otel.roles="
       - "traefik.http.routers.otel.entrypoints=nonexposed"
     depends_on:
       config:
