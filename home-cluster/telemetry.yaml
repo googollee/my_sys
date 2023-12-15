@@ -436,7 +436,7 @@ services:
               # processors: [resourcedetection, batch]
               # exporters: [influxdb]
             metrics/nas:
-              receivers: [snmp/qnap]
+              receivers: [hostmetrics, snmp/qnap]
               processors: [resource/nas, batch]
               exporters: [influxdb]
             metrics/router:
@@ -444,7 +444,7 @@ services:
               processors: [metricstransform/snmp, resource/router, batch]
               exporters: [influxdb]
             metrics:
-              receivers: [hostmetrics, prometheus]
+              receivers: [prometheus]
               processors: [resourcedetection, batch]
               exporters: [influxdb]
             logs:
