@@ -1,15 +1,22 @@
 version: "3"
 
+x-base: &x-base
+  restart: always
+  logging:
+    driver: "fluentd"
+    options:
+      fluentd-address: localhost:8006
+
 networks:
   default:
     name: gateway_default
 
 services:
   gpt:
+    <<: *x-base
     image: ghcr.io/binary-husky/gpt_academic_nolocal:master
     container_name: gpt
     hostname: gpt
-    restart: always
     labels:
       - "traefik.http.routers.gpt.rule=Host(`gpt-p.zhaohai.li`)"
       - "traefik.http.routers.gpt.entrypoints=https"
@@ -40,10 +47,10 @@ services:
       - "22303"
 
   tinyfilemanager:
+    <<: *x-base
     image: tinyfilemanager/tinyfilemanager:2.4.7
     container_name: tinyfilemanager
     hostname: tinyfilemanager
-    restart: always
     labels:
       - "traefik.http.routers.tinyfilemanager.rule=Host(`fs-p.zhaohai.li`)"
       - "traefik.http.routers.tinyfilemanager.entrypoints=https"
@@ -66,10 +73,10 @@ services:
         $$use_auth = false;
 
   qbittorrent:
+    <<: *x-base
     image: linuxserver/qbittorrent:4.6.2
     container_name: qbittorrent
     hostname: qbittorrent
-    restart: always
     labels:
       - "traefik.http.routers.qbittorrent.rule=Host(`bt-p.zhaohai.li`)"
       - "traefik.http.routers.qbittorrent.entrypoints=https"
@@ -93,10 +100,10 @@ services:
       PGID: "100"
 
   jellyfin:
+    <<: *x-base
     image: jellyfin/jellyfin:10.8.13-1
     container_name: jellyfin
     hostname: jellyfin
-    restart: always
     labels:
       - "traefik.http.routers.media.rule=Host(`media.zhaohai.li`)"
       - "traefik.http.routers.media.entrypoints=https"
@@ -120,14 +127,10 @@ services:
       JELLYFIN_PublishedServerUrl: https://media.zhaohai.li
 
   gotosocial:
+    <<: *x-base
     image: superseriousbusiness/gotosocial:0.13.0
     container_name: gotosocial
     hostname: gotosocial
-    restart: always
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:8006
     labels:
       - "traefik.http.routers.gotosocial.rule=Host(`mblog.zhaohai.li`)||Host(`gts-w.zhaohai.li`)"
       - "traefik.http.routers.gotosocial.entrypoints=https"
@@ -146,14 +149,10 @@ services:
         target: /gotosocial/storage
 
   nocodb:
+    <<: *x-base
     image: nocodb/nocodb:0.202.10
     container_name: nocodb
     hostname: nocodb
-    restart: always
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:8006
     labels:
       - "traefik.http.routers.forms.rule=Host(`forms.zhaohai.li`)"
       - "traefik.http.routers.forms.entrypoints=https"
@@ -165,10 +164,10 @@ services:
       - "8080"
 
   hass:
+    <<: *x-base
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: hass 
     hostname: hass
-    restart: always
     network_mode: host
     labels:
       - "traefik.http.routers.iot.ignore"
