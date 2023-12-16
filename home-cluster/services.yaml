@@ -66,7 +66,7 @@ services:
         $$use_auth = false;
 
   qbittorrent:
-    image: linuxserver/qbittorrent:4.6.0
+    image: linuxserver/qbittorrent:4.6.2
     container_name: qbittorrent
     hostname: qbittorrent
     restart: always
@@ -93,7 +93,7 @@ services:
       PGID: "100"
 
   jellyfin:
-    image: jellyfin/jellyfin:10.8.12
+    image: jellyfin/jellyfin:10.8.13-1
     container_name: jellyfin
     hostname: jellyfin
     restart: always
@@ -120,7 +120,7 @@ services:
       JELLYFIN_PublishedServerUrl: https://media.zhaohai.li
 
   gotosocial:
-    image: superseriousbusiness/gotosocial:0.12.1
+    image: superseriousbusiness/gotosocial:0.13.0
     container_name: gotosocial
     hostname: gotosocial
     restart: always
@@ -146,7 +146,7 @@ services:
         target: /gotosocial/storage
 
   nocodb:
-    image: nocodb/nocodb:0.202.5
+    image: nocodb/nocodb:0.202.10
     container_name: nocodb
     hostname: nocodb
     restart: always
@@ -163,3 +163,23 @@ services:
         target: /usr/app/data/
     expose:
       - "8080"
+
+  hass:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: hass 
+    hostname: hass
+    restart: always
+    network_mode: host
+    labels:
+      - "traefik.http.routers.iot.ignore"
+    volumes:
+      - type: bind
+        source: /share/System/config/hass
+        target: /config
+    privileged: true
+    # expose:
+      # - "8123"
+    # ports:
+      # - 21063:21063
+    environment:
+      TZ: Europe/Berlin

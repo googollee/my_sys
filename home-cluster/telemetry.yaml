@@ -9,7 +9,7 @@ volumes:
 
 services:
   config:
-    image: debian:12-slim
+    image: alpine:3.19
     container_name: config
     hostname: config
     user: "root"
@@ -477,7 +477,7 @@ services:
       - "8086"
 
   otel:
-    image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.89.0
+    image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.91.0
     container_name: otel
     hostname: otel
     restart: unless-stopped
