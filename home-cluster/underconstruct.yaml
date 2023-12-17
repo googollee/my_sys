@@ -4,3 +4,4 @@ networks:
   default:
     name: gateway_default
 
+services:
