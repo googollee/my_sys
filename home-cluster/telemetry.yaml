@@ -1,457 +1,13 @@
 version: "3"
 
+x-base: &x-base
+  restart: always
+
 networks:
   default:
     name: gateway_default
 
-volumes:
-  config:
-
 services:
-  config:
-    image: alpine:3.19
-    container_name: config
-    hostname: config
-    user: "root"
-    entrypoint: []
-    command:
-      - "/bin/sh"
-      - "-c"
-      - |
-        export INFLUXDB_TOKEN=$$(cat /etc/host_config/influxdb_token)
-        echo "$${OTEL_CONFIG}" | sed "s/influxdb-token/$${INFLUXDB_TOKEN}/g" > /otel/config.yaml
-    volumes:
-      - config:/otel
-      - /share/System/config/influxdb_token:/etc/host_config/influxdb_token
-    environment:
-      OTEL_CONFIG: |
-        receivers:
-          fluentforward:
-            endpoint: 0.0.0.0:8006
-
-          prometheus:
-            config:
-              scrape_configs:
-                - job_name: 'otelcol'
-                  scrape_interval: 60s
-                  static_configs:
-                    - targets: ['localhost:8888']
-                - job_name: 'influxdb'
-                  scrape_interval: 60s
-                  static_configs:
-                    - targets: ['influxdb:8086']
-                - job_name: 'traefik'
-                  scrape_interval: 60s
-                  scheme: https
-                  static_configs:
-                    - targets: ['gateway-p.zhaohai.li']
-                - job_name: 'hass'
-                  scrape_interval: 60s
-                  metrics_path: /api/prometheus
-                  static_configs:
-                    - targets: ['iot.zhaohai.li']
-
-          hostmetrics:
-            collection_interval: 60s
-            # root_path: /hostfs
-            scrapers:
-              cpu:
-              disk:
-              filesystem:
-              memory:
-              processes:
-
-          snmp/ubnt:
-            collection_interval: 60s
-            endpoint: udp://192.168.10.1:161
-            version: v2c
-            community: public
-
-            attributes:
-              if:
-                oid: 1.3.6.1.2.1.31.1.1.1.1
-                value: device
-                description: The textual name of the interface.
-              direction:
-                value: direction
-                enum:
-                  - receive
-                  - transmit
-              memory.state:
-                value: state
-                enum:
-                  - total.swap
-                  - free.swap
-                  - total
-                  - free
-                  - shared
-                  - buffered
-                  - cached
-              cpu.state:
-                value: state
-                enum:
-                  - user
-                  - nice
-                  - system_wait  # wait + kernel
-                  - idle
-                  - wait
-                  - system
-                  - interrupt
-              tcp.state:
-                value: state
-                enum:
-                  - ESTABLISHED
-                  - LISTEN
-                  - CLOSE
-                  - CLOSE_WAIT
-                  - CLOSING
-                  - DELETE
-                  - FIN_WAIT_1
-                  - FIN_WAIT_2
-                  - LAST_ACK
-                  - SYN_RECV
-                  - SYN_SENT
-                  - TIME_WAIT
-              connection.protocol:
-                value: protocol
-                enum:
-                  - tcp
-                  - udp
-              process.state:
-                value: status
-                enum:
-                  - unknown
-                  - sleeping
-                  - idle
-                  - running
-                  - blocked
-
-            metrics:
-              system.uptime:
-                description: The amount of time since this host was last initialized.
-                unit: "10ms"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.2.1.25.1.1.0"
-              system.memory.usage:
-                description: The amount of memory for this host. total = used + buffered + cached + free
-                unit: "KiB"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.4.1.2021.4.3.0"
-                    attributes:
-                      - name: memory.state
-                        value: total.swap
-                  - oid: "1.3.6.1.4.1.2021.4.4.0"
-                    attributes:
-                      - name: memory.state
-                        value: free.swap
-                  - oid: "1.3.6.1.4.1.2021.4.5.0"
-                    attributes:
-                      - name: memory.state
-                        value: total
-                  - oid: "1.3.6.1.4.1.2021.4.6.0"
-                    attributes:
-                      - name: memory.state
-                        value: free
-                  - oid: "1.3.6.1.4.1.2021.4.13.0"
-                    attributes:
-                      - name: memory.state
-                        value: shared
-                  - oid: "1.3.6.1.4.1.2021.4.14.0"
-                    attributes:
-                      - name: memory.state
-                        value: buffered
-                  - oid: "1.3.6.1.4.1.2021.4.15.0"
-                    attributes:
-                      - name: memory.state
-                        value: cached
-              system.cpu.time:
-                description: The number of 'ticks' (typically 1/100s) spent processing states.
-                unit: "10ms"
-                sum:
-                  value_type: int
-                  monotonic: true
-                  aggregation: cumulative
-                scalar_oids:
-                  - oid: "1.3.6.1.4.1.2021.11.50.0"
-                    attributes:
-                      - name: cpu.state
-                        value: user
-                  - oid: "1.3.6.1.4.1.2021.11.51.0"
-                    attributes:
-                      - name: cpu.state
-                        value: nice
-                  - oid: "1.3.6.1.4.1.2021.11.52.0"
-                    attributes:
-                      - name: cpu.state
-                        value: system_wait
-                  - oid: "1.3.6.1.4.1.2021.11.53.0"
-                    attributes:
-                      - name: cpu.state
-                        value: idle
-                  - oid: "1.3.6.1.4.1.2021.11.54.0"
-                    attributes:
-                      - name: cpu.state
-                        value: wait
-                  - oid: "1.3.6.1.4.1.2021.11.55.0"
-                    attributes:
-                      - name: cpu.state
-                        value: system
-                  - oid: "1.3.6.1.4.1.2021.11.56.0"
-                    attributes:
-                      - name: cpu.state
-                        value: interrupt
-              system.network.io:
-                description: The total number of octets received on the interface, including framing characters.
-                unit: "byte"
-                sum:
-                  value_type: int
-                  monotonic: true
-                  aggregation: cumulative
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: receive
-                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: transmit
-              system.network.bandwidth:
-                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
-                unit: "mbps"
-                gauge:
-                  value_type: int
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
-                    attributes:
-                      - name: if
-              system.network.connections:
-                description: The number of TCP connections for different states.
-                unit: "-"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.2.1.6.9.0"
-                    attributes:
-                      - name: tcp.state
-                        value: ESTABLISHED
-                      - name: connection.protocol
-                        value: tcp
-              system.processes.count:
-                description: The number of process contexts currently loaded or running on this system.
-                unit: "-"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.2.1.25.1.6.0"
-                    attributes:
-                      - name: process.state
-                        value: unknown
-
-          snmp/qnap:
-            collection_interval: 60s
-            endpoint: udp://192.168.10.2:161
-            timeout: 10s
-            version: v2c
-            community: public
-
-            attributes:
-              if:
-                oid: 1.3.6.1.2.1.31.1.1.1.1
-                value: device
-                description: The textual name of the interface.
-              direction:
-                value: direction
-                enum:
-                  - receive
-                  - transmit
-              tcp.state:
-                value: state
-                enum:
-                  - ESTABLISHED
-                  - LISTEN
-                  - CLOSE
-                  - CLOSE_WAIT
-                  - CLOSING
-                  - DELETE
-                  - FIN_WAIT_1
-                  - FIN_WAIT_2
-                  - LAST_ACK
-                  - SYN_RECV
-                  - SYN_SENT
-                  - TIME_WAIT
-              connection.protocol:
-                value: protocol
-                enum:
-                  - tcp
-                  - udp
-              fan:
-                oid: 1.3.6.1.4.1.24681.1.3.15.1.2
-                value: name
-                description: A unique textual name for each system fan.
-
-            metrics:
-              system.uptime:
-                description: The amount of time since this host was last initialized.
-                unit: "10ms"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.2.1.25.1.1.0"
-              system.network.io:
-                description: The total number of octets received on the interface, including framing characters.
-                unit: "byte"
-                sum:
-                  value_type: int
-                  monotonic: true
-                  aggregation: cumulative
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.6"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: receive
-                  - oid: "1.3.6.1.2.1.31.1.1.1.10"
-                    attributes:
-                      - name: if
-                      - name: direction
-                        value: transmit
-              system.network.bandwidth:
-                description: An estimate of the interface's current bandwidth in units of 1,000,000 bits per second.
-                unit: "mbps"
-                gauge:
-                  value_type: int
-                column_oids:
-                  - oid: "1.3.6.1.2.1.31.1.1.1.15"
-                    attributes:
-                      - name: if
-              system.network.connections:
-                description: The number of TCP connections for different states.
-                unit: "-"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.2.1.6.9.0"
-                    attributes:
-                      - name: tcp.state
-                        value: ESTABLISHED
-                      - name: connection.protocol
-                        value: tcp
-              system.temperature:
-                description: System temperature.
-                unit: "C"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.4.1.24681.1.3.6.0"
-              system.fan:
-                description: System fan speed.
-                unit: "RPM"
-                gauge:
-                  value_type: int
-                column_oids:
-                  - oid: "1.3.6.1.4.1.24681.1.3.15.1.3"
-                    attributes:
-                      - name: fan
-              system.firmware.update:
-                description: Firmware can upgrade or not.
-                unit: "bool"
-                gauge:
-                  value_type: int
-                scalar_oids:
-                  - oid: "1.3.6.1.4.1.55062.1.12.7.0"
-
-        processors:
-          resource/router:
-            attributes:
-              - key: host.name
-                value: router
-                action: upsert
-          resource/nas:
-            attributes:
-              - key: host.name
-                value: nas
-                action: upsert
-          metricstransform/snmp:
-            transforms:
-              - include: system.memory.usage
-                action: update
-                operations:
-                  - action: experimental_scale_value
-                    experimental_scale: 1024
-              - include: system.cpu.time
-                action: update
-                operations:
-                  - action: toggle_scalar_data_type
-          memory_limiter:
-            check_interval: 1s
-            limit_mib: 100
-            spike_limit_mib: 80
-          resourcedetection:
-            detectors: [docker]
-            timeout: 2s
-            override: false
-          batch:
-            timeout: 5s
-            send_batch_size: 100000
-
-        exporters:
-          influxdb:
-            endpoint: http://influxdb:8086
-            timeout: 10000ms
-            org: home
-            bucket: home-cluster
-            token: influxdb-token
-            span_dimensions:
-              - service.name
-              - span.name
-            log_record_dimensions:
-              - service.name
-            metrics_schema: telegraf-prometheus-v1
-
-            sending_queue:
-              enabled: true
-              num_consumers: 3
-              queue_size: 10
-
-            retry_on_failure:
-              enabled: true
-              initial_interval: 1s
-              max_interval: 3s
-              max_elapsed_time: 10s
-
-        service:
-          # telemetry:
-            # logs:
-              # level: debug
-          pipelines:
-            # traces:
-              # receivers: []
-              # processors: [resourcedetection, batch]
-              # exporters: [influxdb]
-            metrics/nas:
-              receivers: [hostmetrics, snmp/qnap]
-              processors: [resource/nas, batch]
-              exporters: [influxdb]
-            metrics/router:
-              receivers: [snmp/ubnt]
-              processors: [metricstransform/snmp, resource/router, batch]
-              exporters: [influxdb]
-            metrics:
-              receivers: [prometheus]
-              processors: [resourcedetection, batch]
-              exporters: [influxdb]
-            logs:
-              receivers: [fluentforward]
-              processors: [resourcedetection, batch]
-              exporters: [influxdb]
-
   influxdb:
     image: influxdb:2.7
     container_name: influxdb
@@ -476,42 +32,181 @@ services:
     expose:
       - "8086"
 
-  otel:
-    image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.91.0
-    container_name: otel
-    hostname: otel
-    restart: unless-stopped
-    user: "0"
+  prometheus:
+    <<: *x-base
+    image: prom/prometheus:v2.48.1
+    container_name: prometheus
+    hostname: prometheus
     labels:
-      - "traefik.http.routers.otel.ignore"
-    depends_on:
-      config:
-        condition: service_completed_successfully
-      influxdb:
-        condition: service_healthy
+      - "traefik.http.routers.prometheus.ignore"
+    user: nobody:nobody
+    healthcheck:
+      test: "wget --no-verbose --spider http://localhost:9090/-/ready || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    entrypoint: []
     command:
-      - "--config"
-      - "/otel/config.yaml"
+      - "/bin/sh"
+      - "-c"
+      - |
+        echo "$${CONFIG}" > /home/prometheus.yml
+        exec /bin/prometheus \
+          --config.file=/home/prometheus.yml \
+          --web.listen-address="0.0.0.0:9090" \
+          --storage.tsdb.path=/prometheus/data \
+          --storage.tsdb.retention.time=7d
     volumes:
-      - config:/otel
-      - /:/hostfs
-      - /proc:/proc
-      - /dev:/dev
-      - /usr:/usr
-      - /bin:/bin
-      - /lib:/lib
-      - /mnt:/mnt
-      - /share:/share
-      - /var:/var
-      - /etc:/etc
+      - /share/System/config/telemetry/prometheus:/prometheus
+    environment:
+      CONFIG: |
+        global:
+          scrape_interval: 15s
+          evaluation_interval: 15s
+        scrape_configs:
+          - job_name: "prometheus"
+            static_configs:
+              - targets: ["localhost:9090"]
+
+  loki:
+    <<: *x-base
+    image: grafana/loki:2.9.3
+    container_name: loki
+    hostname: loki
+    labels:
+      - "traefik.http.routers.loki.ignore"
+    user: loki:nobody
+    healthcheck:
+      test: "wget --no-verbose --spider http://localhost:3100/ready || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    command:
+      - "--compactor.retention-enabled"
+      - "--config.file=/etc/loki/local-config.yaml"
+      - "--store.retention=7d"
+    volumes:
+      - /share/System/config/telemetry/loki:/loki
+
+  tempo:
+    <<: *x-base
+    image: grafana/tempo:2.3.1
+    container_name: tempo
+    hostname: tempo
+    labels:
+      - "traefik.http.routers.tempo.ignore"
+    user: nobody:nobody
+    healthcheck:
+      test: "wget --no-verbose --spider http://localhost:8000/ready || exit 1"
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    command:
+      - "--compactor.compaction.block-retention=168h" # 7d
+      - "--multitenancy.enabled=false"
+      - "--target=all"
+      - "--server.grpc-listen-port=4317"
+      - "--server.http-listen-port=8000"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo/data"
+    volumes:
+      - /share/System/config/telemetry/tempo:/var/tempo
+
+  grafana:
+    <<: *x-base
+    image: grafana/grafana:10.2.3
+    container_name: grafana
+    hostname: grafana
+    labels:
+      - "traefik.http.routers.grafana.rule=Host(`grafana.zhaohai.li`)"
+      - "traefik.http.routers.grafana.entrypoints=https"
+    user: grafana:nobody
+    entrypoint: []
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        mkdir -p /home/grafana/provisioning/datasources
+        echo "$${DATA_SOURCE}" > /home/grafana/provisioning/datasources/datasource.yml
+        exec /run.sh
+    volumes:
+      - /share/System/config/telemetry/grafana:/grafana
     expose:
-      - "1888" # pprof extension
-      - "8888" # Prometheus metrics exposed by the Collector
-      - "8889" # Prometheus exporter metrics
-      - "13133" # health_check extension
-      - "4317" # OTLP gRPC receiver
-      - "4318" # OTLP http receiver
-    ports:
-      - 8006:8006 # fluentforward
-    cap_add:
-      - SYS_PTRACE
+      - 3000
+    environment:
+      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+      GF_PATHS_DATA: /grafana/data
+      GF_PATHS_LOGS: /grafana/logs
+      GF_PATHS_PLUGINS: /grafana/plugins
+      GF_PATHS_PROVISIONING: /home/grafana/provisioning
+      DATA_SOURCE: |
+        apiVersion: 1
+        datasources:
+          - uid: prometheus
+            orgId: 1
+            name: Prometheus
+            type: prometheus
+            typeName: Prometheus
+            access: proxy
+            url: http://prometheus:9090
+            password: ''
+            user: ''
+            database: ''
+            basicAuth: false
+            isDefault: true
+            jsonData:
+              exemplarTraceIdDestinations:
+                - datasourceUid: tempo
+                  name: TraceID
+              httpMethod: POST
+            readOnly: false
+            editable: false
+          - uid: tempo
+            orgId: 1
+            name: Tempo
+            type: tempo
+            typeName: Tempo
+            access: proxy
+            url: http://tempo:8000
+            password: ''
+            user: ''
+            database: ''
+            basicAuth: false
+            isDefault: false
+            jsonData:
+              nodeGraph:
+                enabled: true
+              search:
+                hide: false
+              lokiSearch:
+                datasourceUid: loki
+              tracesToLogsV2:
+                datasourceUid: loki
+                spanStartTimeShift: '1m'
+                spanEndTimeShift: '-1m'
+                filterBySpanID: false
+                filterByTraceID: true
+                tags:
+                  - job
+            readOnly: false
+            editable: false
+          - uid: loki
+            orgId: 1
+            name: Loki
+            type: loki
+            typeName: Loki
+            access: proxy
+            url: http://loki:3100
+            password: ''
+            user: ''
+            database: ''
+            basicAuth: false
+            isDefault: false
+            jsonData:
+              derivedFields:
+                - datasourceUid: tempo
+                  matcherRegex: (?:trace_id)=(\w+)
+                  name: TraceID
+                  url: $${__value.raw}
+            readOnly: false
+            editable: false
