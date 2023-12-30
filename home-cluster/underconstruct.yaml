@@ -392,6 +392,25 @@ services:
                 action: update
                 operations:
                   - action: toggle_scalar_data_type
+          resource/loki:
+            attributes:
+              - action: insert
+                key: host_name
+                from_attribute: host.name
+              - action: insert
+                key: loki.resources.labels
+                value: host_name
+              - action: insert
+                key: loki.format
+                value: raw
+          attributes/loki:
+            actions:
+              - action: extract
+                key: container_name
+                pattern: ^/(?P<job>.*)$
+              - action: insert
+                key: loki.attribute.labels
+                value: job,container_name
           memory_limiter:
             check_interval: 1s
             limit_mib: 100
@@ -405,6 +424,30 @@ services:
             send_batch_size: 100000
 
         exporters:
+          file/logs:
+            path: /share/System/config/telemetry/logs.json
+          file/traces:
+            path: /share/System/config/telemetry/traces.json
+          file/metrics:
+            path: /share/System/config/telemetry/metrics.json
+          loki:
+            endpoint: http://loki:3100/loki/api/v1/push
+            default_labels_enabled:
+              exporter: false
+              job: true
+
+          prometheus:
+            endpoint: "0.0.0.0:9090"
+          prometheusremotewrite:
+            endpoint: "http://prometheus:9090/api/v1/write"
+            resource_to_telemetry_conversion:
+              enabled: true
+
+          otlp/tempo:
+            endpoint: tempo:4317
+            tls:
+              insecure: true
+
           influxdb:
             endpoint: http://influxdb:8086
             timeout: 10000ms
@@ -437,23 +480,23 @@ services:
             # traces:
               # receivers: []
               # processors: [resourcedetection, batch]
-              # exporters: [influxdb]
+              # exporters: [otlp/tempo, file/traces, influxdb]
             metrics/nas:
               receivers: [hostmetrics, snmp/qnap]
               processors: [resource/nas, batch]
-              exporters: [influxdb]
+              exporters: [prometheusremotewrite, prometheus, influxdb]
             metrics/router:
               receivers: [snmp/ubnt]
               processors: [metricstransform/snmp, resource/router, batch]
-              exporters: [influxdb]
+              exporters: [prometheusremotewrite, prometheus, influxdb]
             metrics:
               receivers: [prometheus]
               processors: [resourcedetection, batch]
-              exporters: [influxdb]
+              exporters: [prometheusremotewrite, prometheus, influxdb]
             logs:
               receivers: [fluentforward]
-              processors: [resourcedetection, batch]
-              exporters: [influxdb]
+              processors: [resourcedetection, resource/loki, attributes/loki, batch]
+              exporters: [loki, influxdb]
 
   otel:
     image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.91.0
