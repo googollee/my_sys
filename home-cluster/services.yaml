@@ -118,6 +118,8 @@ services:
       - type: bind
         source: /share/System/config/jellyfin/cache
         target: /cache
+    devices:
+      - /dev/dri:/dev/dri
     expose:
       - "8096"
     ports:
