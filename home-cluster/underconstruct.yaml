@@ -21,11 +21,9 @@ services:
       - "/bin/sh"
       - "-c"
       - |
-        export INFLUXDB_TOKEN=$$(cat /etc/host_config/influxdb_token)
-        echo "$${OTEL_CONFIG}" | sed "s/influxdb-token/$${INFLUXDB_TOKEN}/g" > /otel/config.yaml
+        echo "$${OTEL_CONFIG}" > /otel/config.yaml
     volumes:
       - config:/otel
-      - /share/System/config/influxdb_token:/etc/host_config/influxdb_token
     environment:
       OTEL_CONFIG: |
         receivers:
@@ -39,10 +37,6 @@ services:
                   scrape_interval: 60s
                   static_configs:
                     - targets: ['localhost:8888']
-                - job_name: 'influxdb'
-                  scrape_interval: 60s
-                  static_configs:
-                    - targets: ['influxdb:8086']
                 - job_name: 'traefik'
                   scrape_interval: 60s
                   scheme: https
@@ -55,7 +49,7 @@ services:
                     - targets: ['iot.zhaohai.li']
 
           hostmetrics:
-            collection_interval: 60s
+            collection_interval: 10s
             # root_path: /hostfs
             scrapers:
               cpu:
@@ -65,7 +59,7 @@ services:
               processes:
 
           snmp/ubnt:
-            collection_interval: 60s
+            collection_interval: 10s
             endpoint: udp://192.168.10.1:161
             version: v2c
             community: public
@@ -173,7 +167,7 @@ services:
                         value: cached
               system.cpu.time:
                 description: The number of 'ticks' (typically 1/100s) spent processing states.
-                unit: "10ms"
+                unit: "seconds"
                 sum:
                   value_type: int
                   monotonic: true
@@ -258,7 +252,7 @@ services:
                         value: unknown
 
           snmp/qnap:
-            collection_interval: 60s
+            collection_interval: 10s
             endpoint: udp://192.168.10.2:161
             timeout: 10s
             version: v2c
@@ -348,14 +342,14 @@ services:
                         value: tcp
               system.temperature:
                 description: System temperature.
-                unit: "C"
+                unit: "celsius"
                 gauge:
                   value_type: int
                 scalar_oids:
                   - oid: "1.3.6.1.4.1.24681.1.3.6.0"
               system.fan:
                 description: System fan speed.
-                unit: "RPM"
+                unit: "rpm"
                 gauge:
                   value_type: int
                 column_oids:
@@ -392,6 +386,11 @@ services:
                 action: update
                 operations:
                   - action: toggle_scalar_data_type
+              - include: system.cpu.time
+                action: update
+                operations:
+                  - action: experimental_scale_value
+                    experimental_scale: 0.01
           resource/loki:
             attributes:
               - key: host_name
@@ -450,6 +449,7 @@ services:
             endpoint: "0.0.0.0:9090"
           prometheusremotewrite:
             endpoint: "http://prometheus:9090/api/v1/write"
+            send_metadata: true
             resource_to_telemetry_conversion:
               enabled: true
 
@@ -457,30 +457,6 @@ services:
             endpoint: tempo:4317
             tls:
               insecure: true
-
-          influxdb:
-            endpoint: http://influxdb:8086
-            timeout: 10000ms
-            org: home
-            bucket: home-cluster
-            token: influxdb-token
-            span_dimensions:
-              - service.name
-              - span.name
-            log_record_dimensions:
-              - service.name
-            metrics_schema: telegraf-prometheus-v1
-
-            sending_queue:
-              enabled: true
-              num_consumers: 3
-              queue_size: 10
-
-            retry_on_failure:
-              enabled: true
-              initial_interval: 1s
-              max_interval: 3s
-              max_elapsed_time: 10s
 
         service:
           # telemetry:
@@ -494,19 +470,19 @@ services:
             metrics/nas:
               receivers: [hostmetrics, snmp/qnap]
               processors: [attributes/nas, batch]
-              exporters: [prometheusremotewrite, prometheus, influxdb]
+              exporters: [prometheusremotewrite]
             metrics/router:
               receivers: [snmp/ubnt]
               processors: [metricstransform/snmp, attributes/router, batch]
-              exporters: [prometheusremotewrite, prometheus, influxdb]
+              exporters: [prometheusremotewrite]
             metrics:
               receivers: [prometheus]
               processors: [resourcedetection, batch]
-              exporters: [prometheusremotewrite, prometheus, influxdb]
+              exporters: [prometheusremotewrite]
             logs:
               receivers: [fluentforward]
               processors: [resourcedetection, resource/loki, attributes/loki, batch]
-              exporters: [loki, influxdb]
+              exporters: [loki]
 
   otel:
     image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.91.0
