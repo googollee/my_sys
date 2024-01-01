@@ -2,36 +2,16 @@ version: "3"
 
 x-base: &x-base
   restart: always
+  logging:
+    driver: "fluentd"
+    options:
+      fluentd-address: localhost:8006
 
 networks:
   default:
     name: gateway_default
 
 services:
-  influxdb:
-    image: influxdb:2.7
-    container_name: influxdb
-    hostname: influxdb
-    restart: always
-    user: "root:root"
-    labels:
-      - 'traefik.http.routers.influx.rule=Host(`telemetry.zhaohai.li`) && !Path(`/ping`, `/metrics`)'
-      - "traefik.http.routers.influx.entrypoints=https"
-    healthcheck:
-      test: "curl -f http://localhost:8086/ping || exit 1"
-      interval: 5s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - type: bind
-        source: /share/System/config/influxdb/data
-        target: /var/lib/influxdb2
-      - type: bind
-        source: /share/System/config/influxdb/config
-        target: /etc/influxdb2
-    expose:
-      - "8086"
-
   prometheus:
     <<: *x-base
     image: prom/prometheus:v2.48.1
