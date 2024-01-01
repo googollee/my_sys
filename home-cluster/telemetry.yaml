@@ -34,22 +34,22 @@ services:
             config:
               scrape_configs:
                 - job_name: 'otelcol'
-                  scrape_interval: 30s
+                  scrape_interval: 15s
                   static_configs:
                     - targets: ['localhost:8888']
                 - job_name: 'traefik'
-                  scrape_interval: 30s
+                  scrape_interval: 15s
                   scheme: https
                   static_configs:
                     - targets: ['gateway-p.zhaohai.li']
                 - job_name: 'hass'
-                  scrape_interval: 30s
+                  scrape_interval: 15s
                   metrics_path: /api/prometheus
                   static_configs:
                     - targets: ['iot.zhaohai.li']
 
           hostmetrics:
-            collection_interval: 30s
+            collection_interval: 15s
             # root_path: /hostfs
             scrapers:
               cpu:
@@ -59,7 +59,7 @@ services:
               processes:
 
           snmp/ubnt:
-            collection_interval: 30s
+            collection_interval: 15s
             endpoint: udp://192.168.10.1:161
             version: v2c
             community: public
@@ -252,7 +252,7 @@ services:
                         value: unknown
 
           snmp/qnap:
-            collection_interval: 30s
+            collection_interval: 15s
             endpoint: udp://192.168.10.2:161
             timeout: 10s
             version: v2c
