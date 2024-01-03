@@ -618,6 +618,7 @@ services:
       - "-c"
       - |
         mkdir -p /home/grafana/provisioning/datasources
+        echo "$${CONFIG}" > /home/grafana/config.ini
         echo "$${DATA_SOURCE}" > /home/grafana/provisioning/datasources/datasource.yml
         exec /run.sh
     volumes:
@@ -625,11 +626,15 @@ services:
     expose:
       - 3000
     environment:
-      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+      GF_PATHS_CONFIG: /home/grafana/config.ini
       GF_PATHS_DATA: /grafana/data
       GF_PATHS_LOGS: /grafana/logs
       GF_PATHS_PLUGINS: /grafana/plugins
       GF_PATHS_PROVISIONING: /home/grafana/provisioning
+      CONFIG: |
+        [server]
+        domain = telemetry.zhaohai.li
+        root_url = https://%(domain)s/
       DATA_SOURCE: |
         apiVersion: 1
         datasources:
