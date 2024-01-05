@@ -43,13 +43,13 @@ services:
                   static_configs:
                     - targets: ['gateway-p.zhaohai.li']
                 - job_name: 'hass'
-                  scrape_interval: 1m
+                  scrape_interval: 30s
                   metrics_path: /api/prometheus
                   static_configs:
                     - targets: ['iot.zhaohai.li']
 
           hostmetrics:
-            collection_interval: 1m
+            collection_interval: 30s
             # root_path: /hostfs
             scrapers:
               cpu:
@@ -59,7 +59,7 @@ services:
               processes:
 
           snmp/ubnt:
-            collection_interval: 1m
+            collection_interval: 30s
             endpoint: udp://192.168.10.1:161
             version: v2c
             community: public
@@ -252,7 +252,7 @@ services:
                         value: unknown
 
           snmp/qnap:
-            collection_interval: 1m
+            collection_interval: 30s
             endpoint: udp://192.168.10.2:161
             timeout: 10s
             version: v2c
@@ -552,7 +552,7 @@ services:
     environment:
       CONFIG: |
         global:
-          scrape_interval: 1m
+          scrape_interval: 30s
           evaluation_interval: 1m
         scrape_configs:
           - job_name: "prometheus"
