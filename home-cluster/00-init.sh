@@ -41,8 +41,6 @@ sudo firewall-cmd --reload
 # Install cockpit
 sudo rpm-ostree update
 sudo rpm-ostree install --assumeyes --allow-inactive cockpit cockpit-ws cockpit-system cockpit-ostree cockpit-storaged cockpit-networkmanager cockpit-selinux cockpit-navigator cockpit-machines cockpit-file-sharing
-sudo sed -i '/\[global\]/a \\tinclude = registry\n' /etc/samba/smb.conf
-sudo systemctl restart smb.service
 
 cat <<EOF
 Reboot the system to apply the change:

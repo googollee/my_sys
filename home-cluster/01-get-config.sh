@@ -2,7 +2,9 @@
 
 HOST="iot"
 
-ssh ${HOST} "sudo systemctl enable cockpit.socket; \
+ssh ${HOST} "sudo sed -i '/\[global\]/a \\tinclude = registry\n' /etc/samba/smb.conf; \
+sudo systemctl restart smb.service; \
+sudo systemctl enable cockpit.socket; \
 sudo systemctl start cockpit.socket; \
 sudo firewall-cmd --permanent --add-service=cockpit; \
 sudo firewall-cmd --reload; \
