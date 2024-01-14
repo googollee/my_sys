@@ -1,0 +1,9 @@
+[Unit]
+Description=Reboot Scheduling.
+
+[Timer]
+OnCalendar=Sat *-*-* 04:00:00
+Unit=reboot.target
+
+[Install]
+WantedBy=multi-user.target
