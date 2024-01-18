@@ -25,6 +25,9 @@ sudo cp schedule-reboot.timer /etc/systemd/system/
 sudo systemctl enable --now rpm-ostreed-automatic.timer
 sudo systemctl enable --now schedule-reboot.timer
 
+# Upgrade to the latest
+sudo rpm-ostree update
+
 # Install k3s
 sudo mkdir -p /etc/rancher/k3s
 sudo cp k3s.yaml /etc/rancher/k3s/config.yaml
@@ -39,7 +42,6 @@ sudo firewall-cmd --permanent --zone=trusted --add-source=10.43.0.0/16 #services
 sudo firewall-cmd --reload
 
 # Install cockpit
-sudo rpm-ostree update
 sudo rpm-ostree install --assumeyes --allow-inactive cockpit cockpit-ws cockpit-system cockpit-ostree cockpit-storaged cockpit-networkmanager cockpit-selinux cockpit-navigator cockpit-machines cockpit-file-sharing
 
 cat <<EOF
