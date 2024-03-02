@@ -177,6 +177,8 @@ services:
       - type: bind
         source: /share/System/config/hass
         target: /config
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
     privileged: true
     # expose:
       # - "8123"
