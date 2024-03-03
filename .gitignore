@@ -2,4 +2,4 @@ nvim/plug*
 nvim/.*
 playbook/.vault_password
 output/
-home-server/k8s/secrets*
+home-cluster/services/secrets.yaml
