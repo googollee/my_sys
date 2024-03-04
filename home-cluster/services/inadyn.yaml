@@ -9,6 +9,13 @@ spec:
   - name: inadyn
     image: alpine:3.19
     imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 0.2
+        memory: 512Mi
+      requests:
+        cpu: 0.1
+        memory: 128Mi
     env:
     - name: CF_DNS_API_TOKEN
       valueFrom:
