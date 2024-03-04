@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bt
+  labels:
+    app: bt
+spec:
+  containers:
+  - name: bt
+    image: linuxserver/qbittorrent:4.6.3
+    imagePullPolicy: IfNotPresent
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /media
+      name: media
+    - mountPath: /config
+      name: config
+    env:
+    - name: "WEBUI_PORT"
+      value: "8080"
+    - name: "TZ"
+      value: "Europe/Berlin"
+    - name: "PUID"
+      value: "1000"
+    - name: "PGID"
+      value: "1000"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+  volumes:
+  - name: media
+    hostPath:
+      path: /mnt/data/media
+  - name: config
+    hostPath:
+      path: /mnt/data/config/qbittorrent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bt
+spec:
+  type: ClusterIP
+  selector:
+    app: bt
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bt
+  annotations:
+   cert-manager.io/issuer: "cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "bt.zhaohai.li"
+    secretName: tls-bt-ingress-dns
+  rules:
+  - host: "bt.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: bt
+            port:
+              number: 8080
