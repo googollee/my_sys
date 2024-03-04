@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mblog
+  labels:
+    app: mblog
+spec:
+  containers:
+  - name: mblog
+    image: superseriousbusiness/gotosocial:0.13.3
+    imagePullPolicy: IfNotPresent
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+    ports:
+    - name: http
+      containerPort: 8080
+      protocol: TCP
+    volumeMounts:
+    - mountPath: /gotosocial/storage
+      name: config
+    env:
+    - name: GTS_HOST
+      value: mblog.zhaohai.li
+    - name: GTS_DB_TYPE
+      value: sqlite
+    - name: GTS_DB_ADDRESS
+      value: /gotosocial/storage/sqlite.db
+    - name: GTS_LETSENCRYPT_ENABLED
+      value: "false"
+    - name: TZ
+      value: Europe/Berlin
+    resources:
+      limits:
+        cpu: 200m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+  volumes:
+  - name: config
+    hostPath:
+      path: /mnt/data/config/gotosocial
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mblog
+spec:
+  type: ClusterIP
+  selector:
+    app: mblog
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mblog
+  annotations:
+   cert-manager.io/issuer: "cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "mblog.zhaohai.li"
+    secretName: tls-mblog-ingress-dns
+  rules:
+  - host: "mblog.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mblog
+            port:
+              number: 8080
