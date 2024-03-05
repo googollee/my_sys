@@ -22,6 +22,8 @@ sudo systemctl enable cockpit.socket; \
 sudo systemctl start cockpit.socket; \
 sudo firewall-cmd --permanent --add-service=cockpit; \
 sudo firewall-cmd --reload; \
+sudo systemctl start libvirtd; \
+sudo systemctl enable libvirtd; \
 "
 
 mkdir -p ~/.kube/
