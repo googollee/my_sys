@@ -1,7 +1,7 @@
 write-kubeconfig-mode: "0644"
 tls-san:
-  - "iot"
-  - "iot.local"
+  - "nas"
+  - "nas.local"
 node-label:
   - "location=home"
 cluster-cidr: 10.42.0.0/16
