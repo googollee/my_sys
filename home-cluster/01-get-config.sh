@@ -16,6 +16,8 @@ sudo systemctl restart smb.service; \
 sudo setsebool -P samba_export_all_ro=1 samba_export_all_rw=1; \
 sudo semanage fcontext –at samba_share_t '/mnt/data/media'; \
 sudo restorecon '/mnt/data/media'; \
+sudo firewall-cmd --permanent --add-service=netbios-ns; \
+sudo firewall-cmd --permanent --add-service=samba-client; \
 sudo firewall-cmd --permanent --add-service=samba; \
 sudo firewall-cmd --reload; \
 sudo systemctl enable cockpit.socket; \
