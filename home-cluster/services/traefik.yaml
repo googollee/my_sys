@@ -1,3 +1,17 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    additionalArguments:
+      - --accesslog=true
+      - --providers.kubernetescrd.allowemptyservices=true
+      - --providers.kubernetescrd.allowexternalnameservices=true
+      - --providers.kubernetesingress.allowemptyservices=true
+      - --providers.kubernetesingress.allowexternalnameservices=true
+---
 apiVersion: v1
 kind: Service
 metadata:
