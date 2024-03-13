@@ -1,49 +1,58 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: inadyn 
+  name: inadyn
   labels:
     app: inadyn
 spec:
-  containers:
-  - name: inadyn
-    image: alpine:3.19
-    imagePullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 0.2
-        memory: 512Mi
-      requests:
-        cpu: 0.1
-        memory: 128Mi
-    env:
-    - name: CF_DNS_API_TOKEN
-      valueFrom:
-          secretKeyRef:
-            name: cloudflare-api-token-secret
-            key: api-token
-    - name: INADYN_CONFIG
-      value: |
-        period     = 300
-        user-agent = Mozilla/5.0
-        provider cloudflare.com:1 {
-            username = zhaohai.li
-            password = cloudflare-token
-            hostname = "zhaohai.li"
-            ttl = 1
-            proxied = true # optional.
-        }
-        provider cloudflare.com:2 {
-            username = zhaohai.li
-            password = cloudflare-token
-            hostname = "*.zhaohai.li"
-            ttl = 1
-            proxied = true # optional.
-        }
-    command:
-    - "/bin/sh"
-    - "-c"
-    - |
-      apk add inadyn
-      echo "$${INADYN_CONFIG}" | sed "s/cloudflare-token/$${CF_DNS_API_TOKEN}/g" > /root/config.conf
-      exec inadyn --foreground --no-pidfile -f /root/config.conf
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inadyn
+  template:
+    metadata:
+      labels:
+        app: inadyn
+    spec:
+      containers:
+      - name: inadyn
+        image: alpine:3.19
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 0.2
+            memory: 512Mi
+          requests:
+            cpu: 0.1
+            memory: 128Mi
+        env:
+        - name: CF_DNS_API_TOKEN
+          valueFrom:
+              secretKeyRef:
+                name: cloudflare-api-token-secret
+                key: api-token
+        - name: INADYN_CONFIG
+          value: |
+            period     = 300
+            user-agent = Mozilla/5.0
+            provider cloudflare.com:1 {
+                username = zhaohai.li
+                password = cloudflare-token
+                hostname = "zhaohai.li"
+                ttl = 1
+                proxied = true # optional.
+            }
+            provider cloudflare.com:2 {
+                username = zhaohai.li
+                password = cloudflare-token
+                hostname = "*.zhaohai.li"
+                ttl = 1
+                proxied = true # optional.
+            }
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          apk add inadyn
+          echo "$${INADYN_CONFIG}" | sed "s/cloudflare-token/$${CF_DNS_API_TOKEN}/g" > /root/config.conf
+          exec inadyn --foreground --no-pidfile -f /root/config.conf
