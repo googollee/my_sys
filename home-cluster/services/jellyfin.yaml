@@ -80,8 +80,8 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "media.zhaohai.li"
-    secretName: tls-media-ingress-dns
+    - "zhaohai.li"
+    - "*.zhaohai.li"
   rules:
   - host: "media.zhaohai.li"
     http:

@@ -74,8 +74,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "bt.zhaohai.li"
-    secretName: tls-bt-ingress-dns
+    - "zhaohai.li"
+    - "*.zhaohai.li"
+    secretName: tls-zhaohai-li-ingress-dns
   rules:
   - host: "bt.zhaohai.li"
     http:
