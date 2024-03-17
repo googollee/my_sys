@@ -45,8 +45,6 @@ kind: Ingress
 metadata:
   name: gateway
   namespace: kube-system
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: kube-system-webauth@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
