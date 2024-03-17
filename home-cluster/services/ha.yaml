@@ -65,7 +65,7 @@ kind: Ingress
 metadata:
   name: iot
   annotations:
-   cert-manager.io/issuer: "cert-zhaohai-li-dns"
+   cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
 spec:
   tls:
   - hosts:
