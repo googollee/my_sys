@@ -11,6 +11,13 @@ spec:
       - --providers.kubernetescrd.allowexternalnameservices=true
       - --providers.kubernetesingress.allowemptyservices=true
       - --providers.kubernetesingress.allowexternalnameservices=true
+    ports:
+      authsecure:
+        port: 9443
+        expose: true
+        exposedPort: 9443
+        tls:
+          enabled: true
 ---
 apiVersion: v1
 kind: Service
