@@ -2,3 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - hello-world.yaml
+  - cert-manager.yaml
+  - cert-zhaohai-li.yaml
+  - traefik.yaml
+  - inadyn.yaml
+  - gotosocial.yaml
+  - ha.yaml
+  - jellyfin.yaml
+  - qbittorrent.yaml
