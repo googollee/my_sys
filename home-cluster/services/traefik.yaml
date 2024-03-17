@@ -18,6 +18,8 @@ spec:
         exposedPort: 9443
         tls:
           enabled: true
+        middlewares:
+          - kube-system-webauth@kubernetescrd
 ---
 apiVersion: v1
 kind: Service
