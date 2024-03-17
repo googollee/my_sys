@@ -11,15 +11,6 @@ spec:
       - --providers.kubernetescrd.allowexternalnameservices=true
       - --providers.kubernetesingress.allowemptyservices=true
       - --providers.kubernetesingress.allowexternalnameservices=true
-    ports:
-      authsecure:
-        port: 9443
-        expose: true
-        exposedPort: 9443
-        tls:
-          enabled: true
-        middlewares:
-          - kube-system-webauth@kubernetescrd
 ---
 apiVersion: v1
 kind: Service
@@ -45,6 +36,8 @@ kind: Ingress
 metadata:
   name: gateway
   namespace: kube-system
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: kube-system-webauth@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
