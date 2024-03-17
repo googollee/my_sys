@@ -31,7 +31,7 @@ spec:
     installCRDs: true
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: cert-zhaohai-li-dns
   namespace: cert-manager
