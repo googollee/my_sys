@@ -32,9 +32,32 @@ return function(use)
     local augroup = util.augroup
     local autocmd = util.autocmd
 
-    augroup('fmt', {
-      autocmd('BufNewFile,BufRead', '*.go', 'setlocal noexpandtab tabstop=2 shiftwidth=2'),
-      autocmd('BufWritePre', '*.go', 'lua require("go.format").goimport()'),
+    local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*.go",
+      callback = function()
+        require('go.format').goimport()
+        require('go.format').gofmt()
+      end,
+      group = format_sync_grp,
+    })
+    vim.api.nvim_create_autocmd("BufNewFile", {
+      pattern = "*.go",
+      callback = function()
+        vim.cmd("setlocal noexpandtab tabstop=2 shiftwidth=2")
+        require('go.format').goimport()
+        require('go.format').gofmt()
+      end,
+      group = format_sync_grp,
+    })
+    vim.api.nvim_create_autocmd("BufRead", {
+      pattern = "*.go",
+      callback = function()
+        vim.cmd("setlocal noexpandtab tabstop=2 shiftwidth=2")
+        require('go.format').goimport()
+        require('go.format').gofmt()
+      end,
+      group = format_sync_grp,
     })
   end)
 end
