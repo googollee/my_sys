@@ -49,7 +49,14 @@ spec:
     - host: gateway.zhaohai.li
       http:
         paths:
-          - path: /
+          - path: /dashboard/
+            pathType: Prefix
+            backend:
+              service:
+                name: traefik-dashboard
+                port:
+                  number: 9000
+          - path: /api/
             pathType: Prefix
             backend:
               service:
