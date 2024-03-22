@@ -34,10 +34,8 @@ spec:
           value: "Europe/Berlin"
         resources:
           limits:
-            cpu: 0.5
             memory: 2Gi
           requests:
-            cpu: 0.2
             memory: 512Mi
       hostNetwork: true
       volumes:

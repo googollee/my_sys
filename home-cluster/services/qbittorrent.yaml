@@ -38,11 +38,9 @@ spec:
           value: "1000"
         resources:
           limits:
-            cpu: "0.7"
-            memory: 5Gi
+            memory: 6Gi
           requests:
-            cpu: "0.2"
-            memory: 1Gi
+            memory: 2Gi
       volumes:
       - name: media
         hostPath:
