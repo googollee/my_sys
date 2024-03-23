@@ -83,18 +83,28 @@ data:
 
       resource/loki:
         attributes:
-          - key: host_name
-            from_attribute: host.name
+          - key: service.namespace
+            from_attribute: k8s.namespace.name
+            action: upsert
+          - key: service.name
+            from_attribute: k8s.pod.name
+            action: upsert
+          - key: service.instance.id
+            from_attribute: k8s.pod.uid
             action: upsert
           - key: loki.resources.labels
-            value: host_name
-            action: upsert
-          - key: loki.format
-            value: raw
+            value: service.namespace,service.name,service.instance.id
             action: upsert
 
     exporters:
       debug: {}
+      file/logs:
+        path: /dump/logs.json
+        format: json
+        rotation:
+          max_days: 1
+          max_backups: 3
+          localtime: true
 
       prometheusremotewrite:
         endpoint: http://prometheus.monitor.svc.cluster.local:9090/api/v1/write
@@ -283,7 +293,8 @@ data:
             - batch
           exporters:
             - debug
-            # - loki
+            # - file/logs
+            - loki
         metrics:
           receivers:
             - otlp
@@ -379,6 +390,8 @@ spec:
               mountPath: /hostfs
               readOnly: true
               mountPropagation: HostToContainer
+            # - name: dump
+              # mountPath: /dump
       volumes:
         - name: config
           configMap:
@@ -392,4 +405,20 @@ spec:
         - name: hostfs
           hostPath:
             path: /
+        # - name: dump
+          # persistentVolumeClaim:
+            # claimName: otelcol-dump
       hostNetwork: false
+---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+  # name: otelcol-dump
+  # namespace: monitor
+# spec:
+  # accessModes:
+    # - ReadWriteOnce
+  # storageClassName: local-path
+  # resources:
+    # requests:
+      # storage: 2Gi
