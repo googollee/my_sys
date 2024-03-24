@@ -18,9 +18,9 @@ spec:
                 - -c
                 - |
                   echo syncing book...
-                  rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".DS_Store" --checksum
+                  rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**" --checksum
                   echo syncing photos...
-                  rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".DS_Store" --checksum
+                  rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**" --checksum
                   echo rlone done
               volumeMounts:
                 - mountPath: /config/rclone
