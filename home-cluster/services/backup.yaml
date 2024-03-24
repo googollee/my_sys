@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rclone
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: rclone
+              image: rclone/rclone:1.66
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/sh"]
+              args:
+                - -c
+                - |
+                  echo syncing book...
+                  rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".DS_Store" --checksum
+                  echo syncing photos...
+                  rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".DS_Store" --checksum
+                  echo rlone done
+              volumeMounts:
+                - mountPath: /config/rclone
+                  name: config
+                - mountPath: /mnt/data/media
+                  name: media
+          volumes:
+            - name: config
+              hostPath:
+                path: /mnt/data/config/rclone
+            - name: media
+              hostPath:
+                path: /mnt/data/media
+          restartPolicy: OnFailure
