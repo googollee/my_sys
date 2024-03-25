@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: rclone
 spec:
-  schedule: "0 3 * * *"
+  schedule: "10 3 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
