@@ -21,9 +21,9 @@ spec:
                 - -c
                 - |
                   echo syncing book...
-                  rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**" --checksum
+                  rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**"
                   echo syncing photos...
-                  rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**" --checksum
+                  rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**"
                   echo rlone done
               volumeMounts:
                 - mountPath: /config/rclone
