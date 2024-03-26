@@ -37,4 +37,4 @@ spec:
             - name: media
               hostPath:
                 path: /mnt/data/media
-          restartPolicy: OnFailure
+          restartPolicy: Never
