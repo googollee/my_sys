@@ -3,8 +3,11 @@ kind: CronJob
 metadata:
   name: rclone
 spec:
-  schedule: "10 3 * * *"
+  schedule: "10 2 * * *"
   concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300 # 5min
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
