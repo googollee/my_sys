@@ -5,12 +5,16 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
-    additionalArguments:
-      - --accesslog=true
-      - --providers.kubernetescrd.allowemptyservices=true
-      - --providers.kubernetescrd.allowexternalnameservices=true
-      - --providers.kubernetesingress.allowemptyservices=true
-      - --providers.kubernetesingress.allowexternalnameservices=true
+    logs:
+      access:
+        enabled: true
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
+        allowEmptyServices: true
+      kubernetesIngress:
+        allowExternalNameServices: true
+        allowEmptyServices: true
 ---
 apiVersion: v1
 kind: Service
