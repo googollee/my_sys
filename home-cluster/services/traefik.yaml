@@ -5,6 +5,9 @@ metadata:
   namespace: kube-system
 spec:
   valuesContent: |-
+    additionalArguments:
+    - --entryPoints.wansecure.address=:8444/tcp
+    - --entryPoints.wansecure.http.tls=true
     logs:
       access:
         enabled: true
@@ -15,6 +18,34 @@ spec:
       kubernetesIngress:
         allowExternalNameServices: true
         allowEmptyServices: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: webauth
+  namespace: kube-system
+spec:
+  basicAuth:
+    secret: webauth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-wan
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/instance: traefik
+    app.kubernetes.io/name: traefik-wan
+spec:
+  type: LoadBalancer
+  ports:
+  - name: traefik
+    port: 8444
+    targetPort: 8444
+    protocol: TCP
+  selector:
+    app.kubernetes.io/instance: traefik-kube-system
+    app.kubernetes.io/name: traefik
 ---
 apiVersion: v1
 kind: Service
@@ -41,6 +72,7 @@ metadata:
   name: gateway
   namespace: kube-system
   annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.middlewares: kube-system-webauth@kubernetescrd
 spec:
   ingressClassName: traefik
@@ -50,29 +82,20 @@ spec:
     - "*.zhaohai.li"
     secretName: tls-zhaohai-li-ingress-dns
   rules:
-    - host: gateway.zhaohai.li
-      http:
-        paths:
-          - path: /dashboard/
-            pathType: Prefix
-            backend:
-              service:
-                name: traefik-dashboard
-                port:
-                  number: 9000
-          - path: /api/
-            pathType: Prefix
-            backend:
-              service:
-                name: traefik-dashboard
-                port:
-                  number: 9000
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: webauth
-  namespace: kube-system
-spec:
-  basicAuth:
-    secret: webauth
+  - host: gateway-p.zhaohai.li
+    http:
+      paths:
+      - path: /dashboard/
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-dashboard
+            port:
+              number: 9000
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-dashboard
+            port:
+              number: 9000

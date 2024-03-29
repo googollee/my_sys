@@ -58,17 +58,18 @@ spec:
   selector:
     app: mblog
   ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: http
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mblog
   annotations:
-   cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
 spec:
   tls:
   - hosts:
