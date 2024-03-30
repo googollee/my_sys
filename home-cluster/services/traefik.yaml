@@ -73,7 +73,6 @@ metadata:
   namespace: kube-system
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.middlewares: kube-system-webauth@kubernetescrd
 spec:
   ingressClassName: traefik
   tls:
