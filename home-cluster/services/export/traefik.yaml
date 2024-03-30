@@ -19,15 +19,6 @@ spec:
         allowExternalNameServices: true
         allowEmptyServices: true
 ---
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: webauth
-  namespace: kube-system
-spec:
-  basicAuth:
-    secret: webauth
----
 apiVersion: v1
 kind: Service
 metadata:
