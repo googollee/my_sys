@@ -1,0 +1,252 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: grafana-agent
+  namespace: flux-system
+spec:
+  interval: 5m
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: grafana-agent
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: grafana-agent
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: grafana-agent
+        namespace: flux-system
+  install:
+    createNamespace: true
+  interval: 1m0s
+  releaseName: grafana-agent
+  targetNamespace: monitor
+  values:
+    nameOverride: grafana-agent
+
+    crds:
+      create: true
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+    configReloader:
+      enabled: true
+    controller:
+      type: 'daemonset'
+      replicas: 1
+      volumes:
+        extra:
+          - name: host
+            hostPath:
+              path: "/"
+          - name: lib
+            hostPath:
+              path: "/var/lib"
+    service:
+      enabled: true
+    ingress:
+      enabled: true
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
+      hosts:
+      - collector.zhaohai.li
+      faroPort: 80
+      tls:
+      - hosts:
+        - "zhaohai.li"
+        - "*.zhaohai.li"
+        secretName: tls-zhaohai-li-ingress-dns
+    serviceMonitor:
+      enabled: false
+
+    agent:
+      mode: 'flow'
+      mounts:
+        varlog: true
+        extra:
+          - name: host
+            mountPath: "/host"
+          - name: lib
+            mountPath: "/var/lib"
+      configMap:
+        create: true
+        content: |
+          logging {
+            level  = "info"
+            format = "logfmt"
+          }
+
+          prometheus.remote_write "default" {
+            endpoint {
+              url = "http://prometheus.monitor.svc.cluster.local:9090/api/v1/write"
+            }
+          }
+
+          // discovery rules
+          discovery.kubernetes "pods" {
+            role = "pod"
+          }
+
+          discovery.kubernetes "services" {
+            role = "service"
+          }
+
+          discovery.kubernetes "endpoints" {
+            role = "endpoints"
+          }
+
+          discovery.kubernetes "endpointslices" {
+            role = "endpointslice"
+          }
+
+          discovery.kubernetes "ingresses" {
+            role = "ingress"
+          }
+
+          discovery.kubernetes "nodes" {
+            role = "node"
+          }
+
+          // kubelet
+          discovery.relabel "kubelet" {
+            targets = discovery.kubernetes.nodes.targets
+
+            rule {
+              action = "replace"
+              target_label = "__address__"
+              replacement = "kubernetes.default.svc.cluster.local:443"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              regex = "(.+)"
+              action = "replace"
+              replacement = "/api/v1/nodes/${1}/proxy/metrics"
+              target_label = "__metrics_path__"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              target_label  = "k8s_node_name"
+            }
+          }
+
+          prometheus.scrape "kubelet" {
+            scheme = "https"
+            tls_config {
+                server_name = "kubernetes"
+                ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+                insecure_skip_verify = false
+            }
+            bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+            targets = discovery.relabel.kubelet.output
+            scrape_interval = "10s"
+            forward_to = [prometheus.remote_write.default.receiver]
+          }
+
+          // localhost
+          prometheus.exporter.unix "localhost" {
+            procfs_path = "/host/proc"
+            sysfs_path = "/host/sys"
+            rootfs_path = "/host"
+            udev_data_path = "/host/run/udev/data"
+          }
+
+          discovery.relabel "localhost" {
+            targets = prometheus.exporter.unix.localhost.targets
+
+            rule {
+              source_labels = ["instance"]
+              target_label  = "k8s_node_name"
+            }
+          }
+
+          prometheus.scrape "localhost" {
+            targets = discovery.relabel.localhost.output
+            scrape_interval = "10s"
+            forward_to = [prometheus.remote_write.default.receiver]
+          }
+
+          // logging
+          discovery.relabel "logs" {
+            targets = discovery.kubernetes.pods.targets
+
+            rule {
+              source_labels = ["__meta_kubernetes_namespace"]
+              target_label  = "k8s_namespace_name"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_node_name"]
+              target_label  = "k8s_node_name"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_controller_kind"]
+              target_label  = "k8s_controller_kind"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_controller_name"]
+              target_label  = "k8s_controller_name"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_controller_kind", "__meta_kubernetes_pod_controller_name"]
+              separator     = ";"
+              regex         = "(.*);(.*)"
+              target_label  = to_lower("k8s_${1}_name")
+              replacement   = "${2}"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_name"]
+              target_label  = "k8s_pod_name"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_container_name"]
+              target_label  = "k8s_container_name"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+              separator     = ";"
+              regex         = "(.*);(.*);(.*);(.*)"
+              replacement   = "/var/log/pods/${1}_${2}_${3}/${4}/*.log"
+              target_label  = "__path__"
+            }
+          }
+
+          local.file_match "logs" {
+            path_targets = discovery.relabel.logs.output
+          }
+
+          loki.source.file "pods" {
+            targets    = local.file_match.logs.targets
+            forward_to = [loki.process.logs.receiver]
+          }
+
+          loki.process "logs" {
+            stage.cri {}
+            forward_to = [loki.write.local.receiver]
+          }
+
+          loki.source.kubernetes_events "events" {
+            log_format = "json"
+            forward_to = [loki.write.local.receiver]
+          }
+
+          loki.write "local" {
+            endpoint {
+              url = "http://loki.monitor.svc.cluster.local:3100/loki/api/v1/push"
+            }
+          }
+
