@@ -56,7 +56,7 @@ spec:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
         cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
       hosts:
-      - collector.zhaohai.li
+      - collector-p.zhaohai.li
       faroPort: 80
       tls:
       - hosts:
