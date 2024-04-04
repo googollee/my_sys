@@ -29,27 +29,6 @@ spec:
   values:
     nameOverride: grafana-agent
 
-    crds:
-      create: true
-    rbac:
-      create: true
-    serviceAccount:
-      create: true
-    configReloader:
-      enabled: true
-    controller:
-      type: 'daemonset'
-      replicas: 1
-      volumes:
-        extra:
-          - name: host
-            hostPath:
-              path: "/"
-          - name: lib
-            hostPath:
-              path: "/var/lib"
-    service:
-      enabled: true
     ingress:
       enabled: true
       annotations:
@@ -63,6 +42,19 @@ spec:
         - "zhaohai.li"
         - "*.zhaohai.li"
         secretName: tls-zhaohai-li-ingress-dns
+    crds:
+      create: true
+    rbac:
+      create: true
+    serviceAccount:
+      create: true
+    configReloader:
+      enabled: true
+    controller:
+      type: 'daemonset'
+      replicas: 1
+    service:
+      enabled: true
     serviceMonitor:
       enabled: false
 
@@ -70,11 +62,6 @@ spec:
       mode: 'flow'
       mounts:
         varlog: true
-        extra:
-          - name: host
-            mountPath: "/host"
-          - name: lib
-            mountPath: "/var/lib"
       configMap:
         create: true
         content: |
@@ -189,24 +176,15 @@ spec:
           }
 
           // localhost
-          prometheus.exporter.unix "localhost" {
-            procfs_path = "/host/proc"
-            sysfs_path = "/host/sys"
-            rootfs_path = "/host"
-            udev_data_path = "/host/run/udev/data"
-          }
-
-          discovery.relabel "localhost" {
-            targets = prometheus.exporter.unix.localhost.targets
-
-            rule {
-              source_labels = ["instance"]
-              target_label  = "k8s_node_name"
-            }
-          }
-
           prometheus.scrape "localhost" {
-            targets = discovery.relabel.localhost.output
+            targets = [
+              {
+                "__address__"   = "nas.local:9100",
+                "instance"      = "nas",
+                "k8s_node_name" = "nas",
+              },
+            ]
+
             scrape_interval = "10s"
             forward_to = [prometheus.remote_write.default.receiver]
           }
