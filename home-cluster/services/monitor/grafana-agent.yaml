@@ -7,6 +7,93 @@ spec:
   interval: 5m
   url: https://grafana.github.io/helm-charts
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snmp-config
+  namespace: monitor
+data:
+  snmp.yaml: |
+    auths:
+      public_v2:
+        community: public
+        security_level: noAuthNoPriv
+        auth_protocol: MD5
+        priv_protocol: DES
+        version: 2
+    modules:
+      ubnt:
+        walk:
+        - 1.3.6.1.2.1.31.1.1.1.1
+        - 1.3.6.1.2.1.31.1.1.1.10
+        - 1.3.6.1.2.1.31.1.1.1.15
+        - 1.3.6.1.2.1.31.1.1.1.6
+        get:
+        - 1.3.6.1.2.1.25.1.1.0
+        - 1.3.6.1.4.1.2021.11.11.0
+        - 1.3.6.1.4.1.2021.4.11.0
+        - 1.3.6.1.4.1.2021.4.5.0
+        metrics:
+        - name: hrSystemUptime
+          oid: 1.3.6.1.2.1.25.1.1
+          type: gauge
+          help: The amount of time since this host was last initialized - 1.3.6.1.2.1.25.1.1
+        - name: ifHCOutOctets
+          oid: 1.3.6.1.2.1.31.1.1.1.10
+          type: counter
+          help: The total number of octets transmitted out of the interface, including framing
+            characters - 1.3.6.1.2.1.31.1.1.1.10
+          indexes:
+          - labelname: ifIndex
+            type: gauge
+          lookups:
+          - labels:
+            - ifIndex
+            labelname: ifName
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            type: DisplayString
+        - name: ifHighSpeed
+          oid: 1.3.6.1.2.1.31.1.1.1.15
+          type: gauge
+          help: An estimate of the interface's current bandwidth in units of 1,000,000 bits
+            per second - 1.3.6.1.2.1.31.1.1.1.15
+          indexes:
+          - labelname: ifIndex
+            type: gauge
+          lookups:
+          - labels:
+            - ifIndex
+            labelname: ifName
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            type: DisplayString
+        - name: ifHCInOctets
+          oid: 1.3.6.1.2.1.31.1.1.1.6
+          type: counter
+          help: The total number of octets received on the interface, including framing
+            characters - 1.3.6.1.2.1.31.1.1.1.6
+          indexes:
+          - labelname: ifIndex
+            type: gauge
+          lookups:
+          - labels:
+            - ifIndex
+            labelname: ifName
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            type: DisplayString
+        - name: ssCpuIdle
+          oid: 1.3.6.1.4.1.2021.11.11
+          type: gauge
+          help: The percentage of processor time spent idle, calculated over the last minute
+            - 1.3.6.1.4.1.2021.11.11
+        - name: memTotalFree
+          oid: 1.3.6.1.4.1.2021.4.11
+          type: gauge
+          help: The total amount of memory free or available for use on this host - 1.3.6.1.4.1.2021.4.11
+        - name: memTotalReal
+          oid: 1.3.6.1.4.1.2021.4.5
+          type: gauge
+          help: The total amount of real/physical memory installed on this host. - 1.3.6.1.4.1.2021.4.5
+---
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
@@ -53,6 +140,11 @@ spec:
     controller:
       type: 'daemonset'
       replicas: 1
+      volumes:
+        extra:
+        - name: conf
+          configMap:
+            name: snmp-config
     service:
       enabled: true
     serviceMonitor:
@@ -62,6 +154,10 @@ spec:
       mode: 'flow'
       mounts:
         varlog: true
+        extra:
+        - name: conf
+          mountPath: /etc/snmp_conf
+          readOnly: true
       configMap:
         create: true
         content: |
@@ -187,6 +283,31 @@ spec:
 
             scrape_interval = "10s"
             forward_to = [prometheus.remote_write.default.receiver]
+          }
+
+          // edgerouterx
+          prometheus.exporter.snmp "erx" {
+            config_file = "/etc/snmp_conf/snmp.yaml"
+
+            target "erx" {
+                address     = "router.local"
+                module      = "ubnt"
+            }
+          }
+
+          prometheus.scrape "erx" {
+            targets         = prometheus.exporter.snmp.erx.targets
+            scrape_interval = "30s"
+            forward_to      = [prometheus.relabel.erx.receiver]
+          }
+
+          prometheus.relabel "erx" {
+            forward_to     = [prometheus.remote_write.default.receiver]
+
+            rule {
+              target_label = "instance"
+              replacement  = "erx"
+            }
           }
 
           // logging
