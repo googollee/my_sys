@@ -3,7 +3,7 @@ auths:
     version: 2
     community: public
 modules:
-  edgerouterx:
+  ubnt:
     walk:
       - hrSystemUptime
       - ifHCInOctets

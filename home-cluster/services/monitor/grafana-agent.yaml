@@ -22,7 +22,7 @@ data:
         priv_protocol: DES
         version: 2
     modules:
-      edgerouterx:
+      ubnt:
         walk:
         - 1.3.6.1.2.1.31.1.1.1.1
         - 1.3.6.1.2.1.31.1.1.1.10
@@ -352,8 +352,9 @@ spec:
             config_file = "/etc/snmp_conf/snmp.yaml"
 
             target "erx" {
-                address     = "router.local"
-                module      = "ubnt"
+              address = "router.local"
+              module  = "ubnt"
+              auth    = "public"
             }
           }
 
