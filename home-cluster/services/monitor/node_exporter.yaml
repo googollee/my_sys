@@ -20,6 +20,9 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
         - '--path.rootfs=/hostfs'
+        - '--path.procfs=/hostfs/proc'
+        - '--path.sysfs=/hostfs/sys'
+        - '--path.udev.data=/hostfs/run/udev/data'
         ports:
         - containerPort: 9100
           hostPort: 9100
