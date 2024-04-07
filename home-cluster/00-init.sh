@@ -41,7 +41,7 @@ sudo firewall-cmd --permanent --zone=trusted --add-source=10.43.0.0/16 #services
 sudo firewall-cmd --reload
 
 # Install cockpit
-sudo rpm-ostree install --assumeyes --allow-inactive net-tools virt-manager cockpit cockpit-ws cockpit-system cockpit-ostree cockpit-storaged cockpit-networkmanager cockpit-selinux cockpit-navigator cockpit-machines cockpit-file-sharing
+sudo rpm-ostree install --assumeyes --allow-inactive smartmontools net-tools virt-manager cockpit cockpit-ws cockpit-system cockpit-ostree cockpit-storaged cockpit-networkmanager cockpit-selinux cockpit-navigator cockpit-machines cockpit-file-sharing
 
 cat <<EOF
 Reboot the system to apply the change:
