@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: smart-exporter
+  namespace: monitor
+  labels:
+    app: smart-exporter
+spec:
+  selector:
+    matchLabels:
+      app: smart-exporter
+  template:
+    metadata:
+      labels:
+        app: smart-exporter
+    spec:
+      hostNetwork: true
+      containers:
+      - name: smart-exporter
+        image: "quay.io/prometheuscommunity/smartctl-exporter:v0.12.0"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          privileged: true
+        args:
+        - '--smartctl.device-include=/dev/sd[ab]'
+        ports:
+        - containerPort: 9633
+          hostPort: 9633
+          protocol: TCP
+        volumeMounts:
+        - name: hostdev
+          mountPath: /hostdev
+      volumes:
+      - name: hostdev
+        hostPath:
+          path: /dev

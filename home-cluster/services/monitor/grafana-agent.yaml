@@ -347,6 +347,20 @@ spec:
             forward_to = [prometheus.remote_write.default.receiver]
           }
 
+          // smartctl
+          prometheus.scrape "smartctl" {
+            targets = [
+              {
+                "__address__"   = "nas.local:9633",
+                "instance"      = "nas",
+                "k8s_node_name" = "nas",
+              },
+            ]
+
+            scrape_interval = "60s"
+            forward_to = [prometheus.remote_write.default.receiver]
+          }
+
           // edgerouterx
           prometheus.exporter.snmp "erx" {
             config_file = "/etc/snmp_conf/snmp.yaml"
