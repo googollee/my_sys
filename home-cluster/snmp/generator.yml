@@ -13,6 +13,8 @@ modules:
       - memAvailSwap
       - memTotalReal
       - memAvailReal
+      - memTotalFree
+      - memMinimumSwap
       - memShared
       - memBuffer
       - memCached
