@@ -29,6 +29,8 @@ function git_branch_name()
 if [ "$SHELL" = "/bin/zsh" ]
 then
   setopt prompt_subst
+  bindkey -v
+  bindkey '^R' history-incremental-pattern-search-backward
   export PS1='%(?.%F{green}✓.%F{red}✗)%f%D{%H:%M:%S} [%n@%m:%~] $(git_branch_name)
 %# '
 else
