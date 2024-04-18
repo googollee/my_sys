@@ -4,7 +4,7 @@ return function(use)
 
     config = function()
       require('go').setup({
-        goimport = 'gopls',
+        goimports = 'gopls',
         gofmt = 'gopls',
       })
     end,
@@ -37,25 +37,6 @@ return function(use)
       pattern = "*.go",
       callback = function()
         require('go.format').goimport()
-        require('go.format').gofmt()
-      end,
-      group = format_sync_grp,
-    })
-    vim.api.nvim_create_autocmd("BufNewFile", {
-      pattern = "*.go",
-      callback = function()
-        vim.cmd("setlocal noexpandtab tabstop=2 shiftwidth=2")
-        require('go.format').goimport()
-        require('go.format').gofmt()
-      end,
-      group = format_sync_grp,
-    })
-    vim.api.nvim_create_autocmd("BufRead", {
-      pattern = "*.go",
-      callback = function()
-        vim.cmd("setlocal noexpandtab tabstop=2 shiftwidth=2")
-        require('go.format').goimport()
-        require('go.format').gofmt()
       end,
       group = format_sync_grp,
     })
