@@ -37,6 +37,7 @@ require('nvim-cmp').init(use)
 
 require('lang/markdown')(use)
 require('lang/go')(use)
+require('lang/zig')(use)
 require('lang/cider')(use)
 
 require("lazy").setup(pkgs)
