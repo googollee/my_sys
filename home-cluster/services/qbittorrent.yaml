@@ -36,11 +36,6 @@ spec:
           value: "1000"
         - name: "PGID"
           value: "1000"
-        resources:
-          limits:
-            memory: 6Gi
-          requests:
-            memory: 2Gi
       volumes:
       - name: media
         hostPath:
