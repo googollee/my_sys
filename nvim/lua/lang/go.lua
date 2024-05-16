@@ -18,6 +18,17 @@ return function(use)
     cfg = {
       on_attach = require('lsp').on_attach(),
       capabilities = require('nvim-cmp').capabilities(),
+      settings = {
+        hints = {
+          rangeVariableTypes = true,
+          parameterNames = true,
+          constantValues = true,
+          assignVariableTypes = true,
+          compositeLiteralFields = true,
+          compositeLiteralTypes = true,
+          functionTypeParameters = true,
+        },
+      },
     }
 
     local nvim_lsp = require('lspconfig')
