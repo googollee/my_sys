@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ifttt
+  labels:
+    app: ifttt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ifttt
+  template:
+    metadata:
+      labels:
+        app: ifttt
+    spec:
+      containers:
+      - name: ifttt
+        image: nodered/node-red:3.1.9
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 1880
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 512Mi
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/data/config/nodered
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ifttt
+spec:
+  type: ClusterIP
+  selector:
+    app: ifttt
+  ports:
+  - name: http
+    port: 1880
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ifttt
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "zhaohai.li"
+    - "*.zhaohai.li"
+  rules:
+  - host: "ifttt-p.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ifttt
+            port:
+              number: 1880

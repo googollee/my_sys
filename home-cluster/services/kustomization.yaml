@@ -9,3 +9,4 @@ resources:
   - ha.yaml
   - jellyfin.yaml
   - qbittorrent.yaml
+  - nodered.yaml
