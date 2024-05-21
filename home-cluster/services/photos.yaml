@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photos
+  labels:
+    app: photos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photos
+  template:
+    metadata:
+      labels:
+        app: photos
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: photos
+        image: viktorstrate/photoview:master
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PHOTOVIEW_DATABASE_DRIVER
+          value: sqlite
+        - name: PHOTOVIEW_SQLITE_PATH
+          value: /home/photoview/db.sqlite
+        - name: PHOTOVIEW_MEDIA_CACHE
+          value: /home/photoview/cache
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: zoneinfo
+          readOnly: true
+        - mountPath: /media/photos/Googol图库
+          name: photos
+          readOnly: true
+        - mountPath: /home/photoview
+          name: data
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/data/config/photoview
+      - name: photos
+        hostPath:
+          path: /mnt/data/media/photos/Googol图库
+      - name: zoneinfo
+        hostPath:
+          path: /usr/share/zoneinfo
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: photos
+spec:
+  type: ClusterIP
+  selector:
+    app: photos
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: photos
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "zhaohai.li"
+    - "*.zhaohai.li"
+  rules:
+  - host: "photos.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: photos
+            port:
+              number: 80

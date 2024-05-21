@@ -10,3 +10,4 @@ resources:
   - jellyfin.yaml
   - qbittorrent.yaml
   - nodered.yaml
+  - photos.yaml
