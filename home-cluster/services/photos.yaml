@@ -28,6 +28,8 @@ spec:
           value: /home/photoview/db.sqlite
         - name: PHOTOVIEW_MEDIA_CACHE
           value: /home/photoview/cache
+        - name: HOME
+          value: /home/photoview
         ports:
         - name: http
           containerPort: 80
