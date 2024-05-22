@@ -30,6 +30,11 @@ spec:
           value: /home/photoview/cache
         - name: HOME
           value: /home/photoview
+        - name: MAPBOX_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: mapbox-token
+              key: api-token
         ports:
         - name: http
           containerPort: 80
