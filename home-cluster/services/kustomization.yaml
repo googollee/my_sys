@@ -11,3 +11,4 @@ resources:
   - qbittorrent.yaml
   - nodered.yaml
   - photos.yaml
+  - note.yaml
