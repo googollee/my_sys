@@ -17,6 +17,17 @@ return function(use)
       }
       vim.wo.foldmethod = 'expr'
       vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-    end
+    end,
+  }
+
+  use {
+    "Mr-LLLLL/cool-chunk.nvim",
+    event = { "CursorHold", "CursorHoldI" },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("cool-chunk").setup({})
+    end,
   }
 end
