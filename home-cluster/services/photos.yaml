@@ -19,7 +19,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos
-        image: viktorstrate/photoview:sha-6693920
+        image: viktorstrate/photoview:sha-ddacba8
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_DATABASE_DRIVER
