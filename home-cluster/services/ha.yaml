@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: iot
-        image: ghcr.io/home-assistant/home-assistant:stable
+        image: ghcr.io/home-assistant/home-assistant:2024.5.5
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8123
