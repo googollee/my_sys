@@ -4,7 +4,7 @@
   "cmp-nvim-lsp": { "branch": "main", "commit": "39e2eda76828d88b773cc27a3f61d2ad782c922d" },
   "cmp-nvim-lua": { "branch": "main", "commit": "f12408bdb54c39c23e67cab726264c10db33ada8" },
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
-  "cool-chunk.nvim": { "branch": "main", "commit": "df017f8a68ab82cf392c0e112b71648731dbb855" },
+  "cool-chunk.nvim": { "branch": "main", "commit": "59006bf658e4bdaedd330bc481efd708867b8977" },
   "delimitMate": { "branch": "master", "commit": "537a1da0fa5eeb88640425c37e545af933c56e1b" },
   "gitsigns.nvim": { "branch": "main", "commit": "e31d2149d9f3fb056bfd5b3416b2e818be10aabe" },
   "go.nvim": { "branch": "master", "commit": "8f8ab4b968d08bd70ecda1f2909fb5e6177452ca" },
