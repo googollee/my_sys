@@ -65,7 +65,7 @@ metadata:
   name: note
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/issuer: "cert-manager/cert-zhaohai-li-dns"
+    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
 spec:
   tls:
   - hosts:
