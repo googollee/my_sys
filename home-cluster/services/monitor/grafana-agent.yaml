@@ -201,7 +201,6 @@ spec:
       faroPort: 80
       tls:
       - hosts:
-        - "zhaohai.li"
         - "*.zhaohai.li"
         secretName: tls-zhaohai-li-ingress-dns
     crds:

@@ -79,7 +79,6 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "zhaohai.li"
     - "*.zhaohai.li"
   rules:
   - host: "media.zhaohai.li"

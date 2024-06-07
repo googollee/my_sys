@@ -59,7 +59,6 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "zhaohai.li"
     - "*.zhaohai.li"
   rules:
   - host: "ifttt-p.zhaohai.li"

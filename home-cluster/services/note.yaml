@@ -69,7 +69,6 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "zhaohai.li"
     - "*.zhaohai.li"
   rules:
   - host: "note.zhaohai.li"

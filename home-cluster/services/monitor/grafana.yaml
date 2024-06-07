@@ -140,7 +140,6 @@ metadata:
 spec:
   tls:
   - hosts:
-    - "zhaohai.li"
     - "*.zhaohai.li"
     secretName: tls-zhaohai-li-ingress-dns
   rules:
