@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inadyn
-  namespace: cert-manager
+  namespace: export
   labels:
     app: inadyn
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: inadyn
-        image: alpine:3.19
+        image: alpine:3.20
         imagePullPolicy: IfNotPresent
         resources:
           limits:
