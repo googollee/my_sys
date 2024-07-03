@@ -38,6 +38,25 @@ else
   export PS1='`if [ "$?" == "0" ]; then echo "\[\033[01;32m\]✓"; else echo "\[\033[01;31m\]✗"; fi`\t\[\033[m\] [`if [ "$(id -u)" = "0" ]; then echo "\[\033[01;31m\]"; fi`\u\[\033[m\]@\h:\w] \[\033[32m\]`if [ "$(git status -s 2>/dev/null | head -1)" != "" ]; then echo "\[\033[01;31m\]"; fi``git branch 2>/dev/null | grep ^* | sed "s/^\* \(.*\)$/\1/g"`\[\033[m\]\n\$ '
 fi
 
+# Go
+export GOPATH=~/.local
+
+# nvim
+if [ "$(which nvim)" != "nvim not found" ]; then
+  export EDITOR=nvim
+  alias vi='nvim'
+  alias nv='nvim'
+fi
+
+# Homebrew
+if [ -e /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  BREW="$(which brew 2>/dev/null)"
+  if [ -f `brew --prefix`/etc/bash_completion ]; then
+    . `brew --prefix`/etc/bash_completion
+  fi
+fi
+
 # macOS
 if [ `uname` = "Darwin" ]; then
   export DOCKER_DEFAULT_PLATFORM=linux/amd64
@@ -64,23 +83,8 @@ if which lsb_release >/dev/null; then
       echo --xm_deployment_env=sandbox --xm_thinmint_delegate=deepmind-xmanager-test-jobs --xm_evaluator_job_accounting_user=deepmind-resources-xmanager-test-borg
     }
   fi
-fi
 
-# Homebrew
-if [ -e /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  BREW="$(which brew 2>/dev/null)"
-  if [ -f `brew --prefix`/etc/bash_completion ]; then
-    . `brew --prefix`/etc/bash_completion
+  if [[ $- =~ i ]] && [[ -z "$TMUX" ]] && [[ -n "$SSH_TTY" ]]; then
+    tmux attach-session -t ssh_tmux || tmux new-session -s ssh_tmux
   fi
-fi
-
-# Go
-export GOPATH=~/.local
-
-# nvim
-if [ "$(which nvim)" != "nvim not found" ]; then
-  export EDITOR=nvim
-  alias vi='nvim'
-  alias nv='nvim'
 fi
