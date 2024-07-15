@@ -85,7 +85,7 @@ if which lsb_release >/dev/null; then
     }
   fi
 
-  gcertstatus >/dev/null 2>&1
+  gcertstatus -check_remaining=6h >/dev/null 2>&1
   if [ "$?" != "0" ]; then
     gcert
   fi
