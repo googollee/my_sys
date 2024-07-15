@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: grafana-agent
+  name: grafana
   namespace: flux-system
 spec:
   interval: 5m
@@ -171,25 +171,24 @@ data:
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: grafana-agent
+  name: grafana
   namespace: flux-system
 spec:
   chart:
     spec:
-      chart: grafana-agent
-      version: 0.38.0
+      chart: alloy
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: grafana-agent
+        name: grafana
         namespace: flux-system
   install:
     createNamespace: true
   interval: 1m0s
-  releaseName: grafana-agent
+  releaseName: alloy
   targetNamespace: monitor
   values:
-    nameOverride: grafana-agent
+    nameOverride: alloy
 
     ingress:
       enabled: true
@@ -198,7 +197,7 @@ spec:
         cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
       hosts:
       - collector-p.zhaohai.li
-      faroPort: 80
+      faroPort: 12345
       tls:
       - hosts:
         - "*.zhaohai.li"
@@ -224,8 +223,7 @@ spec:
     serviceMonitor:
       enabled: false
 
-    agent:
-      mode: 'flow'
+    alloy:
       mounts:
         varlog: true
         extra:
