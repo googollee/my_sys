@@ -269,6 +269,30 @@ spec:
             role = "node"
           }
 
+          // app monitor
+          discovery.relabel "platform_monitor" {
+            targets = discovery.kubernetes.pods.targets
+
+            rule {
+              action = "keep"
+              source_labels = ["__meta_kubernetes_pod_annotationpresent_platform_montior"]
+              regex = "true"
+            }
+
+            rule {
+              action = "replace"
+              source_labels = ["__meta_kubernetes_pod_annotation_platform_montior"]
+              target_label = "__metrics_path__"
+            }
+          }
+
+          prometheus.scrape "platform_monitor" {
+            scheme = "http"
+            targets = discovery.relabel.platform_monitor.output
+            scrape_interval = "30s"
+            forward_to = [prometheus.remote_write.default.receiver]
+          }
+
           // cadvisor
           discovery.relabel "cadvisor" {
             targets = discovery.kubernetes.nodes.targets
