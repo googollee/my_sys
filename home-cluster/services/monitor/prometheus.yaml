@@ -46,7 +46,7 @@ spec:
             - --web.listen-address=0.0.0.0:9090
             - --web.external-url=http://prometheus.monitor.svc.cluster.local:9090/
             - --storage.tsdb.path=/prometheus/data
-            - --storage.tsdb.retention.time=7d
+            - --storage.tsdb.retention.time=1y
           ports:
             - name: http
               containerPort: 9090
