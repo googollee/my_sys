@@ -15,7 +15,7 @@ spec:
         app: iot
       annotations:
         platform_montior: "/api/prometheus"
-        platform_token_secret: hass-token
+        platform_monitor_bearer_secret: hass-token
     spec:
       containers:
       - name: iot
