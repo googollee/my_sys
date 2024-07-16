@@ -271,7 +271,7 @@ spec:
 
           // app monitor
           discovery.relabel "platform_monitor" {
-            targets = discovery.kubernetes.pods.targets
+            targets = discovery.kubernetes.services.targets
 
             rule {
               action = "keep"
