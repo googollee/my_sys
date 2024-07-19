@@ -19,9 +19,11 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos
-        image: viktorstrate/photoview:sha-ddacba8
+        image: ghcr.io/googollee/photoview:sha-9f0e7f6
         imagePullPolicy: IfNotPresent
         env:
+        - name: PHOTOVIEW_VIDEO_ENCODER
+          value: h264_qsv
         - name: PHOTOVIEW_DATABASE_DRIVER
           value: sqlite
         - name: PHOTOVIEW_SQLITE_PATH
@@ -51,7 +53,14 @@ spec:
           readOnly: true
         - mountPath: /home/photoview
           name: data
+        - mountPath: /dev/dri
+          name: dev-dri
+        securityContext:
+          privileged: true
       volumes:
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
       - name: data
         hostPath:
           path: /mnt/data/config/photoview
