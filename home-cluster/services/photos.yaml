@@ -19,7 +19,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos
-        image: ghcr.io/googollee/photoview:sha-9f0e7f6
+        image: ghcr.io/googollee/photoview:sha-4c19e71
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_VIDEO_ENCODER
