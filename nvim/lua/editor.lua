@@ -77,7 +77,7 @@ return function(use)
     config = function()
       require("trouble").setup({
         position = "bottom",
-        icons = false,
+        icons = true,
         mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
         fold_open = "v",
         fold_closed = ">",
@@ -85,8 +85,8 @@ return function(use)
         group = true,
         padding = true,
         action_keys = {
-          close = "<esc>", -- close the list
-          cancel = {}, -- cancel the preview and get back to your last window / buffer / cursor
+          close = "q", -- close the list
+          cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
           refresh = "r", -- manually refresh
           jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
           open_split = { "<c-x>" }, -- open buffer in new split

@@ -79,10 +79,28 @@ return function(use)
       }
     }
 
-     cfg = {
+    local lspkind = require("lspkind")
+    require("cmp").setup({
+      formatting = {
+        format = lspkind.cmp_format({
+          with_text = true,
+          maxwidth = 40, -- half max width
+          menu = {
+            buffer = "[buffer]",
+            nvim_lsp = "[CiderLSP]",
+            nvim_lua = "[API]",
+            path = "[path]",
+            vim_vsnip = "[snip]",
+          },
+        }),
+      },
+    })
+
+    cfg = {
       on_attach = require('lsp').on_attach(),
       capabilities = require('nvim-cmp').capabilities(),
     }
     nvim_lsp.ciderlsp.setup(cfg)
+
   end)
 end
