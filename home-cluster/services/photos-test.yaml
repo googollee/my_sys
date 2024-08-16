@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: photos
+  name: photos-test
   labels:
-    app: photos
+    app: photos-test
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: photos
+      app: photos-test
   template:
     metadata:
       labels:
-        app: photos
+        app: photos-test
     spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - name: photos
-        image: viktorstrate/photoview:sha-5438fbb
+      - name: photos-test
+        image: ghcr.io/googollee/photoview:sha-122e2f3
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_LISTEN_IP
@@ -67,7 +67,7 @@ spec:
           path: /dev/dri
       - name: data
         hostPath:
-          path: /mnt/data/config/photoview
+          path: /mnt/data/config/photoview-test
       - name: photos
         hostPath:
           path: /mnt/data/media/photos/Googol图库
@@ -81,11 +81,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: photos
+  name: photos-test
 spec:
   type: ClusterIP
   selector:
-    app: photos
+    app: photos-test
   ports:
   - name: http
     port: 80
@@ -95,7 +95,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: photos
+  name: photos-test
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
@@ -104,13 +104,13 @@ spec:
   - hosts:
     - "*.zhaohai.li"
   rules:
-  - host: "photos.zhaohai.li"
+  - host: "photos-test.zhaohai.li"
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: photos
+            name: photos-test
             port:
               number: 80
