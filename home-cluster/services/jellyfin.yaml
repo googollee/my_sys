@@ -14,6 +14,7 @@ spec:
       labels:
         app: media
     spec:
+      terminationGracePeriodSeconds: 3600
       containers:
       - name: media
         image: jellyfin/jellyfin:10.9.3

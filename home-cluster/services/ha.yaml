@@ -15,8 +15,8 @@ spec:
         app: iot
       annotations:
         platform_montior: "/api/prometheus"
-        platform_monitor_bearer_secret: hass-token
     spec:
+      terminationGracePeriodSeconds: 3600
       containers:
       - name: iot
         image: ghcr.io/home-assistant/home-assistant:2024.8

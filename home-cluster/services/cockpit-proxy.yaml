@@ -63,6 +63,7 @@ spec:
       labels:
         app: cockpit-proxy
     spec:
+      terminationGracePeriodSeconds: 3600
       containers:
       - name: cockpit-proxy
         image: nginx:1.25
