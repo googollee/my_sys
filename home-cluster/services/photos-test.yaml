@@ -19,7 +19,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos-test
-        image: ghcr.io/googollee/photoview:sha-122e2f3
+        image: ghcr.io/googollee/photoview:sha-41cbbd3
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_LISTEN_IP
@@ -52,7 +52,7 @@ spec:
         - mountPath: /usr/share/zoneinfo
           name: zoneinfo
           readOnly: true
-        - mountPath: /media/photos/Googol图库
+        - mountPath: /media/photos/for_test
           name: photos
           readOnly: true
         - mountPath: /home/photoview
@@ -70,7 +70,7 @@ spec:
           path: /mnt/data/config/photoview-test
       - name: photos
         hostPath:
-          path: /mnt/data/media/photos/Googol图库
+          path: /mnt/data/media/photos/for_test
       - name: zoneinfo
         hostPath:
           path: /usr/share/zoneinfo
