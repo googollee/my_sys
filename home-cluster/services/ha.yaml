@@ -19,7 +19,7 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
       - name: iot
-        image: ghcr.io/home-assistant/home-assistant:2024.8
+        image: ghcr.io/home-assistant/home-assistant:2024.9
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8123
