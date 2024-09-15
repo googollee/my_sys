@@ -17,6 +17,8 @@ spec:
         platform_montior: "/api/prometheus"
     spec:
       terminationGracePeriodSeconds: 3600
+      strategy:
+        type: Recreate
       containers:
       - name: iot
         image: ghcr.io/home-assistant/home-assistant:2024.9
