@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
       - name: bt
-        image: linuxserver/qbittorrent:4.6.3
+        image: linuxserver/qbittorrent:4.6.7
         imagePullPolicy: IfNotPresent
         ports:
         - name: http

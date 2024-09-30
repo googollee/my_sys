@@ -17,8 +17,8 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
       - name: media
-        image: jellyfin/jellyfin:10.9.3
-        imagePullPolicy: IfNotPresent
+        image: jellyfin/jellyfin:10
+        imagePullPolicy: Always
         ports:
         - name: http
           containerPort: 8096
