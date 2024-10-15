@@ -20,15 +20,15 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos-test
-        image: ghcr.io/googollee/photoview:ios-18-heif-1062
+        image: ghcr.io/googollee/photoview:sha-433f937
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0
         - name: PHOTOVIEW_LISTEN_PORT
           value: "80"
-        - name: PHOTOVIEW_VIDEO_ENCODER
-          value: h264_qsv
+        - name: PHOTOVIEW_VIDEO_HARDWARE_ACCELERATION
+          value: qsv
         - name: PHOTOVIEW_DATABASE_DRIVER
           value: sqlite
         - name: PHOTOVIEW_SQLITE_PATH
