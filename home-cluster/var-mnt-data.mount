@@ -1,0 +1,12 @@
+[Unit]
+Description=My Data disk
+After=var.target
+
+[Mount]
+What=/dev/vg_data/lv_data
+Where=/var/mnt/data
+Type=xfs
+TimeoutSec=5min
+
+[Install]
+WantedBy=local-fs.target
