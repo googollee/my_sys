@@ -1,0 +1,38 @@
+{
+  "ignition": {
+    "version": "3.4.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "docker",
+          "wheel",
+          "sudo"
+        ],
+        "name": "googol",
+        "sshAuthorizedKeys": [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/hostname",
+        "contents": {
+          "compression": "",
+          "source": "data:,coreos"
+        },
+        "mode": 420
+      }
+    ],
+    "links": [
+      {
+        "path": "/etc/localtime",
+        "target": "../usr/share/zoneinfo/Europe/Berlin"
+      }
+    ]
+  }
+}

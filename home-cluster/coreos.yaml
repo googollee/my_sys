@@ -1,0 +1,20 @@
+variant: fcos
+version: 1.5.0
+passwd:
+  users:
+    - name: googol
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop
+      groups:
+        - docker
+        - wheel
+        - sudo
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: coreos
+  links:
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/Europe/Berlin
