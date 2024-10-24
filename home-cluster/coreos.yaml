@@ -15,6 +15,20 @@ storage:
       mode: 0644
       contents:
         inline: coreos
+    - path: /etc/zincati/config.d/55-updates-strategy.toml
+      mode: 0644
+      contents:
+        inline: |
+          [updates]
+          strategy = "periodic"
+
+          [updates.periodic]
+          time_zone = "Europe/Berlin"
+
+          [[updates.periodic.window]]
+          days = [ "Sat" ]
+          start_time = "2:00"
+          length_minutes = 60
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/Europe/Berlin
