@@ -26,6 +26,14 @@
           "source": "data:,coreos"
         },
         "mode": 420
+      },
+      {
+        "path": "/etc/zincati/config.d/55-updates-strategy.toml",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/2TNMQrDMAyF4V2nED5AGjp0KGQp9AQdgzGmFqkgsY0sE9LTFw2ZuopP/5t7TVGpeWgqUWk5cEJXSbgkfjuAEwznzYPyRuFbMhl9dimVLg+SlbP5v4dh55zK7j2keDSccEb3iurQNqNosJ6lrvdxdLBSXvQTNs5dyfhthF8AAAD//zfliSemAAAA"
+        },
+        "mode": 420
       }
     ],
     "links": [
