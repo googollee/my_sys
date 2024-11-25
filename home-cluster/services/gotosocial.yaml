@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
       - name: mblog
-        image: superseriousbusiness/gotosocial:0.17.0
+        image: superseriousbusiness/gotosocial:0.17.3
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 1000
