@@ -1,7 +1,21 @@
 return function(use)
   util = require('util')
 
-  use 'rcarriga/nvim-notify'
+  use {
+    'rcarriga/nvim-notify',
+    config = function ()
+      require('notify').setup {
+        icons = {
+          ERROR = "E",
+          WARN = "W",
+          INFO = "I",
+          DEBUG = "D",
+          TRACE = "T",
+        },
+      }
+      vim.notify = require('notify')
+    end
+  }
 
   use 'tpope/vim-sensible'
 
