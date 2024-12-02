@@ -1,6 +1,8 @@
 return function(use)
   util = require('util')
 
+  use 'rcarriga/nvim-notify'
+
   use 'tpope/vim-sensible'
 
   use {
