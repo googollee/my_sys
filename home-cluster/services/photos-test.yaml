@@ -20,7 +20,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: photos-test
-        image: ghcr.io/googollee/photoview:sha-37c85bc
+        image: ghcr.io/googollee/photoview:sha-0e2827a
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_LISTEN_IP
