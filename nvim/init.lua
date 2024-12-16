@@ -28,6 +28,7 @@ function use(pkg)
 end
 
 require('editor')(use)
+require('ai')(use)
 require('telescope')(use)
 require('git')(use)
 
