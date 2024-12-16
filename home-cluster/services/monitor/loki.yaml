@@ -22,10 +22,10 @@ spec:
         runAsUser: 1000
       containers:
         - name: loki
-          image: grafana/loki:2.9.6
+          image: grafana/loki:3.2.2
           imagePullPolicy: IfNotPresent
           args:
-            - "--compactor.retention-enabled"
+            - "--compactor.compaction-interval=10m"
             - "--config.file=/etc/loki/local-config.yaml"
             - "--store.retention=7d"
           ports:

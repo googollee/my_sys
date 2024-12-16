@@ -17,7 +17,7 @@ spec:
       hostNetwork: true
       containers:
       - name: smart-exporter
-        image: "quay.io/prometheuscommunity/smartctl-exporter:v0.12.0"
+        image: "prometheuscommunity/smartctl-exporter:v0.12.0"
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 0
