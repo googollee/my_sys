@@ -6,8 +6,11 @@ metadata:
 spec:
   valuesContent: |-
     additionalArguments:
+    - --entryPoints.web.forwardedHeaders.insecure=true
+    - --entryPoints.websecure.forwardedHeaders.insecure=true
     - --entryPoints.wansecure.address=:8444/tcp
     - --entryPoints.wansecure.http.tls=true
+    - --entryPoints.wansecure.forwardedHeaders.insecure=true
     logs:
       access:
         enabled: true
