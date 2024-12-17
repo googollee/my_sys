@@ -42,7 +42,9 @@ spec:
       readinessProbe:
         enabled: true
       persistence:
-        enabled: false
+        enabled: true
+        existingClaim: infra-config-claim
+        subPath: redis
       serviceAccount:
         create: false
       pdb:

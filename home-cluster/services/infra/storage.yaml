@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data/infra"
+    path: "/mnt/data/config/infra"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
