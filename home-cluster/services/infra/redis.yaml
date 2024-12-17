@@ -13,12 +13,10 @@ metadata:
   name: redis
   namespace: flux-system
 spec:
-  chart:
-    spec:
-      chartRef:
-        kind: OCIRepository
-        name: redis
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: redis
+    namespace: flux-system
   install:
     createNamespace: true
   interval: 1m0s
