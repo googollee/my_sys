@@ -1,13 +1,13 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
+kind: OCIRepository
 metadata:
-  name: bitnami
+  name: redis
   namespace: flux-system
 spec:
   interval: 5m
-  url: https://registry-1.docker.io/bitnamicharts
+  url: oci://registry-1.docker.io/bitnamicharts/redis
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: redis
@@ -15,16 +15,13 @@ metadata:
 spec:
   chart:
     spec:
-      chart: redis
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami
+      chartRef:
+        kind: OCIRepository
+        name: redis
         namespace: flux-system
   install:
     createNamespace: true
   interval: 1m0s
-  releaseName: redis
   targetNamespace: infra
   values:
     global:
