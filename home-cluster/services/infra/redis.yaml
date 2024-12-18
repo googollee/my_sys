@@ -24,6 +24,7 @@ spec:
     createNamespace: true
   targetNamespace: infra
   values:
+    fullnameOverride: redis
     global:
       redis:
         password: ""
@@ -36,8 +37,11 @@ spec:
       create: false
       name: default
     master:
-      kind: StatefulSet
+      kind: Deployment
       count: 1
+      containerSecurityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       startupProbe:
         enabled: false
       livenessProbe:
@@ -48,8 +52,6 @@ spec:
         enabled: true
         existingClaim: config-claim
         subPath: redis
-      volumePermissions:
-        enabled: true
       serviceAccount:
         create: false
       pdb:
