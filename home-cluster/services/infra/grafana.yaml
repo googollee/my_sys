@@ -1,0 +1,64 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chartRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+  install:
+    createNamespace: true
+  interval: 1m0s
+  targetNamespace: infra
+  values:
+    replicas: 1
+    admin:
+      existingSecret: service-admin
+    smtp:
+      existingSecret: gmail-smtp
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+
+    persistence:
+      enabled: true
+      type: pvc
+      existingClaim: config-claim
+      subPath: grafana
+      inMemory:
+        enabled: false
+
+    ingress:
+      enabled: true
+      annotations:
+        traefik.ingress.kubernetes.io/router.entrypoints: websecure
+        cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+      hosts:
+      - monitor.zhaohai.li
+      tls:
+      - hosts:
+        - "*.zhaohai.li"
+        secretName: tls-zhaohai-li-ingress-dns
+
+    initChownData:
+      enabled: false
+    serviceAccount:
+      create: false
+    rbac:
+      create: false
+    testFramework:
+      enabled: false
