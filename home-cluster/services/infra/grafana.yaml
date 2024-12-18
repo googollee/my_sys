@@ -19,9 +19,9 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
+  interval: 30m
   install:
     createNamespace: true
-  interval: 1m0s
   targetNamespace: infra
   values:
     replicas: 1
