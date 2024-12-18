@@ -23,8 +23,8 @@ spec:
   install:
     createNamespace: true
   targetNamespace: infra
+  releaseName: redis
   values:
-    fullnameOverride: redis
     global:
       redis:
         password: ""

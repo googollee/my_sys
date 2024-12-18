@@ -15,7 +15,8 @@ metadata:
 spec:
   chart:
     spec:
-      chartRef:
+      chart: grafana
+      sourceRef:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
@@ -23,6 +24,7 @@ spec:
   install:
     createNamespace: true
   targetNamespace: infra
+  releaseName: grafana
   values:
     replicas: 1
     admin:
@@ -33,6 +35,15 @@ spec:
       runAsUser: 1000
       runAsGroup: 1000
       fsGroup: 1000
+
+    grafana.ini:
+      log:
+        mode: console
+      smtp:
+        enabled: true
+        from_name: Alert
+        from_address: me+nas_alert@zhaohai.li
+        host: smtp.gmail.com:587
 
     persistence:
       enabled: true
