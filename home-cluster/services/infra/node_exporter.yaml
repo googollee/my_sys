@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-exporter
-  namespace: monitor
+  namespace: infra
   labels:
     app: node-exporter
 spec:

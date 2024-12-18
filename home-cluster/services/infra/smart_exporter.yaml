@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: smart-exporter
-  namespace: monitor
+  namespace: infra
   labels:
     app: smart-exporter
 spec:
