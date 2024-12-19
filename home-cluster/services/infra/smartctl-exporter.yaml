@@ -1,0 +1,32 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: prometheus
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: smartctl-exporter
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: prometheus-smartctl-exporter
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: flux-system
+  interval: 30m
+  install:
+    createNamespace: true
+  targetNamespace: infra
+  releaseName: smartctl-exporter
+  values:
+    rbac:
+      create: false
+    serviceAccount:
+      create: true
