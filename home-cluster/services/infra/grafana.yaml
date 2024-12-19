@@ -39,6 +39,8 @@ spec:
     grafana.ini:
       log:
         mode: console
+      date_formats:
+        default_timezone: Europe/Berlin
       smtp:
         enabled: true
         from_name: Alert
