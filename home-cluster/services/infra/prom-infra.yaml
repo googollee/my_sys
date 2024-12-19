@@ -10,7 +10,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prom-hass
+  name: prom-infra
   namespace: flux-system
 spec:
   chart:
@@ -24,11 +24,11 @@ spec:
   install:
     createNamespace: true
   targetNamespace: infra
-  releaseName: prom-hass
+  releaseName: prom-infra
   values:
     server:
-      fullnameOverride: prom-hass
-      retention: "1y"
+      fullnameOverride: prom-infra
+      retention: "7d"
       statefulSet:
         enabled: false
       securityContext:
@@ -39,9 +39,12 @@ spec:
       persistentVolume:
         enabled: true
         existingClaim: config-claim
-        subPath: "prom-hass"
+        subPath: "prom-infra"
       ingress:
         enabled: false
+      extraFlags:
+      - web.enable-lifecycle
+      - web.enable-remote-write-receiver
     serverFiles:
       prometheus.yml:
         rule_files: []

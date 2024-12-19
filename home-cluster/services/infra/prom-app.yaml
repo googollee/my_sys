@@ -10,7 +10,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prometheus
+  name: prom-app
   namespace: flux-system
 spec:
   chart:
@@ -24,11 +24,11 @@ spec:
   install:
     createNamespace: true
   targetNamespace: infra
-  releaseName: prometheus
+  releaseName: prom-app
   values:
     server:
-      fullnameOverride: prometheus
-      retention: "7d"
+      fullnameOverride: prom-app
+      retention: "1y"
       statefulSet:
         enabled: false
       securityContext:
@@ -39,9 +39,12 @@ spec:
       persistentVolume:
         enabled: true
         existingClaim: config-claim
-        subPath: "prometheus"
+        subPath: "prom-app"
       ingress:
         enabled: false
+      extraFlags:
+      - web.enable-lifecycle
+      - web.enable-remote-write-receiver
     serverFiles:
       prometheus.yml:
         rule_files: []

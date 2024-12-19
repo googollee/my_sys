@@ -67,7 +67,13 @@ spec:
 
           prometheus.remote_write "default" {
             endpoint {
-              url = "http://prometheus.monitor.svc.cluster.local:9090/api/v1/write"
+              url = "http://prom-infra.infra.svc/api/v1/write"
+            }
+          }
+
+          prometheus.remote_write "app" {
+            endpoint {
+              url = "http://prom-app.infra.svc/api/v1/write"
             }
           }
 
@@ -117,7 +123,7 @@ spec:
             scheme = "http"
             targets = discovery.relabel.platform_monitor.output
             scrape_interval = "30s"
-            forward_to = [prometheus.remote_write.default.receiver]
+            forward_to = [prometheus.remote_write.app.receiver]
           }
 
           // cadvisor
