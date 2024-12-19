@@ -26,6 +26,7 @@ spec:
   targetNamespace: infra
   releaseName: smartctl-exporter
   values:
+    nameOverride: smartctl-exporter
     rbac:
       create: false
     serviceAccount:

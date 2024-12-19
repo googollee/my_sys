@@ -27,5 +27,3 @@ spec:
   releaseName: node-exporter
   values:
     nameOverride: node-exporter
-    rbac:
-      create: false
