@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inadyn
-  namespace: export
+  namespace: infra
   labels:
     app: inadyn
 spec:
@@ -17,13 +17,13 @@ spec:
     spec:
       containers:
       - name: inadyn
-        image: alpine:3.20
-        imagePullPolicy: IfNotPresent
+        image: alpine:latest
+        imagePullPolicy: Always
         resources:
           limits:
             memory: 512Mi
           requests:
-            memory: 128Mi
+            memory: 64Mi
         env:
         - name: CF_DNS_API_TOKEN
           valueFrom:

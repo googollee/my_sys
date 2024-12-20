@@ -20,7 +20,7 @@ spec:
         kind: HelmRepository
         name: grafana
         namespace: flux-system
-  interval: 1s
+  interval: 30m
   install:
     createNamespace: true
   targetNamespace: infra
