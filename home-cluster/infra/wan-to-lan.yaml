@@ -5,57 +5,50 @@ metadata:
   namespace: infra
 data:
   nginx.conf: |
-    user nginx;
-    worker_processes  3;
+    access_log /dev/stdout;
     error_log  /dev/stderr;
-    events {
-      worker_connections  1024;
-    }
-    http {
-      access_log /dev/stdout;
 
-      server {
-        listen       80;
-        server_name  _ default;
-        location / {
-          # Required to proxy the connection to Cockpit
-          proxy_pass https://zhaohai.li;
-          proxy_set_header Host $host;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_set_header X-Real-Ip $http_cf_connecting_ip;
+    server {
+      listen       8080;
+      server_name  _ default;
+      location / {
+        # Required to proxy the connection to Cockpit
+        proxy_pass https://zhaohai.li;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-Ip $http_cf_connecting_ip;
 
-          # Required for web sockets to function
-          proxy_http_version 1.1;
-          proxy_buffering off;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
+        # Required for web sockets to function
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
 
-          gzip off;
-          proxy_ssl_verify off;
-        }
+        gzip off;
+        proxy_ssl_verify off;
       }
+    }
 
-      server {
-        listen       80;
-        server_name  ~^(.+)-p.zhaohai.li$;
-        auth_basic "Administrator’s Area";
-        auth_basic_user_file /etc/auth/users;
-        location / {
-          # Required to proxy the connection to Cockpit
-          proxy_pass https://zhaohai.li;
-          proxy_set_header Host $host;
-          proxy_set_header X-Forwarded-Proto $scheme;
-          proxy_set_header X-Real-Ip $http_cf_connecting_ip;
+    server {
+      listen       8080;
+      server_name  ~^(.+)-p.zhaohai.li$;
+      auth_basic "Administrator’s Area";
+      auth_basic_user_file /etc/auth/users;
+      location / {
+        # Required to proxy the connection to Cockpit
+        proxy_pass https://zhaohai.li;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-Ip $http_cf_connecting_ip;
 
-          # Required for web sockets to function
-          proxy_http_version 1.1;
-          proxy_buffering off;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
+        # Required for web sockets to function
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
 
-          gzip off;
-          proxy_ssl_verify off;
-        }
+        gzip off;
+        proxy_ssl_verify off;
       }
     }
 ---
@@ -70,7 +63,7 @@ spec:
     app: w2l-proxy
   ports:
   - name: http
-    port: 80
+    port: 8080
     protocol: TCP
     targetPort: http
 ---
@@ -91,18 +84,23 @@ spec:
     spec:
       containers:
       - name: w2l-proxy
-        image: nginx:latest
+        image: nginxinc/nginx-unprivileged:latest
         imagePullPolicy: Always
         securityContext:
+          runAsUser: 65535
+          runAsGroup: 65535
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - ALL
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 8080
           protocol: TCP
         volumeMounts:
         - name: conf
-          mountPath: /etc/nginx
+          mountPath: /etc/nginx/conf.d
           readOnly: true
         - name: wanauth
           mountPath: /etc/auth
@@ -113,7 +111,7 @@ spec:
           name: w2l-proxy
           items:
           - key: nginx.conf
-            path: nginx.conf
+            path: default.conf
       - name: wanauth
         secret:
           secretName: wanauth
@@ -145,4 +143,4 @@ spec:
           service:
             name: w2l-proxy
             port:
-              number: 80
+              number: 8080
