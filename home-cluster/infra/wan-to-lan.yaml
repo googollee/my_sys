@@ -90,7 +90,7 @@ spec:
           runAsUser: 65535
           runAsGroup: 65535
           allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
+          readOnlyRootFilesystem: true
           capabilities:
             drop:
             - ALL
@@ -105,6 +105,8 @@ spec:
         - name: wanauth
           mountPath: /etc/auth
           readOnly: true
+        - name: tmp
+          mountPath: /tmp
       volumes:
       - name: conf
         configMap:
@@ -118,6 +120,8 @@ spec:
           items:
           - key: users
             path: users
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
