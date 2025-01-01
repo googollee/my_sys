@@ -68,19 +68,5 @@
         "target": "../usr/share/zoneinfo/Europe/Berlin"
       }
     ]
-  },
-  "systemd": {
-    "units": [
-      {
-        "contents": "[Unit]\nDescription=Init packages for cockpit\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStartPre=rpm-ostree override remove nfs-utils-coreos\nExecStartPre=rpm-ostree install --assumeyes nfs-utils \nExecStartPre=rpm-ostree install --assumeyes git avahi samba virt-manager\nExecStartPre=rpm-ostree install --assumeyes cockpit-system cockpit-ostree cockpit-podman cockpit-storaged cockpit-networkmanager cockpit-machines cockpit-selinux cockpit-files\nExecStartPre=podman container runlabel --name cockpit-ws RUN quay.io/cockpit/ws\nExecStartPre=podman container runlabel INSTALL quay.io/cockpit/ws\nExecStartPre=systemctl enable libvirtd.service\nExecStart=systemctl enable cockpit.service\n\n[Install]\nWantedBy=multi-user.target\n",
-        "enabled": true,
-        "name": "cockpit-init.service"
-      },
-      {
-        "contents": "[Unit]\nDescription=Install k3s\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nEnvironment=\"K3S_CONFIG_FILE=/etc/rancher/k3s/config.yaml\"\nExecStartPre=curl -o /tmp/k3s.sh https://get.k3s.io\nExecStartPre=chmod +x /tmp/k3s.sh\nExecStart=/tmp/k3s.sh\n\n[Install]\nWantedBy=multi-user.target\n",
-        "enabled": true,
-        "name": "k3s-init.service"
-      }
-    ]
   }
 }
