@@ -5,6 +5,8 @@ passwd:
   groups:
     - name: www-data
       gid: 33
+    - name: nogroup
+      gid: 65534
   users:
     - name: googol
       ssh_authorized_keys:
@@ -19,8 +21,17 @@ passwd:
     - name: www-data
       uid: 33
       system: true
+      home_dir: /nonexistent
+      shell: /usr/sbin/nologin
       groups:
         - www-data
+    - name: nobody
+      uid: 65534
+      system: true
+      home_dir: /nonexistent
+      shell: /usr/sbin/nologin
+      groups:
+        - nogroup
 storage:
   files:
     - path: /etc/hostname

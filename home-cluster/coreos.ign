@@ -7,6 +7,10 @@
       {
         "gid": 33,
         "name": "www-data"
+      },
+      {
+        "gid": 65534,
+        "name": "nogroup"
       }
     ],
     "users": [
@@ -28,9 +32,21 @@
         "groups": [
           "www-data"
         ],
+        "homeDir": "/nonexistent",
         "name": "www-data",
+        "shell": "/usr/sbin/nologin",
         "system": true,
         "uid": 33
+      },
+      {
+        "groups": [
+          "nogroup"
+        ],
+        "homeDir": "/nonexistent",
+        "name": "nobody",
+        "shell": "/usr/sbin/nologin",
+        "system": true,
+        "uid": 65534
       }
     ]
   },
