@@ -2,6 +2,9 @@
 variant: fcos
 version: 1.6.0
 passwd:
+  groups:
+    - name: www-data
+      gid: 33
   users:
     - name: googol
       ssh_authorized_keys:
@@ -12,6 +15,12 @@ passwd:
         - sudo
         - adm
         - systemd-journal
+        - www-data
+    - name: www-data
+      uid: 33
+      system: true
+      groups:
+        - www-data
 storage:
   files:
     - path: /etc/hostname

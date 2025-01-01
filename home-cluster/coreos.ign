@@ -3,6 +3,12 @@
     "version": "3.5.0"
   },
   "passwd": {
+    "groups": [
+      {
+        "gid": 33,
+        "name": "www-data"
+      }
+    ],
     "users": [
       {
         "groups": [
@@ -10,12 +16,21 @@
           "wheel",
           "sudo",
           "adm",
-          "systemd-journal"
+          "systemd-journal",
+          "www-data"
         ],
         "name": "googol",
         "sshAuthorizedKeys": [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop"
         ]
+      },
+      {
+        "groups": [
+          "www-data"
+        ],
+        "name": "www-data",
+        "system": true,
+        "uid": 33
       }
     ]
   },
