@@ -52,6 +52,7 @@ storage:
           PasswordAuthentication yes
     - path: /etc/samba/smb.conf
       mode: 0644
+      overwrite: true
       contents:
         local: 01-get-config.files/smb.conf
   links:

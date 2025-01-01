@@ -54,6 +54,7 @@
         "mode": 420
       },
       {
+        "overwrite": true,
         "path": "/etc/samba/smb.conf",
         "contents": {
           "compression": "gzip",
