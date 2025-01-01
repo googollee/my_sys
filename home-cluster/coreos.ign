@@ -1,6 +1,6 @@
 {
   "ignition": {
-    "version": "3.4.0"
+    "version": "3.5.0"
   },
   "passwd": {
     "users": [
@@ -8,7 +8,9 @@
         "groups": [
           "docker",
           "wheel",
-          "sudo"
+          "sudo",
+          "adm",
+          "systemd-journal"
         ],
         "name": "googol",
         "sshAuthorizedKeys": [
@@ -34,12 +36,50 @@
           "source": "data:;base64,H4sIAAAAAAAC/2TNMQrDMAyF4V2nED5AGjp0KGQp9AQdgzGmFqkgsY0sE9LTFw2ZuopP/5t7TVGpeWgqUWk5cEJXSbgkfjuAEwznzYPyRuFbMhl9dimVLg+SlbP5v4dh55zK7j2keDSccEb3iurQNqNosJ6lrvdxdLBSXvQTNs5dyfhthF8AAAD//zfliSemAAAA"
         },
         "mode": 420
+      },
+      {
+        "path": "/etc/rancher/k3s/k3s.yaml",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/1TMwcrCMBAE4HueIux986e/pYeCD5NuV7O4zUKSKvj0IijU48w3zKNKZ7ztC5OVi1xxs5VnD3EaR3BdG7ZUZuc9eiCrbA2OIahR0t/qmZPlJEEFXLGVUdPC+vl477tYOWfbGBzp3jpXJFnr7IcYxv8QQ/wbJte43oX4QKcvvQIAAP//GmWohLUAAAA="
+        },
+        "mode": 420
+      },
+      {
+        "path": "/etc/ssh/sshd_config.d/02-enable-passwords.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,PasswordAuthentication%20yes%0A"
+        },
+        "mode": 420
+      },
+      {
+        "path": "/etc/samba/smb.conf",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/2xU74sjRRD93n9FQYTTDyar3t7BQUAXQURyd+wqIssx1HTXJO12dzVVNcnGv156ZnK7e/opzHv1472q6qzgjgg092vPZVjTI+aaCAYWQMgsBIEMY6IALSDuYYiJgMWtQAgD2OEpHTKWintauxXcjgVeGalVlPwKjOFIEofzlLCUigqeRcgb4GDUap55hMwhDpECRFu7lVvBezZ651Zwt7v5riWFqNg3Sf0ZAg04JlvD74eokAmLgk+Riimcoh14NNCxVhabXN3tbr6f5d/tbn4AFILCkLjsSaBVbVI9l9JUGTdvAb5+avTN2rn7feIe0yeXY4EqbOw5wXaq7WLxaQwEWxDaRzU5u0LWR1YomBteUF0O5el7pp2SHElATWLZz3GgmHuEmXH7kdQAveexWAvgnsPZTWWElNOxbSaQwBZ6j2pwYDVIuf20cRR17jgocP83eVPYwiBjtNaSMGv3iGbi3AS+o+I5XJRYPNKCZzIMaAjbJe+Cc6A2hR36u6Z6gStrfOyEFrNn0oU4knGHtSYKPLbBN0MLVwbt0JM+x06xUheLUbHIBVM6d4kG6/qE5aGTgeXhRf1AiYw6ytXOHYZ2t/oi4B8S7hrcxbAQ7sTysBceK2zhzw+3v/1y++GPj07JjxLtDFsYlcS5iqqhhx79A5WWbKFXzM5VicXmofmx6vztsV52PYGJMcDEkFwkNQK4NmsNEjw5t4JfixqmNJ/Bt623HlBIoaJ/wP38UJfzfnZ5GzK/mXI2TznTE3Xu/tL4k/OcM02X9FNK8HHBXUU7tCJHlI3lOnvAeUN/NalCaAQZtQ386s3VleuFT0pLzHu+dPnqeY+lPvws8fhlmxT7RW9Y2JNEI0hRW+qPs4TQ3pswmxtYPMFlUc/o/4h789qF2P5iWM6f0bdvr527n8byXOHuDDsKET9Ly8U27dQ3eYInTYvJtrMXrhtQxz5Ff9noF0pe/6+S6+uXVqf7+jcAAP//pEkEkJYFAAA="
+        },
+        "mode": 420
       }
     ],
     "links": [
       {
         "path": "/etc/localtime",
         "target": "../usr/share/zoneinfo/Europe/Berlin"
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Init packages for cockpit\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStartPre=rpm-ostree override remove nfs-utils-coreos\nExecStartPre=rpm-ostree install --assumeyes nfs-utils \nExecStartPre=rpm-ostree install --assumeyes git avahi samba virt-manager\nExecStartPre=rpm-ostree install --assumeyes cockpit-system cockpit-ostree cockpit-podman cockpit-storaged cockpit-networkmanager cockpit-machines cockpit-selinux cockpit-files\nExecStartPre=podman container runlabel --name cockpit-ws RUN quay.io/cockpit/ws\nExecStartPre=podman container runlabel INSTALL quay.io/cockpit/ws\nExecStartPre=systemctl enable libvirtd.service\nExecStart=systemctl enable cockpit.service\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "cockpit-init.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Install k3s\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nEnvironment=\"K3S_CONFIG_FILE=/etc/rancher/k3s/config.yaml\"\nExecStartPre=curl -o /tmp/k3s.sh https://get.k3s.io\nExecStartPre=chmod +x /tmp/k3s.sh\nExecStart=/tmp/k3s.sh\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "k3s-init.service"
       }
     ]
   }

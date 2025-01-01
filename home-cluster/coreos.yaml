@@ -1,5 +1,6 @@
+# butane --pretty --strict coreos.yaml -d . > coreos.ign
 variant: fcos
-version: 1.5.0
+version: 1.6.0
 passwd:
   users:
     - name: googol
@@ -9,6 +10,8 @@ passwd:
         - docker
         - wheel
         - sudo
+        - adm
+        - systemd-journal
 storage:
   files:
     - path: /etc/hostname
@@ -29,6 +32,66 @@ storage:
           days = [ "Sat" ]
           start_time = "2:00"
           length_minutes = 60
+    - path: /etc/rancher/k3s/k3s.yaml
+      mode: 0644
+      contents:
+        inline: |
+          write-kubeconfig-mode: "0644"
+          tls-san:
+            - "coreos"
+            - "coreos.local"
+            - "coreos.zhaohai.li"
+          node-label:
+            - "location=home"
+          cluster-cidr: 10.42.0.0/16
+          service-cidr: 10.43.0.0/16
+    - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
+      mode: 0644
+      contents:
+        inline: |
+          PasswordAuthentication yes
+    - path: /etc/samba/smb.conf
+      mode: 0644
+      contents:
+        local: 01-get-config.files/smb.conf
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/Europe/Berlin
+systemd:
+  units:
+    - name: cockpit-init.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Init packages for cockpit
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStartPre=rpm-ostree override remove nfs-utils-coreos
+        ExecStartPre=rpm-ostree install --assumeyes nfs-utils 
+        ExecStartPre=rpm-ostree install --assumeyes git avahi samba virt-manager
+        ExecStartPre=rpm-ostree install --assumeyes cockpit-system cockpit-ostree cockpit-podman cockpit-storaged cockpit-networkmanager cockpit-machines cockpit-selinux cockpit-files
+        ExecStartPre=podman container runlabel --name cockpit-ws RUN quay.io/cockpit/ws
+        ExecStartPre=podman container runlabel INSTALL quay.io/cockpit/ws
+        ExecStartPre=systemctl enable libvirtd.service
+        ExecStart=systemctl enable cockpit.service
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: k3s-init.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Install k3s
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        Environment="K3S_CONFIG_FILE=/etc/rancher/k3s/config.yaml"
+        ExecStartPre=curl -o /tmp/k3s.sh https://get.k3s.io
+        ExecStartPre=chmod +x /tmp/k3s.sh
+        ExecStart=/tmp/k3s.sh
+
+        [Install]
+        WantedBy=multi-user.target
