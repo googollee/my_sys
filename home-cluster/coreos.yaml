@@ -21,30 +21,11 @@ storage:
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       mode: 0644
       contents:
-        inline: |
-          [updates]
-          strategy = "periodic"
-
-          [updates.periodic]
-          time_zone = "Europe/Berlin"
-
-          [[updates.periodic.window]]
-          days = [ "Sat" ]
-          start_time = "2:00"
-          length_minutes = 60
+        local: coreos.files/updates-strategy.toml
     - path: /etc/rancher/k3s/k3s.yaml
       mode: 0644
       contents:
-        inline: |
-          write-kubeconfig-mode: "0644"
-          tls-san:
-            - "coreos"
-            - "coreos.local"
-            - "coreos.zhaohai.li"
-          node-label:
-            - "location=home"
-          cluster-cidr: 10.42.0.0/16
-          service-cidr: 10.43.0.0/16
+        local: coreos.files/smb.conf
     - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
       mode: 0644
       contents:
@@ -54,7 +35,15 @@ storage:
       mode: 0644
       overwrite: true
       contents:
-        local: 01-get-config.files/smb.conf
+        local: coreos.files/smb.conf
+    - path: /home/googol/install_k3s.sh
+      mode: 0755
+      contents:
+        local: coreos.files/install_k3s.sh
+    - path: /home/googol/install_cockpit.sh
+      mode: 0755
+      contents:
+        local: coreos.files/install_cockpit.sh
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/Europe/Berlin
