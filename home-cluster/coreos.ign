@@ -5,10 +5,6 @@
   "passwd": {
     "groups": [
       {
-        "gid": 33,
-        "name": "www-data"
-      },
-      {
         "gid": 65534,
         "name": "nogroup"
       }
@@ -30,7 +26,7 @@
       },
       {
         "groups": [
-          "www-data"
+          "tape"
         ],
         "homeDir": "/nonexistent",
         "name": "www-data",

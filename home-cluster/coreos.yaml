@@ -3,8 +3,6 @@ variant: fcos
 version: 1.6.0
 passwd:
   groups:
-    - name: www-data
-      gid: 33
     - name: nogroup
       gid: 65534
   users:
@@ -24,7 +22,7 @@ passwd:
       home_dir: /nonexistent
       shell: /usr/sbin/nologin
       groups:
-        - www-data
+        - tape # gid 33 in coreos
     - name: nobody
       uid: 65534
       system: true
