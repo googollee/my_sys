@@ -3,9 +3,6 @@ variant: fcos
 version: 1.6.0
 passwd:
   groups:
-    - name: nogroup
-      should_exist: true
-      system: true
     - name: www-data
       should_exist: true
       system: true
@@ -30,14 +27,6 @@ passwd:
       shell: /usr/sbin/nologin
       groups:
         - www-data
-    - name: nobody
-      system: true
-      no_create_home: true
-      no_user_group: true
-      home_dir: /nonexistent
-      shell: /usr/sbin/nologin
-      groups:
-        - nogroup
 storage:
   files:
     - path: /etc/hostname

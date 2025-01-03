@@ -5,11 +5,6 @@
   "passwd": {
     "groups": [
       {
-        "name": "nogroup",
-        "shouldExist": true,
-        "system": true
-      },
-      {
         "name": "www-data",
         "shouldExist": true,
         "system": true
@@ -40,17 +35,6 @@
         "noCreateHome": true,
         "noUserGroup": true,
         "primaryGroup": "www-data",
-        "shell": "/usr/sbin/nologin",
-        "system": true
-      },
-      {
-        "groups": [
-          "nogroup"
-        ],
-        "homeDir": "/nonexistent",
-        "name": "nobody",
-        "noCreateHome": true,
-        "noUserGroup": true,
         "shell": "/usr/sbin/nologin",
         "system": true
       }
