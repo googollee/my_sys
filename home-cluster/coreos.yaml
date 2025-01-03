@@ -4,11 +4,16 @@ version: 1.6.0
 passwd:
   groups:
     - name: nogroup
-      gid: 65534
+      should_exist: true
+      system: true
+    - name: www-data
+      should_exist: true
+      system: true
   users:
     - name: googol
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop
+      system: false
       groups:
         - docker
         - wheel
@@ -19,13 +24,19 @@ passwd:
     - name: www-data
       uid: 33
       system: true
+      no_create_home: true
+      no_user_group: true
+      primary_group: www-data
       home_dir: /nonexistent
       shell: /usr/sbin/nologin
       groups:
         - tape # gid 33 in coreos
+        - www-data
     - name: nobody
       uid: 65534
       system: true
+      no_create_home: true
+      no_user_group: true
       home_dir: /nonexistent
       shell: /usr/sbin/nologin
       groups:

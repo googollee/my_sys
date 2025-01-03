@@ -5,8 +5,14 @@
   "passwd": {
     "groups": [
       {
-        "gid": 65534,
-        "name": "nogroup"
+        "name": "nogroup",
+        "shouldExist": true,
+        "system": true
+      },
+      {
+        "name": "www-data",
+        "shouldExist": true,
+        "system": true
       }
     ],
     "users": [
@@ -22,14 +28,19 @@
         "name": "googol",
         "sshAuthorizedKeys": [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop"
-        ]
+        ],
+        "system": false
       },
       {
         "groups": [
-          "tape"
+          "tape",
+          "www-data"
         ],
         "homeDir": "/nonexistent",
         "name": "www-data",
+        "noCreateHome": true,
+        "noUserGroup": true,
+        "primaryGroup": "www-data",
         "shell": "/usr/sbin/nologin",
         "system": true,
         "uid": 33
@@ -40,6 +51,8 @@
         ],
         "homeDir": "/nonexistent",
         "name": "nobody",
+        "noCreateHome": true,
+        "noUserGroup": true,
         "shell": "/usr/sbin/nologin",
         "system": true,
         "uid": 65534
