@@ -37,20 +37,26 @@ storage:
       mode: 0644
       contents:
         local: coreos.files/updates-strategy.toml
-    - path: /etc/rancher/k3s/k3s.yaml
-      mode: 0644
-      contents:
-        local: coreos.files/smb.conf
     - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
       mode: 0644
       contents:
         inline: |
           PasswordAuthentication yes
+    - path: /etc/mdadm.conf
+      mode: 0644
+      contents:
+        inline: |
+          ARRAY /dev/md/data level=raid10 num-devices=4 metadata=1.2 UUID=100e2713:a533b132:755ac955:e5cf260c
+            devices=/dev/sda,/dev/sdb,/dev/sdc,/dev/sdd
     - path: /etc/samba/smb.conf
       mode: 0644
       overwrite: true
       contents:
         local: coreos.files/smb.conf
+    - path: /etc/rancher/k3s/config.yaml
+      mode: 0644
+      contents:
+        local: coreos.files/k3s.yaml
     - path: /home/googol/install_k3s.sh
       mode: 0755
       contents:
