@@ -22,7 +22,6 @@ passwd:
         - systemd-journal
         - www-data
     - name: www-data
-      uid: 33
       system: true
       no_create_home: true
       no_user_group: true
@@ -30,10 +29,8 @@ passwd:
       home_dir: /nonexistent
       shell: /usr/sbin/nologin
       groups:
-        - tape # gid 33 in coreos
         - www-data
     - name: nobody
-      uid: 65534
       system: true
       no_create_home: true
       no_user_group: true

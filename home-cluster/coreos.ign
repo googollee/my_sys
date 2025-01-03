@@ -33,7 +33,6 @@
       },
       {
         "groups": [
-          "tape",
           "www-data"
         ],
         "homeDir": "/nonexistent",
@@ -42,8 +41,7 @@
         "noUserGroup": true,
         "primaryGroup": "www-data",
         "shell": "/usr/sbin/nologin",
-        "system": true,
-        "uid": 33
+        "system": true
       },
       {
         "groups": [
@@ -54,8 +52,7 @@
         "noCreateHome": true,
         "noUserGroup": true,
         "shell": "/usr/sbin/nologin",
-        "system": true,
-        "uid": 65534
+        "system": true
       }
     ]
   },
