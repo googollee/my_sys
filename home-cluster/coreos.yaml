@@ -8,9 +8,12 @@ passwd:
       system: true
   users:
     - name: googol
+      system: false
+      no_create_home: false
+      no_user_group: false
+      primary_group: googol
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop
-      system: false
       groups:
         - docker
         - wheel

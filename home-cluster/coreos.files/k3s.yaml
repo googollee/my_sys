@@ -1,8 +1,8 @@
 write-kubeconfig-mode: "0644"
 tls-san:
-  - "coreso"
-  - "coreos.local"
-  - "coreos.zhaohai.li"
+  - "nas"
+  - "nas.local"
+  - "nas.zhaohai.li"
 node-label:
   - "location=home"
 cluster-cidr: 10.42.0.0/16

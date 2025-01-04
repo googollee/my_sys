@@ -21,6 +21,9 @@
           "www-data"
         ],
         "name": "googol",
+        "noCreateHome": false,
+        "noUserGroup": false,
+        "primaryGroup": "googol",
         "sshAuthorizedKeys": [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop"
         ],
@@ -87,7 +90,7 @@
         "path": "/etc/rancher/k3s/config.yaml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/1TMwcrCMBAE4HueIuS++dPf0kPBh0m3q1ncZiGbKvj0IijqceYb5ta4E1z2hVDric+w6UqzD2kax+C6GFius/MefEBtZBo+QS2KYpbf6l6ylsxROLiqK4HkheT18dx31nosulFwKLt1aoC8ttkPKY7/McX0N0zOqF0Z6YsOb3oEAAD//zTEutK1AAAA"
+          "source": "data:;base64,H4sIAAAAAAAC/0zLwcrCMBAE4HueIux986e/pYeCD7NNV7O4zUKSKvj0Iqj0NsM386jSGW/7wsnKRa642cqzhziNI7iuDRuV2XmPHgo1+KWglkgP/ZnJMklQAVdsZVRaWD/X97iLlXO2jcEl3VvniknWOvshhvE/xBD/hsk1rndJfKDTl14BAAD//8s+yjysAAAA"
         },
         "mode": 420
       },
