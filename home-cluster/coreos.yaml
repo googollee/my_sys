@@ -27,6 +27,11 @@ passwd:
       shell: /usr/sbin/nologin
       groups:
         - www-data
+systemd:
+  units:
+    - name: var-mnt-data.mount
+      enabled: false
+      contents_local: coreos.files/var-mnt-data.mount
 storage:
   raid:
     - name: data
@@ -36,11 +41,6 @@ storage:
         - /dev/sdb
         - /dev/sdc
         - /dev/sdd
-  filesystems:
-    - path: /var/mnt/data
-      device: /dev/md/data
-      format: none
-      with_mount_unit: true
   files:
     - path: /etc/hostname
       mode: 0644

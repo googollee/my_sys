@@ -1,0 +1,11 @@
+[Unit]
+Requires=systemd-fsck@dev-md-data.service
+After=systemd-fsck@dev-md-data.service
+
+[Mount]
+Where=/var/mnt/data
+What=/dev/md/data
+Type=none
+
+[Install]
+RequiredBy=local-fs.target
