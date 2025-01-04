@@ -105,6 +105,18 @@
         "path": "/etc/localtime",
         "target": "../usr/share/zoneinfo/Europe/Berlin"
       }
+    ],
+    "raid": [
+      {
+        "devices": [
+          "/dev/sda",
+          "/dev/sdb",
+          "/dev/sdc",
+          "/dev/sdd"
+        ],
+        "level": "raid10",
+        "name": "data"
+      }
     ]
   }
 }

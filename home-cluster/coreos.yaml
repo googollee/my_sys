@@ -28,6 +28,14 @@ passwd:
       groups:
         - www-data
 storage:
+  raid:
+    - name: data
+      level: raid10
+      devices:
+        - /dev/sda
+        - /dev/sdb
+        - /dev/sdc
+        - /dev/sdd
   files:
     - path: /etc/hostname
       mode: 0644
