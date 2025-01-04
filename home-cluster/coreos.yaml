@@ -42,12 +42,6 @@ storage:
       contents:
         inline: |
           PasswordAuthentication yes
-    - path: /etc/mdadm.conf
-      mode: 0644
-      contents:
-        inline: |
-          ARRAY /dev/md/data level=raid10 num-devices=4 metadata=1.2 UUID=100e2713:a533b132:755ac955:e5cf260c
-            devices=/dev/sda,/dev/sdb,/dev/sdc,/dev/sdd
     - path: /etc/samba/smb.conf
       mode: 0644
       overwrite: true
