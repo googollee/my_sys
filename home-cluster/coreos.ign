@@ -21,9 +21,6 @@
           "www-data"
         ],
         "name": "googol",
-        "noCreateHome": false,
-        "noUserGroup": false,
-        "primaryGroup": "googol",
         "sshAuthorizedKeys": [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop"
         ],
