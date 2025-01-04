@@ -6,5 +6,7 @@ rpm-ostree install --assumeyes nfs-utils \
   cockpit-system cockpit-ostree cockpit-podman cockpit-storaged cockpit-networkmanager cockpit-machines cockpit-selinux cockpit-files
 podman container runlabel --name cockpit-ws RUN quay.io/cockpit/ws
 podman container runlabel INSTALL quay.io/cockpit/ws
-systemctl enable libvirtd.service
-systemctl enable cockpit.servic
+
+# Enable units after rebooting
+# systemctl enable libvirtd.service
+# systemctl enable cockpit.service
