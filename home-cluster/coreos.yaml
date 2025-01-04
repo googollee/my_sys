@@ -36,6 +36,11 @@ storage:
         - /dev/sdb
         - /dev/sdc
         - /dev/sdd
+  filesystems:
+    - path: /var/mnt/data
+      device: /dev/md/data
+      format: none
+      with_mount_unit: true
   files:
     - path: /etc/hostname
       mode: 0644
