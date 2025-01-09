@@ -71,7 +71,7 @@
         "path": "/etc/samba/smb.conf",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/2xU74sjRRD93n9FQYTTDyar3t7BQUAXQURyd+wqIssx1HTXJO12dzVVNcnGv156ZnK7e/opzHv1472q6qzgjgg092vPZVjTI+aaCAYWQMgsBIEMY6IALSDuYYiJgMWtQAgD2OEpHTKWintauxXcjgVeGalVlPwKjOFIEofzlLCUigqeRcgb4GDUap55hMwhDpECRFu7lVvBezZ651Zwt7v5riWFqNg3Sf0ZAg04JlvD74eokAmLgk+Riimcoh14NNCxVhabXN3tbr6f5d/tbn4AFILCkLjsSaBVbVI9l9JUGTdvAb5+avTN2rn7feIe0yeXY4EqbOw5wXaq7WLxaQwEWxDaRzU5u0LWR1YomBteUF0O5el7pp2SHElATWLZz3GgmHuEmXH7kdQAveexWAvgnsPZTWWElNOxbSaQwBZ6j2pwYDVIuf20cRR17jgocP83eVPYwiBjtNaSMGv3iGbi3AS+o+I5XJRYPNKCZzIMaAjbJe+Cc6A2hR36u6Z6gStrfOyEFrNn0oU4knGHtSYKPLbBN0MLVwbt0JM+x06xUheLUbHIBVM6d4kG6/qE5aGTgeXhRf1AiYw6ytXOHYZ2t/oi4B8S7hrcxbAQ7sTysBceK2zhzw+3v/1y++GPj07JjxLtDFsYlcS5iqqhhx79A5WWbKFXzM5VicXmofmx6vztsV52PYGJMcDEkFwkNQK4NmsNEjw5t4JfixqmNJ/Bt623HlBIoaJ/wP38UJfzfnZ5GzK/mXI2TznTE3Xu/tL4k/OcM02X9FNK8HHBXUU7tCJHlI3lOnvAeUN/NalCaAQZtQ386s3VleuFT0pLzHu+dPnqeY+lPvws8fhlmxT7RW9Y2JNEI0hRW+qPs4TQ3pswmxtYPMFlUc/o/4h789qF2P5iWM6f0bdvr527n8byXOHuDDsKET9Ly8U27dQ3eYInTYvJtrMXrhtQxz5Ff9noF0pe/6+S6+uXVqf7+jcAAP//pEkEkJYFAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/2xU74sjRRD93n9FQYTTDyar3t7BQUAXQURyd+wqIssx1HTXJO12dzVVNcnGv156ZnK7e/opzHv1472q6qzgjgg092vPZVjTI+aaCAYWQMgsBIEMY6IALSDuYYiJgMWtQAgD2OEpHTKWintauxXcjgVeGalVlPwKjOFIEofzlLCUigqeRcgb4GDUap55hMwhDpECRFu7lVvBezZ651Zwt7v5riWFqNg3Sf0ZAg04JlvD74eokAmLgk+Riimcoh14NNCxVhabXN3tbr6f5d/tbn4AFILCkLjsSaBVbVI9l9JUGTdvAb5+avTN2rn7feIe0yeXY4EqbOw5wXaq7WLxaQwEWxDaRzU5u0LWR1YomBteUF0O5el7pp2SHElATWLZz3GgmHuEmXH7kdQAveexWAvgnsPZTWWElNOxbSaQwBZ6j2pwYDVIuf20cRR17jgocP83eVPYwiBjtNaSMGv3iGbi3AS+o+I5XJRYPNKCZzIMaAjbJe+Cc6A2hR36u6Z6gStrfOyEFrNn0oU4knGHtSYKPLbBN0MLVwbt0JM+x06xUheLUbHIBVM6d4kG6/qE5aGTgeXhRf1AiYw6ytXOHYZ2t/oi4B8S7hrcxbAQ7sTysBceK2zhzw+3v/1y++GPj07JjxLtDFsYlcS5iqqhhx79A5WWbKFXzM5VicXmofmx6vztsV52PYGJMcDEkFwkNQK4NmsNEjw5t4JfixqmNJ/Bt623HlBIoaJ/wP38UJfzfnZ5GzK/mXI2TznTE3Xu/tL4k/OcM02X9FNK8HHBXUU7tCJHlI3lOnvAeUN/NalCaAQZtQ386s3VleuFT0pLzHu+dPnqeY+lPvws8fhlmxT7RW9Y2JNEI0hRW+qPs4TQ3pswmxtYPMFlUc/o/4h789qF2P5iWM6f0bdvr527zxQiPle4O8OuYZ+l5WKbduqbKXTWtJhsO3vhugF17FP0l41+oeT1/yq5vn5pdbqvfwMAAP//OWTKw5YFAAA="
         },
         "mode": 420
       },
@@ -88,6 +88,14 @@
         "contents": {
           "compression": "",
           "source": "data:;base64,IyEvYmluL3NoCgpjdXJsIC1vIC90bXAvazNzLnNoIGh0dHBzOi8vZ2V0Lmszcy5pbwpjaG1vZCAreCAvdG1wL2szcy5zaApLM1NfQ09ORklHX0ZJTEU9L2V0Yy9yYW5jaGVyL2szcy9jb25maWcueWFtbCAvdG1wL2szcy5zaAo="
+        },
+        "mode": 493
+      },
+      {
+        "path": "/home/googol/start_smb.sh",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/4TOQYrDMAyF4X1OoWEWWWVMDpA7zA2MbGuSgG0FSdOku96hN+xJSmlLobR0J8T/wfv+cmGuTqem0f/EoHs1KtEyUMWQCbSEHyXZzZGgPu7nWkgNxT7kZEqBOUP3C4oloKdtYTGPOXvhoX/xXYf+rgtWHAn+IlejzeB0OKLdiE4o5A1aV6q5hIauUJqxveLLPhaKXN8VWsKCqmuCDmFkHjk35wAAAP//KyC3uB4BAAA="
         },
         "mode": 493
       },
