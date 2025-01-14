@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+  labels:
+    app: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      terminationGracePeriodSeconds: 3600
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+      containers:
+      - name: ollama
+        image: ollama/ollama:rocm
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 11434
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /.ollama
+          name: data
+        - mountPath: /dev/dri
+          name: dev-dri
+      volumes:
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
+      - name: data
+        hostPath:
+          path: /mnt/data/config/ollama
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ollama
+spec:
+  type: ClusterIP
+  selector:
+    app: ollama
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ollama
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "*.zhaohai.li"
+  rules:
+  - host: "ollama-p.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: ollama
+            port:
+              number: 80

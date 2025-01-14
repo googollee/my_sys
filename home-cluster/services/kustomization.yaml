@@ -12,3 +12,4 @@ resources:
   - photos.yaml
   - note.yaml
   - metatube.yaml
+  - ollama.yaml
