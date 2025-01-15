@@ -106,6 +106,14 @@
           "source": "data:;base64,H4sIAAAAAAAC/3yQv3LyQAzEez+FvqE+/AxfkSIzDEX+dGlkWxgNdxKRdCa8fYYAdgom5e78dnW3q39tx9L6vmnsWJJ6GBHoRGY8EBgVnQhk56kGZ0+9Gqn/Zlk8MGdICd1roTP5wsNHAzByAE64Z3AsHcLEFqmg4Ej2A/TaH44cyc8eVGZ5O3CXRx0KygKHGo40zIZQnNQO9+K7XbDfs5AvQcos9WvWO87kzdwugSxkYFUydnT5mGBZnnFyeHnfwmfF85q1vdnt6a+K5+3r2//N5lGoWcGTYJcJqnA44C4uSepUg2VsVnBdpY8MdAUzd5cJh7WTTdzTI+Z2YUa+AwAA///Hagd56AEAAA=="
         },
         "mode": 493
+      },
+      {
+        "path": "/home/googol/install_rocm.sh",
+        "contents": {
+          "compression": "",
+          "source": "data:,%23!%2Fbin%2Fsh%0A%0Arpm-ostree%20install%20rocminfo%20rocm-opencl%20rocm-clinfo%20rocm-hip%20radeontop%0A"
+        },
+        "mode": 493
       }
     ],
     "links": [

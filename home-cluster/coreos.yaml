@@ -76,6 +76,10 @@ storage:
       mode: 0755
       contents:
         local: coreos.files/install_cockpit.sh
+    - path: /home/googol/install_rocm.sh
+      mode: 0755
+      contents:
+        local: coreos.files/install_rocm.sh
   links:
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/Europe/Berlin
