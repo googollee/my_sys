@@ -24,9 +24,9 @@ spec:
         imagePullPolicy: Always
         securityContext:
           privileged: true
-        env:
-        - name: "HSA_OVERRIDE_GFX_VERSION"
-          value: "11.0.2"
+        # env:
+        # - name: "HSA_OVERRIDE_GFX_VERSION"
+          # value: "11.0.2"
         ports:
         - name: http
           containerPort: 11434
