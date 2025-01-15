@@ -22,8 +22,8 @@ spec:
       - name: ollama
         image: ollama/ollama:rocm
         imagePullPolicy: Always
-        securityContext:
-          privileged: true
+        # securityContext:
+          # privileged: true
         # env:
         # - name: "HSA_OVERRIDE_GFX_VERSION"
           # value: "11.0.2"
@@ -34,17 +34,17 @@ spec:
         volumeMounts:
         - mountPath: /.ollama
           name: data
-        - mountPath: /dev/dri
-          name: dev-dri
-        - mountPath: /dev/kfd
-          name: dev-kfd
+        # - mountPath: /dev/dri
+          # name: dev-dri
+        # - mountPath: /dev/kfd
+          # name: dev-kfd
       volumes:
-      - name: dev-dri
-        hostPath:
-          path: /dev/dri
-      - name: dev-kfd
-        hostPath:
-          path: /dev/kfd
+      # - name: dev-dri
+        # hostPath:
+          # path: /dev/dri
+      # - name: dev-kfd
+        # hostPath:
+          # path: /dev/kfd
       - name: data
         hostPath:
           path: /mnt/data/config/ollama
