@@ -16,13 +16,14 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
-        privileged: true
         runAsUser: 1001
         runAsGroup: 1001
       containers:
       - name: ollama
         image: ollama/ollama:rocm
         imagePullPolicy: Always
+        securityContext:
+          privileged: true
         env:
         - name: "HSA_OVERRIDE_GFX_VERSION"
           value: "11.0.2"
