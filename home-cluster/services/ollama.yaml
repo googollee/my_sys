@@ -23,7 +23,8 @@ spec:
         image: ollama/ollama:rocm
         imagePullPolicy: Always
         env:
-        - HSA_OVERRIDE_GFX_VERSION=11.0.2
+        - name: "HSA_OVERRIDE_GFX_VERSION"
+          value: "11.0.2"
         ports:
         - name: http
           containerPort: 11434
