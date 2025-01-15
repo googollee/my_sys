@@ -16,6 +16,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
+        privileged: true
         runAsUser: 1001
         runAsGroup: 1001
       containers:
