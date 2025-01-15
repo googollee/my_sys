@@ -31,10 +31,15 @@ spec:
           name: data
         - mountPath: /dev/dri
           name: dev-dri
+        - mountPath: /dev/kfd
+          name: dev-kfd
       volumes:
       - name: dev-dri
         hostPath:
           path: /dev/dri
+      - name: dev-kfd
+        hostPath:
+          path: /dev/kfd
       - name: data
         hostPath:
           path: /mnt/data/config/ollama
