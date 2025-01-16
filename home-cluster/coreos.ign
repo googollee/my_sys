@@ -103,7 +103,7 @@
         "path": "/home/googol/install_cockpit.sh",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/3yQv3LyQAzEez+FvqE+/AxfkSIzDEX+dGlkWxgNdxKRdCa8fYYAdgom5e78dnW3q39tx9L6vmnsWJJ6GBHoRGY8EBgVnQhk56kGZ0+9Gqn/Zlk8MGdICd1roTP5wsNHAzByAE64Z3AsHcLEFqmg4Ej2A/TaH44cyc8eVGZ5O3CXRx0KygKHGo40zIZQnNQO9+K7XbDfs5AvQcos9WvWO87kzdwugSxkYFUydnT5mGBZnnFyeHnfwmfF85q1vdnt6a+K5+3r2//N5lGoWcGTYJcJqnA44C4uSepUg2VsVnBdpY8MdAUzd5cJh7WTTdzTI+Z2YUa+AwAA///Hagd56AEAAA=="
+          "source": "data:;base64,H4sIAAAAAAAC/3yQv3LyQAzEez+FvqE+/AxfkSIzDEX+dGnkszAa7iQiySa8fYYAdgom5e78dnW3q39tx9L6vmnsWJN6GBHoRGbcExhVnQhk52kMLp6yGqn/Zlk8sBRICd3HSmfyhYePBmDgAM9GJIAT7hkca4cwsUWqKDiQ/XBZ8+HIkfzsQXWWtzt3edS+oixwqOFA/WwIxUntcC++2xXznoV8CVJhGb9mveNC3sztEshCBjZKwY4u/xOsyzNODi/vW/gc8bxmbW92e/qr4nn7+vZ/s3kUalbwJNgVglE4HHAXlyR1qsEyNCu4rpKjAF3Bwt1lwn7tZBNnesTcLszIdwAAAP//mdqIou8BAAA="
         },
         "mode": 493
       },
@@ -111,7 +111,7 @@
         "path": "/home/googol/install_rocm.sh",
         "contents": {
           "compression": "",
-          "source": "data:,%23!%2Fbin%2Fsh%0A%0Arpm-ostree%20install%20rocminfo%20rocm-opencl%20rocm-clinfo%20rocm-hip%20radeontop%0A"
+          "source": "data:,%23!%2Fbin%2Fsh%0A%0Arpm-ostree%20install%20rocminfo%20rocm-opencl%20rocm-clinfo%20rocm-hip%20radeontop%0A%0Aecho%20HSA_OVERRIDE_GFX_VERSION%3D11.0.0%0A"
         },
         "mode": 493
       }
