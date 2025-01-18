@@ -16,9 +16,7 @@
           "docker",
           "wheel",
           "sudo",
-          "adm",
-          "systemd-journal",
-          "www-data"
+          "systemd-journal"
         ],
         "name": "googol",
         "sshAuthorizedKeys": [
@@ -126,11 +124,9 @@
       {
         "devices": [
           "/dev/sda",
-          "/dev/sdb",
-          "/dev/sdc",
-          "/dev/sdd"
+          "/dev/sdb"
         ],
-        "level": "raid10",
+        "level": "raid1",
         "name": "data"
       }
     ]

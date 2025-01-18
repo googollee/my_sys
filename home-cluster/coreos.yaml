@@ -15,9 +15,7 @@ passwd:
         - docker
         - wheel
         - sudo
-        - adm
         - systemd-journal
-        - www-data
     - name: www-data
       system: true
       no_create_home: true
@@ -35,12 +33,10 @@ systemd:
 storage:
   raid:
     - name: data
-      level: raid10
+      level: raid1
       devices:
         - /dev/sda
         - /dev/sdb
-        - /dev/sdc
-        - /dev/sdd
   files:
     - path: /etc/hostname
       mode: 0644
