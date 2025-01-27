@@ -16,8 +16,8 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
       - name: photos
         image: viktorstrate/photoview:sha-5438fbb
