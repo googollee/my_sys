@@ -20,7 +20,7 @@ spec:
         runAsGroup: 1001
       containers:
       - name: photos
-        image: photoview/photoview:2
+        image: photoview/photoview:sha-bdb2aef
         imagePullPolicy: Always
         env:
         - name: PHOTOVIEW_LISTEN_IP
