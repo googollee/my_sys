@@ -28,7 +28,7 @@ spec:
         - name: PHOTOVIEW_LISTEN_PORT
           value: "80"
         - name: PHOTOVIEW_VIDEO_HARDWARE_ACCELERATION
-          value: qsv
+          value: vaapi
         - name: PHOTOVIEW_DATABASE_DRIVER
           value: sqlite
         - name: PHOTOVIEW_SQLITE_PATH
