@@ -20,7 +20,7 @@ spec:
         runAsGroup: 1001
       containers:
       - name: photos
-        image: viktorstrate/photoview:sha-5438fbb
+        image: photoview/photoview:2
         imagePullPolicy: IfNotPresent
         env:
         - name: PHOTOVIEW_LISTEN_IP
