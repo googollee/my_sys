@@ -21,7 +21,7 @@ spec:
       containers:
       - name: photos-test
         image: ghcr.io/googollee/photoview:sha-0e2827a
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0

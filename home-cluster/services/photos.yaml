@@ -21,7 +21,7 @@ spec:
       containers:
       - name: photos
         image: photoview/photoview:2
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         env:
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0
