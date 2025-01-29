@@ -40,8 +40,8 @@ local windowMoving = {
 -- spoon.RecursiveBinder.escapeKey = {{}, 'escape'}  -- Press escape to abort
 -- hs.hotkey.bind({'shift'}, 'space', spoon.RecursiveBinder.recursiveBind(toSingleKey(windowMoving)))
 
-winModal = hs.hotkey.modal.new('shift', 'space')
-winModal:bind('', 'escape', function() k:exit() end)
+winModal = hs.hotkey.modal.new('shift', 'space', 'Moving the window...')
+winModal:bind('', 'escape', function() winModal:exit() end)
 for key, f in pairs(windowMoving) do
   winModal:bind('', key[1], key[2], function()
     f()
