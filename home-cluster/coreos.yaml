@@ -46,6 +46,10 @@ storage:
       mode: 0644
       contents:
         local: coreos.files/updates-strategy.toml
+    - path: /etc/systemd/system/raid-check.timer.d/override.conf
+      mode: 0644
+      contents:
+        local: coreos.files/raid-check.timer.override
     - path: /etc/ssh/sshd_config.d/02-enable-passwords.conf
       mode: 0644
       contents:

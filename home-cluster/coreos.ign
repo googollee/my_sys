@@ -57,6 +57,14 @@
         "mode": 420
       },
       {
+        "path": "/etc/systemd/system/raid-check.timer.d/override.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,%5BTimer%5D%0AOnCalendar%3D%0AOnCalendar%3DMon..Sun%20*-*-01%2001%3A00%3A00%0A"
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/ssh/sshd_config.d/02-enable-passwords.conf",
         "contents": {
           "compression": "",
