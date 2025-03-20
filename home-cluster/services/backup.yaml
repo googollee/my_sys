@@ -14,8 +14,8 @@ spec:
         spec:
           containers:
           - name: rclone
-            image: rclone/rclone:1.66
-            imagePullPolicy: IfNotPresent
+            image: rclone/rclone:latest
+            imagePullPolicy: Always
             command: ["/bin/sh"]
             args:
             - -c
