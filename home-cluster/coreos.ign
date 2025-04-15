@@ -44,7 +44,7 @@
         "path": "/etc/hostname",
         "contents": {
           "compression": "",
-          "source": "data:,coreos"
+          "source": "data:,nas"
         },
         "mode": 420
       },

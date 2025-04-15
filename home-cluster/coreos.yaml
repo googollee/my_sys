@@ -41,7 +41,7 @@ storage:
     - path: /etc/hostname
       mode: 0644
       contents:
-        inline: coreos
+        inline: nas
     - path: /etc/zincati/config.d/55-updates-strategy.toml
       mode: 0644
       contents:
