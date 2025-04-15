@@ -1,3 +1,2 @@
 [Timer]
-OnCalendar=
 OnCalendar=Mon..Sun *-*-01 01:00:00

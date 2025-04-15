@@ -60,7 +60,7 @@
         "path": "/etc/systemd/system/raid-check.timer.d/override.conf",
         "contents": {
           "compression": "",
-          "source": "data:,%5BTimer%5D%0AOnCalendar%3D%0AOnCalendar%3DMon..Sun%20*-*-01%2001%3A00%3A00%0A"
+          "source": "data:,%5BTimer%5D%0AOnCalendar%3DMon..Sun%20*-*-01%2001%3A00%3A00%0A"
         },
         "mode": 420
       },
@@ -69,22 +69,6 @@
         "contents": {
           "compression": "",
           "source": "data:,PasswordAuthentication%20yes%0A"
-        },
-        "mode": 420
-      },
-      {
-        "path": "/etc/modules-load.d/modules.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,nct6775"
-        },
-        "mode": 420
-      },
-      {
-        "path": "/etc/modprobe.d/nct6775.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,options%20nct6775%20force_id%3D0xd801"
         },
         "mode": 420
       },
