@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 3600
       containers:
       - name: metatube
-        image: metatube/metatube-server
+        image: ghcr.io/metatube-community/metatube-server:latest
         imagePullPolicy: Always
         ports:
         - name: http
