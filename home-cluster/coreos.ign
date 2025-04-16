@@ -101,7 +101,7 @@
         "path": "/home/googol/start_smb.sh",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/4TOQYrDMAyF4X1OoWEWWWVMDpA7zA2MbGuSgG0FSdOku96hN+xJSmlLobR0J8T/wfv+cmGuTqem0f/EoHs1KtEyUMWQCbSEHyXZzZGgPu7nWkgNxT7kZEqBOUP3C4oloKdtYTGPOXvhoX/xXYf+rgtWHAn+IlejzeB0OKLdiE4o5A1aV6q5hIauUJqxveLLPhaKXN8VWsKCqmuCDmFkHjk35wAAAP//KyC3uB4BAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/4TOQYrDMAwF0H1OoWEWmRlITA4Q5gq9gZFtNQnYVrDUJr19CU0ptIXuhHj/87+/jJuykbGq5BQY5CJKyWsEyugigSTXCpXz5Any437WhUSx6AdOKuSYIzQHEEwOLa0zF7UYoy3cd2++S9/d0wkzDgRHz1lpVWgQGt0jMmIhq1CblNUEVDSJwoQ/pv37/a9vFdtKLuQ5v7hdSHIziixhKx+YB47VNQAA//+tS4m7JAEAAA=="
         },
         "mode": 493
       },
