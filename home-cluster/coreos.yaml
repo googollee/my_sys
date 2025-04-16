@@ -31,12 +31,6 @@ systemd:
       enabled: false
       contents_local: coreos.files/var-mnt-data.mount
 storage:
-  raid:
-    - name: data
-      level: raid1
-      devices:
-        - /dev/sda
-        - /dev/sdb
   files:
     - path: /etc/hostname
       mode: 0644

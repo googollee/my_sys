@@ -127,16 +127,6 @@
         "path": "/etc/localtime",
         "target": "../usr/share/zoneinfo/Europe/Berlin"
       }
-    ],
-    "raid": [
-      {
-        "devices": [
-          "/dev/sda",
-          "/dev/sdb"
-        ],
-        "level": "raid1",
-        "name": "data"
-      }
     ]
   },
   "systemd": {
