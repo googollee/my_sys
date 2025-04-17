@@ -8,7 +8,5 @@ resources:
   - ha.yaml
   - jellyfin.yaml
   - qbittorrent.yaml
-  - nodered.yaml
   - photos.yaml
-  - note.yaml
   - metatube.yaml
