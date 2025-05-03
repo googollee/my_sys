@@ -5,6 +5,7 @@ resources:
   - cockpit-proxy.yaml
   - backup.yaml
   - ha.yaml
+  - gotosocial.yaml
   - jellyfin.yaml
   - qbittorrent.yaml
   - photos.yaml
