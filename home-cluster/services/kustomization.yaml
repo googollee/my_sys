@@ -4,7 +4,6 @@ namespace: default
 resources:
   - cockpit-proxy.yaml
   - backup.yaml
-  - gotosocial.yaml
   - ha.yaml
   - jellyfin.yaml
   - qbittorrent.yaml
