@@ -11,9 +11,23 @@ spec:
     - --entryPoints.wansecure.address=:8444/tcp
     - --entryPoints.wansecure.http.tls=true
     - --entryPoints.wansecure.forwardedHeaders.insecure=true
+    - --api=true
+    - --api.insecure=true
     logs:
       access:
         enabled: true
+        format: json
+        fields:
+          general:
+            defaultMode: keep
+          headers:
+            defaultMode: drop
+            names:
+              User-Agent: keep
+              Content-Type: keep
+              RequestHost: keep
+      general:
+        format: json
     providers:
       kubernetesCRD:
         allowExternalNameServices: true

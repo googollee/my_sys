@@ -92,8 +92,8 @@
       {
         "path": "/home/googol/install_k3s.sh",
         "contents": {
-          "compression": "",
-          "source": "data:;base64,IyEvYmluL3NoCgpjdXJsIC1vIC90bXAvazNzLnNoIGh0dHBzOi8vZ2V0Lmszcy5pbwpjaG1vZCAreCAvdG1wL2szcy5zaApLM1NfQ09ORklHX0ZJTEU9L2V0Yy9yYW5jaGVyL2szcy9jb25maWcueWFtbCAvdG1wL2szcy5zaAo="
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/2SMQWuDMBhA7/kV37IdNob5dMoGwk5jFmlpD/0BojE1QZOIidBe+tuL4sG218d77/UFK2XQSUL4OHQQWECve2xjx5wE6X3vUsRGeDYhZQmX2tbweV57ZBsfi7/DPss3RZbv/n9ReI5DabgUw+Qgt+akGnYpdXcXEsGlBcd7eHuX1nlTavGRPuWTPbdXZO1YieW31KKGQAGlQB1GXz8sZCGL0u8kiXF9nQF9XNwCAAD//9JA9ugCAQAA"
         },
         "mode": 493
       },
