@@ -1,33 +1,16 @@
-return function(use)
-  use {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    config = function()
-      require('nvim-treesitter.configs').setup {
-        ensure_installed = 'all',
-        highlight = {
-          enable = true,
-        },
-        incremental_selection = {
-          enable = false,
-        },
-        indent = {
-          enable = true
-        },
-      }
-      vim.wo.foldmethod = 'expr'
-      vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-    end,
-  }
+return function(add, now, later)
+  add({
+    source = 'nvim-treesitter/nvim-treesitter',
+    -- Use 'master' while monitoring updates in 'main'
+    checkout = 'master',
+    monitor = 'main',
+    -- Perform action after every checkout
+    hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
+  })
 
-  use {
-    "Mr-LLLLL/cool-chunk.nvim",
-    event = { "CursorHold", "CursorHoldI" },
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("cool-chunk").setup({})
-    end,
-  }
+  -- Possible to immediately execute code which depends on the added plugin
+  require('nvim-treesitter.configs').setup({
+    ensure_installed = { 'lua', 'vimdoc' },
+    highlight = { enable = true },
+  })
 end

@@ -6,48 +6,55 @@ function M.config_lsp(fn)
   table.insert(langs, fn)
 end
 
-function M.init(use)
-  use {
-    'neovim/nvim-lspconfig',
-    dependencies = { 'hrsh7th/nvim-cmp' },
-    config = function()
-      local function vim_kv_args(args)
-        local arg_strs = {}
-        for key, arg in pairs(args) do
-          table.insert(arg_strs, string.format('%s=%s', key, arg))
-        end
-        return table.concat(arg_strs, " ")
-      end
-
-      local function sign_define(name, args)
-        local arg = vim_kv_args(args)
-        vim.cmd(string.format('sign define %s %s', name, arg))
-      end
-
-      sign_define('LspDiagnosticsSignError',
-        {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
-      sign_define('LspDiagnosticsSignWarning',
-        {text='!', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
-      sign_define('LspDiagnosticsSignInformation',
-        {text='~', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
-      sign_define('LspDiagnosticsSignHint',
-        {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
-
-      for _, fn in ipairs(langs) do
-        fn()
-      end
-    end,
+function M.init(add, now, later)
+  add {
+    source = 'neovim/nvim-lspconfig',
+    depends = { 
+      'hrsh7th/nvim-cmp',
+      'williamboman/mason.nvim',
+    }
   }
 
-  use "ray-x/lsp_signature.nvim"
+  now(function()
+    local function vim_kv_args(args)
+      local arg_strs = {}
+      for key, arg in pairs(args) do
+        table.insert(arg_strs, string.format('%s=%s', key, arg))
+      end
+      return table.concat(arg_strs, " ")
+    end
 
-  use {
-    'simrat39/symbols-outline.nvim',
-    config = function()
-      local util = require('util')
-      util.noremap('n', '<C-e>', ':SymbolsOutline<CR>')
-    end,
+    local function sign_define(name, args)
+      local arg = vim_kv_args(args)
+      vim.cmd(string.format('sign define %s %s', name, arg))
+    end
+
+    sign_define('LspDiagnosticsSignError',
+      {text='x', texthl='LspDiagnosticsError', linehl='', numhl=''})
+    sign_define('LspDiagnosticsSignWarning',
+      {text='!', texthl='LspDiagnosticsWarning', linehl='', numhl=''})
+    sign_define('LspDiagnosticsSignInformation',
+      {text='~', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
+    sign_define('LspDiagnosticsSignHint',
+      {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
+
+    for _, fn in ipairs(langs) do
+      fn()
+    end
+  end)
+
+  add {
+    source = "ray-x/lsp_signature.nvim",
   }
+
+  add {
+    source = 'simrat39/symbols-outline.nvim',
+  }
+
+  now(function()
+    local util = require('util')
+    util.noremap('n', '<C-e>', ':SymbolsOutline<CR>')
+  end)
 end
 
 function M.on_attach()

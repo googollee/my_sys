@@ -1,150 +1,63 @@
-return function(use)
+return function(add, now, later)
   util = require('util')
 
-  use 'tpope/vim-sensible'
+  require('mini.basics').setup()
 
-  use {
-    'rcarriga/nvim-notify',
-    lazy = false,
-    config = function()
-      require("notify").setup {
-        stages = 'fade_in_slide_out',
-        background_colour = 'Normal',
-        timeout = 3000,
-        icons = {
-          ERROR = "Error",
-          WARN = "Warn",
-          INFO = "Info",
-          DEBUG = "Debug",
-          TRACE = "Trace",
-        },
-      }
-      vim.notify = require("notify")
-    end,
-  }
+  add { source = 'chriskempson/vim-tomorrow-theme' }
+  now(function()
+    -- vim.cmd 'set termguicolors'
+    vim.cmd 'color Tomorrow-Night'
+    vim.cmd 'hi LspSignatureActiveParameter guifg=NONE ctermfg=NONE guibg=#1d1f21 ctermbg=53 gui=Bold,underline,Italic cterm=Bold,underline,Italic guisp=#fbec9f'
+  end)
 
-  use {
-    'Raimondi/delimitMate',
-    config = function()
-      vim.g.delimitMate_expand_cr = 1
-      vim.g.delimitMate_expand_space = 1
-      vim.g.delimitMate_jump_expansion = 1
-    end,
-  }
+  local notify = require('mini.notify')
+  notify.setup()
+  vim.notify = notify.make_notify({
+    ERROR = {duration = 5000},
+    WARN  = {duration = 4000},
+    INFO  = {duration = 3000},
+  })
 
-  use {
-    'ggandor/leap.nvim',
-    config = function()
-      local leap = require('leap')
-      leap.add_default_mappings()
-      leap.opts.safe_labels = {}
+  require('mini.pairs').setup({
+    mappings = {
+      ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].', register = { cr = false } },
+      ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].', register = { cr = false } },
+      ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].', register = { cr = false } },
 
-      -- Bidirectional search
-      util.noremap('n', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
-      util.noremap('v', 's', ':lua require("leap").leap { target_windows = { vim.fn.win_getid() } }<CR>')
-      vim.keymap.del({'x', 'o'}, 'x')
-      vim.keymap.del({'x', 'o'}, 'X')
-    end
-  }
+      [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].', register = { cr = false } },
+      [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].', register = { cr = false } },
+      ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].', register = { cr = false } },
 
-  use {
-    'nathanaelkane/vim-indent-guides',
-    config = function()
-      vim.cmd([[
-        let g:indent_guides_enable_on_vim_startup = 1
-        let g:indent_guides_auto_colors = 0
-        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=235 ctermfg=darkgray
-        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=236 ctermfg=darkgray
-      ]])
-    end
-  }
+      ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
+      ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
+      ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },
+    },
+  })
 
-  use {
-    'nvim-lualine/lualine.nvim',
-    config = function()
-      require('lualine').setup {
-        options = {
-          icons_enabled = false,
-          theme = 'auto',
-          component_separators = { left = '', right = ''},
-          section_separators = { left = '', right = ''},
-        },
-      }
-    end,
-  }
+  require('mini.jump2d').setup()
 
-  use {
-    'chriskempson/vim-tomorrow-theme',
-    config = function()
-      -- vim.cmd 'set termguicolors'
-      vim.cmd 'color Tomorrow-Night'
-      vim.cmd 'hi LspSignatureActiveParameter guifg=NONE ctermfg=NONE guibg=#1d1f21 ctermbg=53 gui=Bold,underline,Italic cterm=Bold,underline,Italic guisp=#fbec9f'
-    end,
-  }
+  require('mini.comment').setup()
 
-  use {
-    'scrooloose/nerdcommenter',
-    config = function()
-      vim.g.NERDSpaceDelims = 1
+  require('mini.icons').setup({ style = 'ascii' })
 
-      util.noremap('n', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
-      util.noremap('v', '<leader>,', ':call nerdcommenter#Comment(0, "toggle")<CR>')
-    end,
-  }
+  require('mini.indentscope').setup()
 
-  use {
-    'folke/trouble.nvim',
-    config = function()
-      require("trouble").setup({
-        position = "bottom",
-        icons = true,
-        mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
-        fold_open = "v",
-        fold_closed = ">",
-        indent_lines = true,
-        group = true,
-        padding = true,
-        action_keys = {
-          close = "q", -- close the list
-          cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
-          refresh = "r", -- manually refresh
-          jump = { "<cr>", "<tab>" }, -- jump to the diagnostic or open / close folds
-          open_split = { "<c-x>" }, -- open buffer in new split
-          open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
-          open_tab = { "<c-t>" }, -- open buffer in new tab
-          jump_close = { "o" }, -- jump to the diagnostic and close the list
-          toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
-          toggle_preview = "P", -- toggle auto_preview
-          hover = "K", -- opens a small popup with the full multiline message
-          preview = "p", -- preview the diagnostic location
-          close_folds = { "zM", "zm" }, -- close all folds
-          open_folds = { "zR", "zr" }, -- open all folds
-          toggle_fold = { "zA", "za" }, -- toggle fold of current file
-          previous = "k", -- preview item
-          next = "j", -- next item
-        },
-        auto_open = false, -- automatically open the list when you have diagnostics
-        auto_close = false, -- automatically close the list when you have no diagnostics
-        auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
-        auto_fold = false, -- automatically fold a file trouble list at creation
-        auto_jump = { "lsp_definitions" }, -- for the given modes, automatically jump if there is only a single result
-        signs = {
-          error = "x",
-          warning = "!",
-          hint = "?",
-          information = "i",
-          other = "-",
-        },
-        use_diagnostic_signs = false, -- enabling this will use the signs defined in your lsp client
-      })
+  require('mini.git').setup()
 
-      util.noremap("n", "<Leader>xx", "<Cmd>TroubleToggle<CR>")
-      util.noremap("n", "<Leader>xw", "<Cmd>Trouble workspace_diagnostics<CR>")
-      util.noremap("n", "<Leader>xd", "<Cmd>Trouble document_diagnostics<CR>")
-      util.noremap("n", "<Leader>xl", "<Cmd>Trouble loclist<CR>")
-      util.noremap("n", "<Leader>xq", "<Cmd>Trouble quickfix<CR>")
-    end
-  }
+  require('mini.diff').setup({
+    view = {
+      style = vim.opt.number and 'number' or 'sign',
+    },
+  })
+
+  require('mini.statusline').setup()
+  require('mini.tabline').setup()
+
+  require('mini.pick').setup()
+  util.noremap('n', '<C-p>', ':Pick files<CR>')
+  util.noremap('n', '<C-f>', ':Pick grep_live<CR>')
+
+  -- require('mini.completion').setup()
 
   vim.opt.foldenable = false
   vim.opt.number = true
@@ -174,7 +87,6 @@ return function(use)
   vim.opt.updatetime = 1000
   vim.opt.mouse = ''
 
-  local util = require('util')
   local augroup = util.augroup
   local autocmd = util.autocmd
 
@@ -199,7 +111,6 @@ return function(use)
   util.noremap('n', '<C-w>', ':tabnew<CR>')
   util.noremap('n', '<C-u>', ':tabprev<CR>')
   util.noremap('n', '<C-i>', ':tabnext<CR>')
-  util.noremap('n', '<TAB>', ':tabnext<CR>')
   util.noremap('n', '<C-[>', ':cprevious<CR>')
   util.noremap('n', '<C-]>', ':cnext<CR>')
 end
