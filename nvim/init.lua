@@ -15,14 +15,6 @@ end
 -- Set up 'mini.deps' (customize to your liking)
 require('mini.deps').setup({ path = { package = path_package } })
 
-vim.cmd([[
-let g:loaded_perl_provider = 0
-let g:loaded_ruby_provider = 0
-let g:loaded_node_provider = 0
-let g:loaded_python_provider = 0
-let g:loaded_python3_provider = 0
-]])
-
 vim.g.mapleader = ","
 
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later

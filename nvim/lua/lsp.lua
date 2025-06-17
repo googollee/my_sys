@@ -1,10 +1,5 @@
 return function(add, now, later)
-  add {
-    source = 'neovim/nvim-lspconfig',
-    depends = { 
-      'williamboman/mason.nvim',
-    },
-  }
+  add { source = 'neovim/nvim-lspconfig' }
 
   local function vim_kv_args(args)
     local arg_strs = {}
@@ -27,10 +22,6 @@ return function(add, now, later)
     {text='~', texthl='LspDiagnosticsInformation', linehl='', numhl=''})
   sign_define('LspDiagnosticsSignHint',
     {text='?', texthl='LspDiagnosticsHint', linehl='', numhl=''})
-
-  add {
-    source = "ray-x/lsp_signature.nvim",
-  }
 
   add { source = 'onsails/lspkind.nvim' }
   require('lspkind').init({

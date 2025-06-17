@@ -117,12 +117,6 @@ return function(add, now, later)
   vim.cmd 'filetype plugin on'
   vim.cmd 'filetype indent on'
 
-  vim.g.mapleader = ','
-
-  util.noremap('n', '<C-h>', ':wincmd h<CR>')
-  util.noremap('n', '<C-j>', ':wincmd j<CR>')
-  util.noremap('n', '<C-k>', ':wincmd k<CR>')
-  util.noremap('n', '<C-l>', ':wincmd l<CR>')
   util.noremap('n', '<C-w>', ':tabnew<CR>')
   util.noremap('n', '<C-u>', ':tabprev<CR>')
   util.noremap('n', '<C-i>', ':tabnext<CR>')
