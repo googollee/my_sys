@@ -55,9 +55,9 @@ return function(add, now, later)
     format = function(buf_id, label)
       local suffix = vim.bo[buf_id].modified and '+' or ''
       if buf_id == vim.api.nvim_get_current_buf() then
-        return string.format('*%s%s*', label, suffix)
+        return string.format('*%s%s*', suffix, label)
       end
-      return string.format(' %s%s ', label, suffix)
+      return string.format(' %s%s ', suffix, label)
     end,
   })
 
