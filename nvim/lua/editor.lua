@@ -51,7 +51,15 @@ return function(add, now, later)
   })
 
   require('mini.statusline').setup()
-  require('mini.tabline').setup()
+  require('mini.tabline').setup({
+    format = function(buf_id, label)
+      local suffix = vim.bo[buf_id].modified and '+' or ''
+      if buf_id == vim.api.nvim_get_current_buf() then
+        return string.format('*%s%s*', label, suffix)
+      end
+      return string.format(' %s%s ', label, suffix)
+    end,
+  })
 
   require('mini.pick').setup()
   util.noremap('n', '<C-p>', ':Pick files<CR>')
@@ -60,6 +68,11 @@ return function(add, now, later)
   vim.opt.completeopt = "menuone,noselect,fuzzy"
   vim.opt.ignorecase = true
   require('mini.completion').setup()
+  local map_multistep = require('mini.keymap').map_multistep
+  map_multistep('i', '<Tab>',   { 'pmenu_next' })
+  map_multistep('i', '<S-Tab>', { 'pmenu_prev' })
+
+  require('mini.map').setup()
 
   vim.opt.foldenable = false
   vim.opt.number = true
