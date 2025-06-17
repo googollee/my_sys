@@ -18,13 +18,13 @@ return function(add, now, later)
 
   require('mini.pairs').setup({
     mappings = {
-      ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].', register = { cr = false } },
-      ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].', register = { cr = false } },
-      ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].', register = { cr = false } },
+      ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].' },
+      ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].' },
+      ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].' },
 
-      [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].', register = { cr = false } },
-      [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].', register = { cr = false } },
-      ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].', register = { cr = false } },
+      [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
+      [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
+      ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
 
       ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
       ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
@@ -34,7 +34,14 @@ return function(add, now, later)
 
   require('mini.jump2d').setup()
 
-  require('mini.comment').setup()
+  require('mini.comment').setup({
+    mappings = {
+      comment = '<leader>,',
+      comment_line = '<leader>,',
+      comment_visual = '<leader>,',
+      textobject = '<leader>,',
+    },
+  })
 
   require('mini.icons').setup({ style = 'ascii' })
 
@@ -76,8 +83,7 @@ return function(add, now, later)
   vim.opt.number = true
   vim.opt.showmatch = true
   vim.opt.cursorline = true
-  vim.opt.expandtab = true
-  vim.opt.ignorecase = true
+  vim.opt.expandtab = true vim.opt.ignorecase = true
   vim.opt.smartcase = true
   vim.opt.list = true
   vim.opt.listchars:append('eol:↴')
