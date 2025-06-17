@@ -8,28 +8,14 @@ return function(add, now, later)
     vim.cmd 'hi LspSignatureActiveParameter guifg=NONE ctermfg=NONE guibg=#1d1f21 ctermbg=53 gui=Bold,underline,Italic cterm=Bold,underline,Italic guisp=#fbec9f'
   end)
 
+  add { source = 'jiangmiao/auto-pairs' }
+
   local notify = require('mini.notify')
   notify.setup()
   vim.notify = notify.make_notify({
     ERROR = {duration = 5000},
     WARN  = {duration = 4000},
     INFO  = {duration = 3000},
-  })
-
-  require('mini.pairs').setup({
-    mappings = {
-      ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\].' },
-      ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\].' },
-      ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\].' },
-
-      [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
-      [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
-      ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
-
-      ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
-      ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
-      ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },
-    },
   })
 
   require('mini.jump2d').setup()
