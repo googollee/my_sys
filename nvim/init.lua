@@ -31,7 +31,7 @@ require('editor')(add, now, later)
 
 require('treesitter')(add, now, later)
 require('lsp').init(add, now, later)
-require('nvim-cmp').init(add, now, later)
+-- require('nvim-cmp').init(add, now, later)
 
 require('lang/markdown')(use)
 require('lang/go')(add, now, later)

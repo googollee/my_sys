@@ -57,7 +57,9 @@ return function(add, now, later)
   util.noremap('n', '<C-p>', ':Pick files<CR>')
   util.noremap('n', '<C-f>', ':Pick grep_live<CR>')
 
-  -- require('mini.completion').setup()
+  vim.opt.completeopt = "menuone,noselect,fuzzy"
+  vim.opt.ignorecase = true
+  require('mini.completion').setup()
 
   vim.opt.foldenable = false
   vim.opt.number = true
