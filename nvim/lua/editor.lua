@@ -1,6 +1,4 @@
 return function(add, now, later)
-  util = require('util')
-
   require('mini.basics').setup()
 
   add { source = 'chriskempson/vim-tomorrow-theme' }
@@ -62,8 +60,8 @@ return function(add, now, later)
   })
 
   require('mini.pick').setup()
-  util.noremap('n', '<C-p>', ':Pick files<CR>')
-  util.noremap('n', '<C-f>', ':Pick grep_live<CR>')
+  vim.keymap.set('n', '<C-p>', ':Pick files<CR>')
+  vim.keymap.set('n', '<C-f>', ':Pick grep_live<CR>')
 
   vim.opt.completeopt = "menuone,noselect,fuzzy"
   vim.opt.ignorecase = true
@@ -102,11 +100,10 @@ return function(add, now, later)
   vim.opt.updatetime = 1000
   vim.opt.mouse = ''
 
-  local augroup = util.augroup
-  local autocmd = util.autocmd
-
-  augroup('lsp_document_highlight', {
-    autocmd('CursorHold', '<buffer>', 'lua vim.diagnostic.open_float()'),
+  local lsp_hl = vim.api.nvim_create_augroup("lsp_document_highlight", {clear = true})
+  vim.api.nvim_create_autocmd('CursorHold', {
+      command = 'lua vim.diagnostic.open_float()',
+      group = lsp_hl,
   })
 
   -- Color scheme
@@ -117,9 +114,13 @@ return function(add, now, later)
   vim.cmd 'filetype plugin on'
   vim.cmd 'filetype indent on'
 
-  util.noremap('n', '<C-w>', ':tabnew<CR>')
-  util.noremap('n', '<C-u>', ':tabprev<CR>')
-  util.noremap('n', '<C-i>', ':tabnext<CR>')
-  util.noremap('n', '<C-[>', ':cprevious<CR>')
-  util.noremap('n', '<C-]>', ':cnext<CR>')
+  vim.keymap.set('n', '<C-h>', ':wincmd h<CR>')
+  vim.keymap.set('n', '<C-j>', ':wincmd j<CR>')
+  vim.keymap.set('n', '<C-k>', ':wincmd k<CR>')
+  vim.keymap.set('n', '<C-l>', ':wincmd l<CR>')
+  vim.keymap.set('n', '<C-w>', ':tabnew<CR>')
+  vim.keymap.set('n', '<C-u>', ':tabprev<CR>')
+  vim.keymap.set('n', '<C-i>', ':tabnext<CR>')
+  vim.keymap.set('n', '<C-[>', ':cprevious<CR>')
+  vim.keymap.set('n', '<C-]>', ':cnext<CR>')
 end
