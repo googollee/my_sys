@@ -3,7 +3,7 @@ return function(add, now, later)
     source = 'neovim/nvim-lspconfig',
     depends = { 
       'williamboman/mason.nvim',
-    }
+    },
   }
 
   local function vim_kv_args(args)
@@ -32,11 +32,22 @@ return function(add, now, later)
     source = "ray-x/lsp_signature.nvim",
   }
 
-  add {
-    source = 'simrat39/symbols-outline.nvim',
-  }
-  require("symbols-outline").setup()
+  add { source = 'onsails/lspkind.nvim' }
+  require('lspkind').init({
+    mode = 'text',
+  })
 
-  local util = require('util')
-  util.noremap('n', '<C-e>', ':SymbolsOutline<CR>')
+  add { source = 'hedyhli/outline.nvim' }
+  vim.keymap.set('n', '<C-e>', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
+  require('outline').setup({
+    symbols = {
+      icon_fetcher = function(k, buf)
+        if k == 'String' then
+          return ""
+        end
+        return false
+      end,
+      icon_source = 'lspkind',
+    }
+  })
 end
