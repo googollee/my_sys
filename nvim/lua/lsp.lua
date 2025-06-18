@@ -1,6 +1,12 @@
-return function(add, now, later)
-  add { source = 'neovim/nvim-lspconfig' }
+local M = {}
 
+function M.init(add, now, later)
+  add { source = 'neovim/nvim-lspconfig' }
+  add { source = 'onsails/lspkind.nvim' }
+  add { source = 'hedyhli/outline.nvim' }
+end
+
+function M.on_attach(args)
   local function vim_kv_args(args)
     local arg_strs = {}
     for key, arg in pairs(args) do
@@ -41,12 +47,10 @@ return function(add, now, later)
   vim.keymap.set('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   vim.keymap.set('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
-  add { source = 'onsails/lspkind.nvim' }
   require('lspkind').init({
     mode = 'text',
   })
 
-  add { source = 'hedyhli/outline.nvim' }
   vim.keymap.set('n', '<C-e>', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
   require('outline').setup({
     symbols = {
@@ -60,3 +64,5 @@ return function(add, now, later)
     }
   })
 end
+
+return M
