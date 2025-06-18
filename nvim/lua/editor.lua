@@ -113,6 +113,4 @@ return function(add, now, later)
   vim.keymap.set('n', '<C-w>', ':tabnew<CR>')
   vim.keymap.set('n', '<C-u>', ':tabprev<CR>')
   vim.keymap.set('n', '<C-i>', ':tabnext<CR>')
-  vim.keymap.set('n', '<C-[>', ':cprevious<CR>')
-  vim.keymap.set('n', '<C-]>', ':cnext<CR>')
 end

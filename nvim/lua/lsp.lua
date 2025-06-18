@@ -1,8 +1,6 @@
 local M = {}
-
 function M.init(add, now, later)
   add { source = 'neovim/nvim-lspconfig' }
-  add { source = 'onsails/lspkind.nvim' }
   add { source = 'hedyhli/outline.nvim' }
 end
 
@@ -36,9 +34,9 @@ function M.on_attach(args)
   vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   vim.keymap.set('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  vim.keymap.set('n', '[g', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  vim.keymap.set('n', ']g', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover({border="single"})<CR>', opts)
+  vim.keymap.set('n', '[g', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  vim.keymap.set('n', ']g', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
   vim.keymap.set("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
   vim.keymap.set('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   vim.keymap.set('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
@@ -46,10 +44,6 @@ function M.on_attach(args)
   vim.keymap.set('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   vim.keymap.set('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   vim.keymap.set('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-
-  require('lspkind').init({
-    mode = 'text',
-  })
 
   vim.keymap.set('n', '<C-e>', '<cmd>Outline<CR>', { desc = 'Toggle Outline' })
   require('outline').setup({
@@ -60,7 +54,7 @@ function M.on_attach(args)
         end
         return false
       end,
-      icon_source = 'lspkind',
+      icon_source = 'mini.icons',
     }
   })
 end

@@ -6,7 +6,7 @@ return function(add, now, later)
   add { source = 'ray-x/go.nvim' }
 
   vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('my.lsp', {}),
+    group = vim.api.nvim_create_augroup('go.lsp', {}),
     callback = function(args)
       require('lsp').on_attach(args)
       require('go').setup()
