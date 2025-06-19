@@ -109,7 +109,7 @@
         "path": "/home/googol/install_cockpit.sh",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/3yQvZIiMQyE83kKXRGbeYYLLrgqimB/sk1kjxhU2DIryQO8/RYLzGxAbdhdX7fsXv3pI0tv+67TYwnVXImgTqTKA4FSqROB7Cw052whVaVqP1kWc8wZQkCzVuhCtvDw0QGM7DDUdCANsXEezmBJiQRwwj2DYYkIE6uHgoIj6Xcq1XQ4sge7mFOZ5f3qQx7rUFAW2KviSMNsCPmp6uFR/LALpj0L2RKkzNLOs95xJuvmdnFkIQVtkjHS9beCZXnGyeDlfQufDS9rrv3d7k+/Vfzfvr793WyehboV/BOMmaAJuwHu/JqkWKuzjN0Kbqskz0A3MHO8TjisjXTiRM+Y+4UZ+QoAAP//uxCKpv0BAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/3yQO3LzMAyEe50C//xpaZ0hRYrMeFzk0aWBSFjCmAQUgpTs22f8klIkKXf57RLA/39tx9La0DR5TE6tZCLQiXLmQJAp6UQge3O1cDTnNZPad5bFCsYIzqFZTXQiW3n4aAB6LhDUHyi7rnIMRzCfiQRwwoHBMHUIE+fiEgr2lC8pr/4wcnF2skJpkbdf73LUkFBWuGjGnsJiCJVZ8+FefLcT+oGFbA1SZKnHRe85kjVLuxRkoQy5SsSOztsKpnWM2eDlfQefFU8b1vZmt/NfFc+717fH7fanUEN+UHgS7CJBFS4GuC/nMHWqhaW/Eg9gNSiMaDYH6FV7jcvL5W6+RKBrT+TufOSwMcoTe/oVvA2ycF8BAAD//1TNL1MkAgAA"
         },
         "mode": 493
       },
