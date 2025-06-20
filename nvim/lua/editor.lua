@@ -41,16 +41,10 @@ return function(add, now, later)
     },
   })
 
-  require('mini.statusline').setup()
-  require('mini.tabline').setup({
-    format = function(buf_id, label)
-      local suffix = vim.bo[buf_id].modified and '+' or ''
-      if buf_id == vim.api.nvim_get_current_buf() then
-        return string.format('*%s%s*', suffix, label)
-      end
-      return string.format(' %s%s ', suffix, label)
-    end,
-  })
+  add { source = 'crispgm/nvim-tabline' }
+  require('tabline').setup({})
+  vim.opt.showtabline = 2
+  vim.api.nvim_set_hl(0, 'TabLineSel', {ctermfg = 'white'})
 
   require('mini.pick').setup()
   vim.keymap.set('n', '<C-p>', ':Pick files<CR>')
