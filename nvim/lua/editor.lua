@@ -59,6 +59,7 @@ return function(add, now, later)
 
   require('mini.map').setup()
 
+  vim.opt.wrap = true
   vim.opt.foldenable = false
   vim.opt.number = true
   vim.opt.showmatch = true
