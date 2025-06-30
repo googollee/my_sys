@@ -24,6 +24,6 @@ require('editor')(add, now, later)
 require('treesitter')(add, now, later)
 require('lsp').init(add, now, later)
 
-require('lang/markdown')(use)
+require('lang/markdown')(add, now, later)
 require('lang/go')(add, now, later)
-require('lang/google')(use)
+require('lang/google')(add, now, later)
