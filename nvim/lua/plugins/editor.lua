@@ -59,10 +59,22 @@ return {
   },
 
   {
+    'nvim-lualine/lualine.nvim',
+    opts = {
+      options = {
+        icons_enabled = false,
+        theme = 'solarized_light',
+      },
+    },
+  },
+
+  {
     'echasnovski/mini.nvim', 
     version = '*',
     config = function()
-      require('mini.basics').setup()
+      require('mini.basics').setup({
+        use_icons = false,
+      })
       require('mini.jump2d').setup()
       require('mini.comment').setup({
         mappings = {
