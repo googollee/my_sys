@@ -50,7 +50,7 @@ function M.on_attach(args)
         end
         return false
       end,
-      icon_source = 'mini.icons',
+      icon_source = 'lspkind',
     }
   })
 end

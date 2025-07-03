@@ -20,7 +20,7 @@ return {
           end
           return false
         end,
-        icon_source = 'mini.icons',
+        icon_source = 'lspkind',
       }
     },
     lazy = false,
@@ -42,6 +42,13 @@ return {
   },
 
   {
+    'onsails/lspkind.nvim',
+    opts = {
+      mode = 'text',
+    },
+  },
+
+  {
     'echasnovski/mini.nvim', 
     version = '*',
     config = function()
@@ -54,7 +61,6 @@ return {
           textobject = '<leader>,',
         },
       })
-      require('mini.icons').setup({ style = 'ascii' })
       require('mini.indentscope').setup()
       require('mini.git').setup()
       require('mini.diff').setup({
