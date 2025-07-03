@@ -22,7 +22,7 @@ vim.g.mapleader = ","
 vim.g.maplocalleader = "\\"
 
 vim.opt.wrap = true
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = true
 vim.opt.foldenable = false
 vim.opt.number = true
 vim.opt.showmatch = true
