@@ -49,6 +49,16 @@ return {
   },
 
   {
+    'nvim-telescope/telescope.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {},
+    keys = {
+      {'<C-p>', '<cmd>Telescope find_files<cr>'},
+      {'<C-f>', '<cmd>Telescope live_grep<cr>'},
+    },
+  },
+
+  {
     'echasnovski/mini.nvim', 
     version = '*',
     config = function()
@@ -69,9 +79,6 @@ return {
         },
       })
       require('mini.map').setup()
-      require('mini.pick').setup()
-      vim.keymap.set('n', '<C-p>', ':Pick files<CR>')
-      vim.keymap.set('n', '<C-f>', ':Pick grep_live<CR>')
     end,
   },
 }
