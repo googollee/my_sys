@@ -1,8 +1,4 @@
 local M = {}
-function M.init(add, now, later)
-  add { source = 'neovim/nvim-lspconfig' }
-  add { source = 'hedyhli/outline.nvim' }
-end
 
 function M.on_attach(args)
   local function vim_kv_args(args)
