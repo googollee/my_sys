@@ -62,7 +62,8 @@ return {
     'echasnovski/mini.nvim', 
     version = '*',
     config = function()
-      require('mini.jump2d').setup({})
+      require('mini.basics').setup()
+      require('mini.jump2d').setup()
       require('mini.comment').setup({
         mappings = {
           comment = '<leader>,',
