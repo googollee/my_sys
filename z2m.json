@@ -1,18 +1,18 @@
 [
     {
-        "fileVersion": 19476481,
+        "fileVersion": 2576953345,
         "fileSize": 131730,
         "manufacturerCode": 4417,
         "imageType": 513,
         "sha512": "5c78be8c887beb829f3658a65ca66b3d08f0d7750dc65e6bcdad7361274be6ed0db871eeb4d2e4922ced223edce1a9dc2b780c7c8eeb57550da44bb05c038ab8",
-        "url": "https://github.com/pvvx/ZigbeeTLc/raw/refs/heads/master/bin/1141-0208-01293001-ZMHOC401N.zigbee"
+        "url": "https://raw.githubusercontent.com/pvvx/ATC_MiThermometer/refs/heads/master/zigbee_ota/1141-0208-99993001-MHO_C401N_v52.zigbee"
     },
     {
-        "fileVersion": 19476481,
+        "fileVersion": 2576953345,
         "fileSize": 131730,
         "manufacturerCode": 4417,
         "imageType": 520,
         "sha512": "5c78be8c887beb829f3658a65ca66b3d08f0d7750dc65e6bcdad7361274be6ed0db871eeb4d2e4922ced223edce1a9dc2b780c7c8eeb57550da44bb05c038ab8",
-        "url": "https://github.com/pvvx/ZigbeeTLc/raw/refs/heads/master/bin/1141-0208-01293001-ZMHOC401N.zigbee"
+        "url": "https://raw.githubusercontent.com/pvvx/ATC_MiThermometer/refs/heads/master/zigbee_ota/1141-0208-99993001-MHO_C401N_v52.zigbee"
     }
 ]
