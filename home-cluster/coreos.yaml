@@ -27,6 +27,9 @@ passwd:
         - www-data
 systemd:
   units:
+    - name: cpu-governor.service
+      enabled: true
+      contents_local: coreos.files/cpu-governor.service
     - name: var-mnt-data.mount
       enabled: false
       contents_local: coreos.files/var-mnt-data.mount

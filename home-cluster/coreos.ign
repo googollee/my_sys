@@ -132,6 +132,11 @@
   "systemd": {
     "units": [
       {
+        "contents": "[Unit]\nDescription=Enable CPU power saving\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/modprobe cpufreq_conservative\nExecStart=/usr/bin/sh -c '/usr/bin/echo \"conservative\" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "cpu-governor.service"
+      },
+      {
         "contents": "[Unit]\nRequires=systemd-fsck@dev-md-data.service\nAfter=systemd-fsck@dev-md-data.service\n\n[Mount]\nWhere=/var/mnt/data\nWhat=/dev/md/data\nType=none\n\n[Install]\nRequiredBy=local-fs.target\n",
         "enabled": false,
         "name": "var-mnt-data.mount"
