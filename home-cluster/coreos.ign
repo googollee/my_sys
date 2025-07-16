@@ -132,7 +132,7 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nDescription=Enable CPU power saving\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/modprobe cpufreq_conservative\nExecStart=/usr/bin/sh -c '/usr/bin/echo \"conservative\" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Enable CPU power saving\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/modprobe cpufreq_conservative\nExecStart=/usr/bin/sh -c '/usr/bin/echo \"powersave\" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "cpu-governor.service"
       },
