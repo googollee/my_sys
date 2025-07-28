@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caldav-demo
+  labels:
+    app: caldav-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caldav-demo
+  template:
+    metadata:
+      labels:
+        app: caldav-demo
+    spec:
+      terminationGracePeriodSeconds: 3600
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+      containers:
+      - name: caldav-demo
+        image: ghcr.io/kaitask/demoserver:main
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: zoneinfo
+          readOnly: true
+      volumes:
+      - name: zoneinfo
+        hostPath:
+          path: /usr/share/zoneinfo
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caldav-demo
+spec:
+  type: ClusterIP
+  selector:
+    app: caldav-demo
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: caldav-demo
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "*.zhaohai.li"
+  rules:
+  - host: "caldav-demo.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: caldav-demo
+            port:
+              number: 8000

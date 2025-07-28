@@ -12,3 +12,4 @@ resources:
   - metatube.yaml
   - ollama.yaml
   - openwebui.yaml
+  - caldav.yaml
