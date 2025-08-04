@@ -13,3 +13,4 @@ resources:
   - ollama.yaml
   - openwebui.yaml
   - caldav.yaml
+  - zhufeng-vm.yaml

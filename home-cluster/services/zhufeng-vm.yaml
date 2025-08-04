@@ -106,7 +106,7 @@ spec:
     - "*.zhaohai.li"
     secretName: tls-zhaohai-li-ingress-dns
   rules:
-  - host: "zhufeng-vm-console.zhaohai.li"
+  - host: "zhufeng-vm-console-p.zhaohai.li"
     http:
       paths:
       - path: /
