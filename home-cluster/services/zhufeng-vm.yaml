@@ -1,0 +1,117 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zhufeng-vm
+  labels:
+    name: zhufeng-vm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zhufeng-vm
+  template:
+    metadata:
+      labels:
+        app: zhufeng-vm
+    spec:
+      containers:
+      - name: qemu
+        image: qemux/qemu
+        env:
+        - name: BOOT
+          value: "debian"
+        - name: DISK_SIZE
+          value: "32G"
+        ports:
+          - containerPort: 22
+            name: ssh
+            protocol: TCP
+          - containerPort: 8006
+            name: http
+            protocol: TCP
+          - containerPort: 5900
+            name: vnc
+            protocol: TCP
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+        volumeMounts:
+        - mountPath: /storage
+          name: storage
+        - mountPath: /dev/kvm
+          name: dev-kvm
+        - mountPath: /dev/net/tun
+          name: dev-tun
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: storage
+        hostPath:
+          path: /mnt/data/config/zhufeng-vm
+      - hostPath:
+          path: /dev/kvm
+        name: dev-kvm
+      - hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+        name: dev-tun
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zhufeng-vm
+spec:
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8006
+      protocol: TCP
+      targetPort: 8006
+    - name: vnc
+      port: 5900
+      protocol: TCP
+      targetPort: 5900
+  selector:
+    app: zhufeng-vm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zhufeng-vm-ssh
+spec:
+  type: NotePort
+  ports:
+    - name: ssh
+      port: 22
+      protocol: TCP
+      targetPort: 22
+      nodePort: 22022
+  selector:
+    app: zhufeng-vm
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iot
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+spec:
+  tls:
+  - hosts:
+    - "*.zhaohai.li"
+    secretName: tls-zhaohai-li-ingress-dns
+  rules:
+  - host: "zhufeng-vm-console.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zhufeng-vm
+            port:
+              number: 8006
