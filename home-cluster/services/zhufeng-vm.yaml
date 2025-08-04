@@ -1,3 +1,4 @@
+# selinux: $ semanage port -a -t ssh_port_t -p tcp 32022
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -82,7 +83,7 @@ kind: Service
 metadata:
   name: zhufeng-vm-ssh
 spec:
-  type: NotePort
+  type: NodePort
   ports:
     - name: ssh
       port: 22
