@@ -59,7 +59,7 @@ spec:
                 password = cloudflare-token
                 hostname = "zhufeng-vm.zhaohai.li"
                 ttl = 1
-                proxied = true # optional.
+                proxied = false # optional.
             }
         command:
         - "/bin/sh"
