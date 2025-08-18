@@ -10,7 +10,5 @@ resources:
   - qbittorrent.yaml
   - photos.yaml
   - metatube.yaml
-  - ollama.yaml
-  - openwebui.yaml
   - caldav.yaml
   - zhufeng-vm.yaml
