@@ -89,7 +89,7 @@ spec:
       port: 22
       protocol: TCP
       targetPort: 22
-      nodePort: 22022
+      nodePort: 32222
   selector:
     app: dev-vm
 ---
