@@ -1,4 +1,4 @@
-# selinux: $ semanage port -a -t ssh_port_t -p tcp 32022
+# selinux: $ semanage port -a -t ssh_port_t -p tcp 32222
 ---
 apiVersion: apps/v1
 kind: Deployment
