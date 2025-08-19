@@ -61,6 +61,13 @@ spec:
                 ttl = 1
                 proxied = false # optional.
             }
+            provider cloudflare.com:4 {
+                username = zhaohai.li
+                password = cloudflare-token
+                hostname = "dev-vm.zhaohai.li"
+                ttl = 1
+                proxied = false # optional.
+            }
         command:
         - "/bin/sh"
         - "-c"
