@@ -12,3 +12,4 @@ resources:
   - metatube.yaml
   - caldav.yaml
   - zhufeng-vm.yaml
+  - dev-vm.yaml
