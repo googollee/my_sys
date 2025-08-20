@@ -17,7 +17,7 @@ spec:
         app: dev-vm
     spec:
       containers:
-      - name: qemu
+      - name: dev-vm
         image: qemux/qemu
         env:
         - name: BOOT

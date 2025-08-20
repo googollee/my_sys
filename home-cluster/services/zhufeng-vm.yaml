@@ -17,7 +17,7 @@ spec:
         app: zhufeng-vm
     spec:
       containers:
-      - name: qemu
+      - name: zhufeng-vm
         image: qemux/qemu
         env:
         - name: BOOT
