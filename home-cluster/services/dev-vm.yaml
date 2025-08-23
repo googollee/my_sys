@@ -24,6 +24,10 @@ spec:
           value: "debian"
         - name: DISK_SIZE
           value: "64G"
+        - name: RAM_SIZE
+          value: "512M"
+        - name: CPU_CORES
+          value: "1"
         ports:
           - containerPort: 22
             name: ssh
