@@ -25,9 +25,9 @@ spec:
         - name: DISK_SIZE
           value: "64G"
         - name: RAM_SIZE
-          value: "512M"
+          value: "2G"
         - name: CPU_CORES
-          value: "1"
+          value: "2"
         ports:
           - containerPort: 22
             name: ssh
