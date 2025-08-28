@@ -69,7 +69,7 @@ if which lsb_release >/dev/null; then
     alias gemini='/google/bin/releases/gemini-cli/tools/gemini'
   fi
 
-  if [ "$(which gcertfdasfsda)" != "" ]
+  if [ "$(which gcertfdasfsda)" != "" ]; then
     gcertstatus -check_remaining=6h >/dev/null 2>&1
     if [ "$?" != "0" ]; then
       gcert
