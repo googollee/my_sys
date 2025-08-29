@@ -4,6 +4,9 @@ umask 0022
 alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
+if [ $(which minikube) != "" ]; then
+  alias mkubectl='minikube kubectl --'
+fi
 
 export LC_ALL="en_US.UTF-8"
 
@@ -69,7 +72,7 @@ if which lsb_release >/dev/null; then
     alias gemini='/google/bin/releases/gemini-cli/tools/gemini'
   fi
 
-  if [ "$(which gcertfdasfsda)" != "" ]; then
+  if [ "$(which gcert)" != "" ]; then
     gcertstatus -check_remaining=6h >/dev/null 2>&1
     if [ "$?" != "0" ]; then
       gcert
