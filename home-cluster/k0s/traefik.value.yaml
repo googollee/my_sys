@@ -1,0 +1,118 @@
+image:  # @schema additionalProperties: false
+  pullPolicy: Always
+
+deployment:
+  enabled: true
+  kind: Deployment
+  replicas: 1
+
+providers:
+  kubernetesIngress:
+    enabled: true
+  kubernetesGateway:
+    enabled: true
+  kubernetesCRD:
+    enabled: true
+  file:
+    enabled: false
+
+ingressClass:
+  enabled: true
+
+gateway:
+  enabled: true
+  listeners:
+    web:
+      port: 80
+      hostname: ""
+      protocol: HTTP
+      namespacePolicy:
+    # websecure:
+    #   port: 8443
+    #   hostname:
+    #   protocol: HTTPS
+    #   namespacePolicy:
+    #   certificateRefs:
+    #   mode:
+
+gatewayClass:
+  enabled: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: PathPrefix(`/dashboard`)
+    services:
+      - name: api@internal
+        kind: TraefikService
+    entryPoints: ["websecure"]
+
+logs:
+  general:
+    level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
+    noColor: true
+  access:
+    enabled: true
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+ports:
+  traefik:
+    port: 8080
+    expose:
+      default: false
+    exposedPort: 8080
+    protocol: TCP
+  web:
+    port: 80
+    expose:
+      default: true
+    exposedPort: 80
+  websecure:
+    port: 443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+  wansecure:
+    port: 8443
+    expose:
+      default: true
+    exposedPort: 8443
+    protocol: TCP
+  metrics:
+    port: 9100
+    expose:
+      default: false
+    exposedPort: 9100
+    protocol: TCP
+
+service:
+  enabled: true
+  single: true
+  type: LoadBalancer
+
+autoscaling:
+  enabled: false
+
+hostNetwork: false
+
+rbac:
+  enabled: true
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+  readOnlyRootFilesystem: true
+
+podSecurityContext:
+  runAsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
