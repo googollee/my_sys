@@ -4,7 +4,7 @@ umask 0022
 alias ls='ls -G --color=auto'
 alias ll='ls -lh --color=auto'
 alias la='ls -a --color=auto'
-if [ $(which minikube) != "" ]; then
+if [ "$(which minikube)" != "" ]; then
   alias mkubectl='minikube kubectl --'
 fi
 
