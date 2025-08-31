@@ -5,6 +5,15 @@ deployment:
   enabled: true
   kind: Deployment
   replicas: 1
+  additionalVolumes:
+  - name: auth
+    secret:
+      secretName: wanauth
+
+additionalVolumeMounts:
+- name: auth
+  readOnly: true
+  mountPath: /etc/auth
 
 providers:
   kubernetesIngress:
@@ -41,11 +50,31 @@ gatewayClass:
 ingressRoute:
   dashboard:
     enabled: true
+    entryPoints: ["websecure"]
     matchRule: PathPrefix(`/dashboard`)
     services:
-      - name: api@internal
-        kind: TraefikService
-    entryPoints: ["websecure"]
+    - name: api@internal
+      kind: TraefikService
+  wanprivate:
+    enabled: true
+    entryPoints: ["wansecure"]
+    matchRule: Host(`*-p.zhaohai.li`)
+    services:
+    - name: traefik
+      namespace: infra
+      port: websecure
+    middlewares:
+      auth:
+        basicAuth:
+          usersFile: /etc/auth/users
+  wanpublic:
+    enabled: true
+    entryPoints: ["wansecure"]
+    matchRule: Host(`*.zhaohai.li`)
+    services:
+    - name: traefik
+      namespace: infra
+      port: websecure
 
 logs:
   general:
@@ -61,6 +90,28 @@ metrics:
 global:
   checkNewVersion: false
   sendAnonymousUsage: false
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: me@zhaohai.li
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      storage: "/data/acme.json"       # Path to store the certificate information.
+      dnsChallenge:
+        provider: cloudflare
+        resolvers: ["1.1.1.1"]
+
+env:
+- name: CF_API_EMAIL
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      name: api-email
+- name: CF_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      name: api-token
 
 ports:
   traefik:
@@ -80,12 +131,16 @@ ports:
       default: true
     exposedPort: 443
     protocol: TCP
+    tls:
+      enabled: true
   wansecure:
     port: 8443
     expose:
       default: true
     exposedPort: 8443
     protocol: TCP
+    tls:
+      enabled: true
   metrics:
     port: 9100
     expose:
