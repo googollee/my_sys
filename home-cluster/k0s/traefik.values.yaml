@@ -1,0 +1,169 @@
+deployment:
+  enabled: true
+  kind: Deployment
+  replicas: 1
+  additionalVolumes:
+  - name: auth
+    secret:
+      secretName: wanauth
+
+additionalVolumeMounts:
+- name: auth
+  readOnly: true
+  mountPath: /etc/auth
+env:
+- name: CF_API_EMAIL
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      key: api-email
+- name: CF_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      key: api-token
+
+providers:
+  kubernetesIngress:
+    enabled: true
+  kubernetesCRD:
+    enabled: true
+  kubernetesGateway:
+    enabled: false
+  file:
+    enabled: false
+
+ingressClass:
+  enabled: true
+
+gateway:
+  enabled: true
+  listeners:
+    web:
+      port: 80
+      hostname: ""
+      protocol: HTTP
+      namespacePolicy:
+    # websecure:
+    #   port: 8443
+    #   hostname:
+    #   protocol: HTTPS
+    #   namespacePolicy:
+    #   certificateRefs:
+    #   mode:
+
+gatewayClass:
+  enabled: true
+
+# ports:
+#   traefik:
+#     port: 8080
+#     expose:
+#       default: false
+#     exposedPort: 8080
+#     protocol: TCP
+#   web:
+#     port: 80
+#     expose:
+#       default: true
+#     exposedPort: 80
+#   websecure:
+#     port: 443
+#     expose:
+#       default: true
+#     exposedPort: 443
+#     protocol: TCP
+#     tls:
+#       enabled: true
+#   wansecure:
+#     port: 8443
+#     expose:
+#       default: true
+#     exposedPort: 8443
+#     protocol: TCP
+#     tls:
+#       enabled: true
+#   metrics:
+#     port: 9100
+#     expose:
+#       default: false
+#     exposedPort: 9100
+#     protocol: TCP
+
+# ingressRoute:
+#   dashboard:
+#     enabled: true
+#     entryPoints: ["websecure"]
+#     matchRule: PathPrefix(`/dashboard`)
+#     services:
+#     - name: api@internal
+#       kind: TraefikService
+#   wanprivate:
+#     enabled: true
+#     entryPoints: ["wansecure"]
+#     matchRule: Host(`*-p.zhaohai.li`)
+#     services:
+#     - name: traefik
+#       namespace: infra
+#       port: websecure
+#     middlewares:
+#       auth:
+#         basicAuth:
+#           usersFile: /etc/auth/users
+#   wanpublic:
+#     enabled: true
+#     entryPoints: ["wansecure"]
+#     matchRule: Host(`*.zhaohai.li`)
+#     services:
+#     - name: traefik
+#       namespace: infra
+#       port: websecure
+#
+# logs:
+#   general:
+#     level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
+#     noColor: true
+#   access:
+#     enabled: true
+#
+# metrics:
+#   prometheus:
+#     entryPoint: metrics
+#
+# global:
+#   checkNewVersion: false
+#   sendAnonymousUsage: false
+#
+# # certificatesResolvers:
+# #   zhaohai.li:
+# #     acme:
+# #       email: me@zhaohai.li
+# #       caServer: https://acme-v02.api.letsencrypt.org/directory
+# #       storage: "/data/acme.json"       # Path to store the certificate information.
+# #       dnsChallenge:
+# #         provider: cloudflare
+# #         resolvers: ["1.1.1.1"]
+
+# service:
+#   enabled: true
+#   single: true
+#   type: LoadBalancer
+#
+# autoscaling:
+#   enabled: false
+#
+# hostNetwork: false
+#
+# rbac:
+#   enabled: true
+#
+# securityContext:
+#   allowPrivilegeEscalation: false
+#   capabilities:
+#     drop: [ALL]
+#   readOnlyRootFilesystem: true
+#
+# podSecurityContext:
+#   runAsGroup: 65532
+#   runAsNonRoot: true
+#   runAsUser: 65532
