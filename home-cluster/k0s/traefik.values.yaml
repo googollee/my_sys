@@ -2,10 +2,6 @@ deployment:
   enabled: true
   kind: Deployment
   replicas: 1
-  additionalVolumes:
-  - name: auth
-    secret:
-      secretName: wanauth
 service:
   enabled: true
   single: true
@@ -25,10 +21,6 @@ podSecurityContext:
   runAsNonRoot: true
   runAsUser: 65532
 
-additionalVolumeMounts:
-- name: auth
-  readOnly: true
-  mountPath: /etc/auth
 env:
 - name: CF_API_EMAIL
   valueFrom:
@@ -121,34 +113,57 @@ ports:
     exposedPort: 9100
     protocol: TCP
 
-# ingressRoute:
-#   dashboard:
-#     enabled: true
-#     entryPoints: ["websecure"]
-#     matchRule: PathPrefix(`/dashboard`)
-#     services:
-#     - name: api@internal
-#       kind: TraefikService
-#   wanprivate:
-#     enabled: true
-#     entryPoints: ["wansecure"]
-#     matchRule: Host(`*-p.zhaohai.li`)
-#     services:
-#     - name: traefik
-#       namespace: infra
-#       port: websecure
-#     middlewares:
-#       auth:
-#         basicAuth:
-#           usersFile: /etc/auth/users
-#   wanpublic:
-#     enabled: true
-#     entryPoints: ["wansecure"]
-#     matchRule: Host(`*.zhaohai.li`)
-#     services:
-#     - name: traefik
-#       namespace: infra
-#       port: websecure
+extraObjects:
+- apiVersion: traefik.io/v1alpha1
+  kind: Middleware
+  metadata:
+    name: wanauth
+  spec:
+    basicAuth:
+      secret: wanauth
+- apiVersion: traefik.io/v1alpha1
+  kind: Middleware
+  metadata:
+    name: web-redirect
+  spec:
+    redirectScheme:
+      scheme: https
+      permanent: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints: ["websecure"]
+    matchRule: "Host(`gateway-p.zhaohai.li`)"
+    services:
+    - name: api@internal
+      kind: TraefikService
+  web-redirect:
+    enabled: true
+    entryPoints: ["web"]
+    matchRule: "PathPrefix(`/`)"
+    middlewares:
+      - name: "web-redirect"
+  # wanprivate:
+  #   enabled: true
+  #   entryPoints: ["wansecure"]
+  #   matchRule: Host(`*-p.zhaohai.li`)
+  #   services:
+  #   - name: traefik
+  #     namespace: infra
+  #     port: websecure
+  #   middlewares:
+  #     auth:
+  #       basicAuth:
+  #         usersFile: /etc/auth/users
+  # wanpublic:
+  #   enabled: true
+  #   entryPoints: ["wansecure"]
+  #   matchRule: Host(`*.zhaohai.li`)
+  #   services:
+  #   - name: traefik
+  #     namespace: infra
+  #     port: websecure
 
 # # certificatesResolvers:
 # #   zhaohai.li:
