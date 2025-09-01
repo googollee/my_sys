@@ -1,0 +1,90 @@
+namespace: infra-metallb
+
+IPAddressPools:
+  pools:
+    - name: nas-pool
+      addresses:
+        - 100.86.221.0/25
+
+L2Advertisements:
+  advertisements:
+    - name: nas
+
+# -- Settings of the bfd session that can be optionally associated with BGP sessions.
+# Refer to https://metallb.universe.tf/apis/#metallb.io/v1beta1.BFDProfile
+BFDProfiles:
+  annotations: {}
+  additionalLabels: {}
+  profiles:
+    # - name: my-profile
+    #   additionalAnnotations: {}
+    #   additionalLabels: {}
+    #   # receiveInterval:
+    #   # transmitInterval:
+    #   # detectMultiplier:
+    #   # echoInterval:
+    #   # echoMode:
+    #   # passiveMode:
+    #   # minimumTtl:
+
+# -- Advertise the IPs coming from the selected IPAddressPools via BGP,
+# setting the parameters of the BGP Advertisement.
+# Refer to https://metallb.universe.tf/apis/#metallb.io/v1beta1.BGPAdvertisement
+BGPAdvertisements:
+  annotations: {}
+  additionalLabels: {}
+  advertisements:
+    # - name: my-adv
+    #   additionalAnnotations: {}
+    #   additionalLabels: {}
+    #   # aggregationLength:
+    #   # aggregationLengthV6:
+    #   # localPref:
+    #   # communities: []
+    #   # ipAddressPools: []
+    #   # ipAddressPoolSelectors: {}
+    #   # nodeSelectors: {}
+    #   # peers: []
+
+# -- Collection of aliases for communities.
+# Users can define named aliases to be used in the BGPPeer CRD.
+# Refer to https://metallb.universe.tf/apis/#metallb.io/v1beta1.Community
+communities:
+  annotations: {}
+  additionalLabels: {}
+  communitiesGroups:
+    # - name: my-communities
+    #   additionalAnnotations: {}
+    #   additionalLabels: {}
+    #   communities:
+    #     - name: my-community
+    #       value: bgpcommunity
+
+# -- Schemas for the peers API.
+# Refer to https://metallb.universe.tf/apis/#metallb.io/v1beta2.BGPPeer
+BGPPeers:
+  annotations: {}
+  additionalLabels: {}
+  peers:
+    # - name: my-peer
+    #   additionalAnnotations: {}
+    #   additionalLabels: {}
+    #   myASN: 99999
+    #   peerASN: 11111
+    #   peerAddress: 192.168.2.1
+    #   # sourceAddress:
+    #   # peerPort:
+    #   # holdTime:
+    #   # keepaliveTime:
+    #   # routerID:
+    #   # nodeSelectors: {}
+    #   # # The next two items are mutually exclusive
+    #   # # This will create a new secret with the provided password
+    #   # password:
+    #   # # Use this if you have an already existing secret
+    #   # passwordSecret:
+    #   # bfdProfile:
+    #   # ebgpMultiHop:
+    #   # vrf:
+
+

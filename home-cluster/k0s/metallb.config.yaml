@@ -1,0 +1,15 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: nas-pool
+  namespace: infra-metallb
+spec:
+  addresses:
+  - 100.86.221.1/32
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: nas
+  namespace: infra-metallb

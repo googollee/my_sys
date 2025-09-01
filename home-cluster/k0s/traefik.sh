@@ -1,1 +1,1 @@
-helm template --namespace=infra --values=traefik.value.yaml traefik traefik/traefik
+helm template --namespace=infra-traefik  traefik traefik/traefik > traefik.yaml
