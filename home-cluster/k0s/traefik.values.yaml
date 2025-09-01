@@ -6,6 +6,24 @@ deployment:
   - name: auth
     secret:
       secretName: wanauth
+service:
+  enabled: true
+  single: true
+  type: LoadBalancer
+autoscaling:
+  enabled: false
+hostNetwork: false
+rbac:
+  enabled: true
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+  readOnlyRootFilesystem: true
+podSecurityContext:
+  runAsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
 
 additionalVolumeMounts:
 - name: auth
@@ -23,13 +41,15 @@ env:
       name: cloudflare-api-token-secret
       key: api-token
 
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
 logs:
   general:
     level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
     noColor: true
   access:
     enabled: true
-
 metrics:
   prometheus:
     entryPoint: metrics
@@ -130,10 +150,6 @@ ports:
 #       namespace: infra
 #       port: websecure
 
-# global:
-#   checkNewVersion: false
-#   sendAnonymousUsage: false
-#
 # # certificatesResolvers:
 # #   zhaohai.li:
 # #     acme:
@@ -143,27 +159,3 @@ ports:
 # #       dnsChallenge:
 # #         provider: cloudflare
 # #         resolvers: ["1.1.1.1"]
-
-# service:
-#   enabled: true
-#   single: true
-#   type: LoadBalancer
-#
-# autoscaling:
-#   enabled: false
-#
-# hostNetwork: false
-#
-# rbac:
-#   enabled: true
-#
-# securityContext:
-#   allowPrivilegeEscalation: false
-#   capabilities:
-#     drop: [ALL]
-#   readOnlyRootFilesystem: true
-#
-# podSecurityContext:
-#   runAsGroup: 65532
-#   runAsNonRoot: true
-#   runAsUser: 65532

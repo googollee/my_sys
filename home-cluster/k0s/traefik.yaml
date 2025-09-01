@@ -237,7 +237,6 @@ spec:
             name: auth
             readOnly: true
         args:
-          - "--global.checkNewVersion"
           - "--entryPoints.metrics.address=:9100/tcp"
           - "--entryPoints.traefik.address=:8080/tcp"
           - "--entryPoints.wansecure.address=:8443/tcp"
