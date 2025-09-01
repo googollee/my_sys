@@ -23,6 +23,17 @@ env:
       name: cloudflare-api-token-secret
       key: api-token
 
+logs:
+  general:
+    level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
+    noColor: true
+  access:
+    enabled: true
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+
 providers:
   kubernetesIngress:
     enabled: true
@@ -37,7 +48,7 @@ ingressClass:
   enabled: true
 
 gateway:
-  enabled: true
+  enabled: false
   listeners:
     web:
       port: 80
@@ -53,42 +64,42 @@ gateway:
     #   mode:
 
 gatewayClass:
-  enabled: true
+  enabled: false
 
-# ports:
-#   traefik:
-#     port: 8080
-#     expose:
-#       default: false
-#     exposedPort: 8080
-#     protocol: TCP
-#   web:
-#     port: 80
-#     expose:
-#       default: true
-#     exposedPort: 80
-#   websecure:
-#     port: 443
-#     expose:
-#       default: true
-#     exposedPort: 443
-#     protocol: TCP
-#     tls:
-#       enabled: true
-#   wansecure:
-#     port: 8443
-#     expose:
-#       default: true
-#     exposedPort: 8443
-#     protocol: TCP
-#     tls:
-#       enabled: true
-#   metrics:
-#     port: 9100
-#     expose:
-#       default: false
-#     exposedPort: 9100
-#     protocol: TCP
+ports:
+  traefik:
+    port: 8080
+    expose:
+      default: false
+    exposedPort: 8080
+    protocol: TCP
+  web:
+    port: 1080
+    expose:
+      default: true
+    exposedPort: 80
+  websecure:
+    port: 1443
+    expose:
+      default: true
+    exposedPort: 443
+    protocol: TCP
+    tls:
+      enabled: true
+  wansecure:
+    port: 8443
+    expose:
+      default: true
+    exposedPort: 8443
+    protocol: TCP
+    tls:
+      enabled: true
+  metrics:
+    port: 9100
+    expose:
+      default: false
+    exposedPort: 9100
+    protocol: TCP
 
 # ingressRoute:
 #   dashboard:
@@ -118,18 +129,7 @@ gatewayClass:
 #     - name: traefik
 #       namespace: infra
 #       port: websecure
-#
-# logs:
-#   general:
-#     level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
-#     noColor: true
-#   access:
-#     enabled: true
-#
-# metrics:
-#   prometheus:
-#     entryPoint: metrics
-#
+
 # global:
 #   checkNewVersion: false
 #   sendAnonymousUsage: false

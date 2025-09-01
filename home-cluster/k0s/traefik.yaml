@@ -127,6 +127,10 @@ spec:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
   ports:
+  - port: 8443
+    name: wansecure
+    targetPort: wansecure
+    protocol: TCP
   - port: 80
     name: web
     targetPort: web
@@ -209,11 +213,14 @@ spec:
         - name: traefik
           containerPort: 8080
           protocol: TCP
+        - name: wansecure
+          containerPort: 8443
+          protocol: TCP
         - name: web
-          containerPort: 8000
+          containerPort: 1080
           protocol: TCP
         - name: websecure
-          containerPort: 8443
+          containerPort: 1443
           protocol: TCP
         securityContext:
           allowPrivilegeEscalation: false
@@ -233,8 +240,9 @@ spec:
           - "--global.checkNewVersion"
           - "--entryPoints.metrics.address=:9100/tcp"
           - "--entryPoints.traefik.address=:8080/tcp"
-          - "--entryPoints.web.address=:8000/tcp"
-          - "--entryPoints.websecure.address=:8443/tcp"
+          - "--entryPoints.wansecure.address=:8443/tcp"
+          - "--entryPoints.web.address=:1080/tcp"
+          - "--entryPoints.websecure.address=:1443/tcp"
           - "--api.dashboard=true"
           - "--ping=true"
           - "--metrics.prometheus=true"
@@ -244,8 +252,13 @@ spec:
           - "--providers.kubernetesingress"
           - "--providers.kubernetesingress.allowEmptyServices=true"
           - "--providers.kubernetesingress.ingressendpoint.publishedservice=infra-traefik/traefik"
+          - "--entryPoints.wansecure.http.tls=true"
           - "--entryPoints.websecure.http.tls=true"
+          - "--log.noColor=true"
           - "--log.level=INFO"
+          - "--accesslog=true"
+          - "--accesslog.fields.defaultmode=keep"
+          - "--accesslog.fields.headers.defaultmode=drop"
           
         env:
           - name: POD_NAME
