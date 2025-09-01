@@ -118,6 +118,7 @@ extraObjects:
   kind: Middleware
   metadata:
     name: wanauth
+    namespace: infra-traefik
   spec:
     basicAuth:
       secret: wanauth
@@ -125,6 +126,7 @@ extraObjects:
   kind: Middleware
   metadata:
     name: web-redirect
+    namespace: infra-traefik
   spec:
     redirectScheme:
       scheme: https
@@ -133,44 +135,55 @@ extraObjects:
 ingressRoute:
   dashboard:
     enabled: true
-    entryPoints: ["websecure"]
-    matchRule: "Host(`gateway-p.zhaohai.li`)"
+    entryPoints: [websecure]
+    matchRule: Host(`gateway-p.zhaohai.li`)
     services:
     - name: api@internal
       kind: TraefikService
   web-redirect:
     enabled: true
-    entryPoints: ["web"]
-    matchRule: "PathPrefix(`/`)"
+    entryPoints: [web]
+    matchRule: PathPrefix(`/`)
     middlewares:
-      - name: "web-redirect"
-  # wanprivate:
-  #   enabled: true
-  #   entryPoints: ["wansecure"]
-  #   matchRule: Host(`*-p.zhaohai.li`)
-  #   services:
-  #   - name: traefik
-  #     namespace: infra
-  #     port: websecure
-  #   middlewares:
-  #     auth:
-  #       basicAuth:
-  #         usersFile: /etc/auth/users
-  # wanpublic:
-  #   enabled: true
-  #   entryPoints: ["wansecure"]
-  #   matchRule: Host(`*.zhaohai.li`)
-  #   services:
-  #   - name: traefik
-  #     namespace: infra
-  #     port: websecure
+    - name: "web-redirect"
+    services:
+    - name: traefik
+      kind: Service
+      port: web
+  wandashboard:
+    enabled: true
+    entryPoints: ["wansecure"]
+    matchRule: Host(`gateway-p.zhaohai.li`)
+    middlewares:
+    - name: "wanauth"
+    services:
+    - name: api@internal
+      kind: TraefikService
+  wanprivate:
+    enabled: true
+    entryPoints: ["wansecure"]
+    matchRule: Host(`*-p.zhaohai.li`)
+    middlewares:
+    - name: "wanauth"
+    services:
+    - name: traefik
+      kind: Service
+      port: websecure
+  wanpublic:
+    enabled: true
+    entryPoints: [wansecure]
+    matchRule: Host(`*.zhaohai.li`)
+    services:
+    - name: traefik
+      kind: Service
+      port: websecure
 
-# # certificatesResolvers:
-# #   zhaohai.li:
-# #     acme:
-# #       email: me@zhaohai.li
-# #       caServer: https://acme-v02.api.letsencrypt.org/directory
-# #       storage: "/data/acme.json"       # Path to store the certificate information.
-# #       dnsChallenge:
-# #         provider: cloudflare
-# #         resolvers: ["1.1.1.1"]
+# certificatesResolvers:
+#   zhaohai.li:
+#     acme:
+#       email: me@zhaohai.li
+#       caServer: https://acme-v02.api.letsencrypt.org/directory
+#       storage: "/data/acme.json"       # Path to store the certificate information.
+#       dnsChallenge:
+#         provider: cloudflare
+#         resolvers: ["1.1.1.1"]

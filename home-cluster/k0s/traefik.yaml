@@ -325,6 +325,75 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
+  name: traefik-wandashboard
+  namespace: infra-traefik
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-infra-traefik
+    helm.sh/chart: traefik-37.0.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  entryPoints:
+  - wansecure
+  routes:
+  - match: Host(`gateway-p.zhaohai.li`)
+    kind: Rule
+    services:
+      - kind: TraefikService
+        name: api@internal
+    middlewares:
+      - name: wanauth
+---
+# Source: traefik/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-wanprivate
+  namespace: infra-traefik
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-infra-traefik
+    helm.sh/chart: traefik-37.0.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  entryPoints:
+  - wansecure
+  routes:
+  - match: Host(`*-p.zhaohai.li`)
+    kind: Rule
+    services:
+      - kind: Service
+        name: traefik
+        port: websecure
+    middlewares:
+      - name: wanauth
+---
+# Source: traefik/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-wanpublic
+  namespace: infra-traefik
+  labels:
+    app.kubernetes.io/name: traefik
+    app.kubernetes.io/instance: traefik-infra-traefik
+    helm.sh/chart: traefik-37.0.0
+    app.kubernetes.io/managed-by: Helm
+spec:
+  entryPoints:
+  - wansecure
+  routes:
+  - match: Host(`*.zhaohai.li`)
+    kind: Rule
+    services:
+      - kind: Service
+        name: traefik
+        port: websecure
+---
+# Source: traefik/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
   name: traefik-web-redirect
   namespace: infra-traefik
   labels:
@@ -338,6 +407,10 @@ spec:
   routes:
   - match: PathPrefix(`/`)
     kind: Rule
+    services:
+      - kind: Service
+        name: traefik
+        port: web
     middlewares:
       - name: web-redirect
 ---
@@ -346,6 +419,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: wanauth
+  namespace: infra-traefik
 spec:
   basicAuth:
     secret: wanauth
@@ -355,6 +429,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: web-redirect
+  namespace: infra-traefik
 spec:
   redirectScheme:
     permanent: true

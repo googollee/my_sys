@@ -37,7 +37,24 @@ metadata:
   name: web-ingress
 spec:
   rules:
-  - host: "abc.com"
+  - host: "abc.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-svc
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: websec-ingress
+spec:
+  rules:
+  - host: "abc-p.zhaohai.li"
     http:
       paths:
       - path: /
