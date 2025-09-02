@@ -38,7 +38,7 @@ global:
   sendAnonymousUsage: false
 logs:
   general:
-    level: "INFO"
+    level: DEBUG
     format: json
     noColor: true
   access:
