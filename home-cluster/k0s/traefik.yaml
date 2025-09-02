@@ -250,9 +250,10 @@ spec:
           - "--providers.kubernetesingress.ingressendpoint.publishedservice=infra-traefik/traefik"
           - "--entryPoints.wansecure.http.tls=true"
           - "--entryPoints.websecure.http.tls=true"
-          - "--log.noColor=true"
+          - "--log.format=json"
           - "--log.level=INFO"
           - "--accesslog=true"
+          - "--accesslog.format=json"
           - "--accesslog.fields.defaultmode=keep"
           - "--accesslog.fields.headers.defaultmode=drop"
           

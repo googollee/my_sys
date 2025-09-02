@@ -38,10 +38,12 @@ global:
   sendAnonymousUsage: false
 logs:
   general:
-    level: "INFO"  # @schema enum:[TRACE,DEBUG,INFO,WARN,ERROR,FATAL,PANIC]; default: "INFO"
+    level: "INFO"
+    format: json
     noColor: true
   access:
     enabled: true
+    format: json
 metrics:
   prometheus:
     entryPoint: metrics
