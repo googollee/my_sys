@@ -38,7 +38,7 @@ global:
   sendAnonymousUsage: false
 logs:
   general:
-    level: DEBUG
+    level: INFO
     format: json
     noColor: true
   access:
@@ -124,52 +124,33 @@ extraObjects:
   spec:
     basicAuth:
       secret: wanauth
-- apiVersion: traefik.io/v1alpha1
-  kind: Middleware
-  metadata:
-    name: web-redirect
-    namespace: infra-traefik
-  spec:
-    redirectScheme:
-      scheme: https
-      permanent: true
 
 ingressRoute:
   dashboard:
     enabled: true
-    entryPoints: [websecure]
-    matchRule: Host(`gateway-p.zhaohai.li`)
+    entryPoints: [web, websecure]
+    matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
     services:
     - name: api@internal
       kind: TraefikService
-  web-redirect:
-    enabled: true
-    entryPoints: [web]
-    matchRule: PathPrefix(`/`)
-    middlewares:
-    - name: "web-redirect"
-    services:
-    - name: traefik
-      kind: Service
-      port: web
   wanprivate:
     enabled: true
     entryPoints: ["wansecure"]
-    matchRule: Host(`[a-z\-_.]+-p.zhaohai.li`)
+    matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
     middlewares:
     - name: "wanauth"
     services:
     - name: traefik
       kind: Service
-      port: websecure
+      port: web
   wanpublic:
     enabled: true
     entryPoints: [wansecure]
-    matchRule: Host(`[a-z\-_.]*([^-][^p]|[^-].|.[^p]).zhaohai.li`)
+    matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
     services:
     - name: traefik
       kind: Service
-      port: websecure
+      port: web
 
 # certificatesResolvers:
 #   zhaohai.li:

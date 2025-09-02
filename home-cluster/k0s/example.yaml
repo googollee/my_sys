@@ -36,7 +36,7 @@ kind: Ingress
 metadata:
   name: web-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 spec:
   rules:
   - host: "abc.zhaohai.li"
@@ -55,7 +55,7 @@ kind: Ingress
 metadata:
   name: websec-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
 spec:
   rules:
   - host: "abc-p.zhaohai.li"

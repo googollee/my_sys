@@ -251,7 +251,7 @@ spec:
           - "--entryPoints.wansecure.http.tls=true"
           - "--entryPoints.websecure.http.tls=true"
           - "--log.format=json"
-          - "--log.level=DEBUG"
+          - "--log.level=INFO"
           - "--accesslog=true"
           - "--accesslog.format=json"
           - "--accesslog.fields.defaultmode=keep"
@@ -314,9 +314,10 @@ metadata:
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:
+  - web
   - websecure
   routes:
-  - match: Host(`gateway-p.zhaohai.li`)
+  - match: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
     kind: Rule
     services:
       - kind: TraefikService
@@ -337,12 +338,12 @@ spec:
   entryPoints:
   - wansecure
   routes:
-  - match: Host(`[a-z\-_.]+-p.zhaohai.li`)
+  - match: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
     kind: Rule
     services:
       - kind: Service
         name: traefik
-        port: websecure
+        port: web
     middlewares:
       - name: wanauth
 ---
@@ -361,36 +362,12 @@ spec:
   entryPoints:
   - wansecure
   routes:
-  - match: Host(`[a-z\-_.]*([^-][^p]|[^-].|.[^p]).zhaohai.li`)
-    kind: Rule
-    services:
-      - kind: Service
-        name: traefik
-        port: websecure
----
-# Source: traefik/templates/ingressroute.yaml
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: traefik-web-redirect
-  namespace: infra-traefik
-  labels:
-    app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
-    app.kubernetes.io/managed-by: Helm
-spec:
-  entryPoints:
-  - web
-  routes:
-  - match: PathPrefix(`/`)
+  - match: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
     kind: Rule
     services:
       - kind: Service
         name: traefik
         port: web
-    middlewares:
-      - name: web-redirect
 ---
 # Source: traefik/templates/extra-objects.yaml
 apiVersion: traefik.io/v1alpha1
@@ -401,14 +378,3 @@ metadata:
 spec:
   basicAuth:
     secret: wanauth
----
-# Source: traefik/templates/extra-objects.yaml
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: web-redirect
-  namespace: infra-traefik
-spec:
-  redirectScheme:
-    permanent: true
-    scheme: https
