@@ -35,6 +35,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: web-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   rules:
   - host: "abc.zhaohai.li"
@@ -52,6 +54,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: websec-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   rules:
   - host: "abc-p.zhaohai.li"

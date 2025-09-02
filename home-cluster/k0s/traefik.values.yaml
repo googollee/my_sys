@@ -85,6 +85,12 @@ ports:
       default: false
     exposedPort: 8080
     protocol: TCP
+  metrics:
+    port: 9100
+    expose:
+      default: false
+    exposedPort: 9100
+    protocol: TCP
   web:
     port: 1080
     expose:
@@ -106,12 +112,6 @@ ports:
     protocol: TCP
     tls:
       enabled: true
-  metrics:
-    port: 9100
-    expose:
-      default: false
-    exposedPort: 9100
-    protocol: TCP
 
 extraObjects:
 - apiVersion: traefik.io/v1alpha1
@@ -150,19 +150,10 @@ ingressRoute:
     - name: traefik
       kind: Service
       port: web
-  wandashboard:
-    enabled: true
-    entryPoints: ["wansecure"]
-    matchRule: Host(`gateway-p.zhaohai.li`)
-    middlewares:
-    - name: "wanauth"
-    services:
-    - name: api@internal
-      kind: TraefikService
   wanprivate:
     enabled: true
     entryPoints: ["wansecure"]
-    matchRule: Host(`*-p.zhaohai.li`)
+    matchRule: Host(`[a-z\-_.]+-p.zhaohai.li`)
     middlewares:
     - name: "wanauth"
     services:
@@ -172,7 +163,7 @@ ingressRoute:
   wanpublic:
     enabled: true
     entryPoints: [wansecure]
-    matchRule: Host(`*.zhaohai.li`)
+    matchRule: Host(`[a-z\-_.]*([^-][^p]|[^-].|.[^p]).zhaohai.li`)
     services:
     - name: traefik
       kind: Service
