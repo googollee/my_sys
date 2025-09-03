@@ -255,12 +255,6 @@ spec:
           - "--accesslog.format=json"
           - "--accesslog.fields.defaultmode=keep"
           - "--accesslog.fields.headers.defaultmode=drop"
-          - "--certificatesresolvers.zhaohai_li.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
-          - "--certificatesresolvers.zhaohai_li.acme.dnsChallenge.provider=cloudflare"
-          - "--certificatesresolvers.zhaohai_li.acme.dnsChallenge.resolvers=1.1.1.1"
-          - "--certificatesresolvers.zhaohai_li.acme.email=me@zhaohai.li"
-          - "--certificatesresolvers.zhaohai_li.acme.storage=/data/acme.json"
-          
         env:
           - name: POD_NAME
             valueFrom:
@@ -270,16 +264,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
-          - name: CF_API_EMAIL
-            valueFrom:
-              secretKeyRef:
-                key: api-email
-                name: cloudflare-api-token-secret
-          - name: CF_API_KEY
-            valueFrom:
-              secretKeyRef:
-                key: api-token
-                name: cloudflare-api-token-secret
       volumes:
         - name: data
           emptyDir: {}
