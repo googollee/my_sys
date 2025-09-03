@@ -70,8 +70,7 @@ kind: Ingress
 metadata:
   name: iot
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+    # traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   tls:
   - hosts:
