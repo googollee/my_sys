@@ -29,15 +29,13 @@ spec:
     ingress:
       enabled: true
       annotations:
-        traefik.ingress.kubernetes.io/router.entrypoints: websecure
-        cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+        # traefik.ingress.kubernetes.io/router.entrypoints: websecure
       hosts:
       - collector-p.zhaohai.li
       faroPort: 12345
       tls:
       - hosts:
         - "*.zhaohai.li"
-        secretName: tls-zhaohai-li-ingress-dns
     crds:
       create: true
     rbac:
@@ -204,7 +202,7 @@ spec:
           prometheus.scrape "localhost" {
             targets = [
               {
-                "__address__"   = "node-exporter.infra.svc:9100",
+                "__address__"   = "node-exporter.infra.svc:9110",
                 "instance"      = "nas",
                 "k8s_node_name" = "nas",
               },
