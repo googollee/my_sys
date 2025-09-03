@@ -8,7 +8,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 automountServiceAccountToken: false
@@ -21,7 +21,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups:
@@ -98,7 +98,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -118,7 +118,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
@@ -149,7 +149,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
@@ -169,7 +169,7 @@ spec:
       labels:
         app.kubernetes.io/name: traefik
         app.kubernetes.io/instance: traefik-infra-traefik
-        helm.sh/chart: traefik-37.0.0
+        helm.sh/chart: traefik-37.1.0
         app.kubernetes.io/managed-by: Helm
     spec:
       serviceAccountName: traefik
@@ -177,7 +177,7 @@ spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: true
       containers:
-      - image: docker.io/traefik:v3.5.0
+      - image: docker.io/traefik:v3.5.1
         imagePullPolicy: IfNotPresent
         name: traefik
         resources:
@@ -232,6 +232,7 @@ spec:
           - name: tmp
             mountPath: /tmp
         args:
+          - "--global.checkNewVersion=false"
           - "--entryPoints.metrics.address=:9100/tcp"
           - "--entryPoints.traefik.address=:18888/tcp"
           - "--entryPoints.wansecure.address=:8443/tcp"
@@ -254,6 +255,11 @@ spec:
           - "--accesslog.format=json"
           - "--accesslog.fields.defaultmode=keep"
           - "--accesslog.fields.headers.defaultmode=drop"
+          - "--certificatesresolvers.zhaohai_li.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+          - "--certificatesresolvers.zhaohai_li.acme.dnsChallenge.provider=cloudflare"
+          - "--certificatesresolvers.zhaohai_li.acme.dnsChallenge.resolvers=1.1.1.1"
+          - "--certificatesresolvers.zhaohai_li.acme.email=me@zhaohai.li"
+          - "--certificatesresolvers.zhaohai_li.acme.storage=/data/acme.json"
           
         env:
           - name: POD_NAME
@@ -293,7 +299,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   name: traefik
 spec:
@@ -308,7 +314,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:
@@ -330,7 +336,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:
@@ -354,7 +360,7 @@ metadata:
   labels:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
-    helm.sh/chart: traefik-37.0.0
+    helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
   entryPoints:

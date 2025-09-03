@@ -155,12 +155,12 @@ ingressRoute:
       kind: Service
       port: web
 
-# certificatesResolvers:
-#   zhaohai.li:
-#     acme:
-#       email: me@zhaohai.li
-#       caServer: https://acme-v02.api.letsencrypt.org/directory
-#       storage: "/data/acme.json"       # Path to store the certificate information.
-#       dnsChallenge:
-#         provider: cloudflare
-#         resolvers: ["1.1.1.1"]
+certificatesResolvers:
+  zhaohai_li:
+    acme:
+      email: me@zhaohai.li
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      storage: /data/acme.json       # Path to store the certificate information.
+      dnsChallenge:
+        provider: cloudflare
+        resolvers: ["1.1.1.1"]
