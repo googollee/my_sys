@@ -122,7 +122,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: traefik
     app.kubernetes.io/instance: traefik-infra-traefik
@@ -140,9 +140,9 @@ spec:
     targetPort: websecure
     protocol: TCP
 ---
-# Source: traefik/templates/deployment.yaml
+# Source: traefik/templates/daemonset.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: DaemonSet
 metadata:
   name: traefik
   namespace: infra-traefik
@@ -153,16 +153,12 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik
       app.kubernetes.io/instance: traefik-infra-traefik
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+  updateStrategy:
+    type: OnDelete
   minReadySeconds: 0
   template: 
     metadata:
@@ -179,7 +175,7 @@ spec:
       serviceAccountName: traefik
       automountServiceAccountToken: true
       terminationGracePeriodSeconds: 60
-      hostNetwork: false
+      hostNetwork: true
       containers:
       - image: docker.io/traefik:v3.5.0
         imagePullPolicy: IfNotPresent
@@ -188,7 +184,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /ping
-            port: 8080
+            port: 18888
             scheme: HTTP
           failureThreshold: 1
           initialDelaySeconds: 2
@@ -198,7 +194,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /ping
-            port: 8080
+            port: 18888
             scheme: HTTP
           failureThreshold: 3
           initialDelaySeconds: 2
@@ -211,20 +207,22 @@ spec:
           containerPort: 9100
           protocol: TCP
         - name: traefik
-          containerPort: 8080
+          containerPort: 18888
           protocol: TCP
         - name: wansecure
           containerPort: 8443
           protocol: TCP
         - name: web
-          containerPort: 1080
+          containerPort: 80
           protocol: TCP
         - name: websecure
-          containerPort: 1443
+          containerPort: 443
           protocol: TCP
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
+            add:
+            - NET_BIND_SERVICE
             drop:
             - ALL
           readOnlyRootFilesystem: true
@@ -235,10 +233,10 @@ spec:
             mountPath: /tmp
         args:
           - "--entryPoints.metrics.address=:9100/tcp"
-          - "--entryPoints.traefik.address=:8080/tcp"
+          - "--entryPoints.traefik.address=:18888/tcp"
           - "--entryPoints.wansecure.address=:8443/tcp"
-          - "--entryPoints.web.address=:1080/tcp"
-          - "--entryPoints.websecure.address=:1443/tcp"
+          - "--entryPoints.web.address=:80/tcp"
+          - "--entryPoints.websecure.address=:443/tcp"
           - "--api.dashboard=true"
           - "--ping=true"
           - "--metrics.prometheus=true"
@@ -282,9 +280,9 @@ spec:
         - name: tmp
           emptyDir: {}
       securityContext:
-        runAsGroup: 65532
-        runAsNonRoot: true
-        runAsUser: 65532
+        runAsGroup: 65535
+        runAsNonRoot: false
+        runAsUser: 0
 ---
 # Source: traefik/templates/ingressclass.yaml
 apiVersion: networking.k8s.io/v1

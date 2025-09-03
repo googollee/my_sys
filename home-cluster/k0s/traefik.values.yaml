@@ -1,25 +1,28 @@
+hostNetwork: true
 deployment:
   enabled: true
-  kind: Deployment
+  kind: DaemonSet
   replicas: 1
 service:
   enabled: true
   single: true
-  type: LoadBalancer
+  type: ClusterIP
+updateStrategy:
+  type: OnDelete
 autoscaling:
   enabled: false
-hostNetwork: false
 rbac:
   enabled: true
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop: [ALL]
+    add: [NET_BIND_SERVICE]
   readOnlyRootFilesystem: true
 podSecurityContext:
-  runAsGroup: 65532
-  runAsNonRoot: true
-  runAsUser: 65532
+  runAsGroup: 65535
+  runAsNonRoot: false
+  runAsUser: 0
 
 env:
 - name: CF_API_EMAIL
@@ -82,10 +85,10 @@ gatewayClass:
 
 ports:
   traefik:
-    port: 8080
+    port: 18888
     expose:
       default: false
-    exposedPort: 8080
+    exposedPort: 18888
     protocol: TCP
   metrics:
     port: 9100
@@ -94,12 +97,12 @@ ports:
     exposedPort: 9100
     protocol: TCP
   web:
-    port: 1080
+    port: 80
     expose:
       default: true
     exposedPort: 80
   websecure:
-    port: 1443
+    port: 443
     expose:
       default: true
     exposedPort: 443
@@ -135,10 +138,10 @@ ingressRoute:
       kind: TraefikService
   wanprivate:
     enabled: true
-    entryPoints: ["wansecure"]
+    entryPoints: [wansecure]
     matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
     middlewares:
-    - name: "wanauth"
+    - name: wanauth
     services:
     - name: traefik
       kind: Service
