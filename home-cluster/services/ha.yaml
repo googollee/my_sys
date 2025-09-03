@@ -75,7 +75,6 @@ spec:
   tls:
   - hosts:
     - "*.zhaohai.li"
-    secretName: tls-zhaohai-li-ingress-dns
   rules:
   - host: "iot.zhaohai.li"
     http:
