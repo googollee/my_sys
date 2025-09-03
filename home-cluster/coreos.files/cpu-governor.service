@@ -6,7 +6,6 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/sh -c '/usr/bin/echo "power"     | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference'
 ExecStart=/usr/bin/sh -c '/usr/bin/echo "powersave" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor'
-ExecStart=/usr/bin/sh -c '/usr/bin/echo "2000000"   | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq'
 
 [Install]
 WantedBy=multi-user.target
