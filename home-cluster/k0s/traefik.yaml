@@ -4,10 +4,10 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: traefik
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -17,10 +17,10 @@ automountServiceAccountToken: false
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: traefik-infra-traefik
+  name: traefik-infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 rules:
@@ -94,30 +94,30 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: traefik-infra-traefik
+  name: traefik-infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-infra-traefik
+  name: traefik-infra
 subjects:
   - kind: ServiceAccount
     name: traefik
-    namespace: infra-traefik
+    namespace: infra
 ---
 # Source: traefik/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: traefik
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -125,7 +125,7 @@ spec:
   type: ClusterIP
   selector:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
   ports:
   - port: 8443
     name: wansecure
@@ -140,25 +140,26 @@ spec:
     targetPort: websecure
     protocol: TCP
 ---
-# Source: traefik/templates/daemonset.yaml
+# Source: traefik/templates/deployment.yaml
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: traefik
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   annotations:
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik
-      app.kubernetes.io/instance: traefik-infra-traefik
-  updateStrategy:
-    type: OnDelete
+      app.kubernetes.io/instance: traefik-infra
+  strategy:
+    type: Recreate
   minReadySeconds: 0
   template: 
     metadata:
@@ -168,7 +169,7 @@ spec:
         prometheus.io/port: "9100"
       labels:
         app.kubernetes.io/name: traefik
-        app.kubernetes.io/instance: traefik-infra-traefik
+        app.kubernetes.io/instance: traefik-infra
         helm.sh/chart: traefik-37.1.0
         app.kubernetes.io/managed-by: Helm
     spec:
@@ -245,16 +246,26 @@ spec:
           - "--providers.kubernetescrd"
           - "--providers.kubernetescrd.allowEmptyServices=true"
           - "--providers.kubernetesingress"
+          - "--providers.kubernetesingress.allowExternalNameServices=true"
           - "--providers.kubernetesingress.allowEmptyServices=true"
-          - "--providers.kubernetesingress.ingressendpoint.publishedservice=infra-traefik/traefik"
+          - "--providers.kubernetesingress.ingressendpoint.publishedservice=infra/traefik"
           - "--entryPoints.wansecure.http.tls=true"
           - "--entryPoints.websecure.http.tls=true"
+          - "--entryPoints.websecure.http.tls.certResolver=cloudflare"
+          - "--entryPoints.websecure.http.tls.domains[0].main=zhaohai.li"
+          - "--entryPoints.websecure.http.tls.domains[0].sans=*.zhaohai.li"
           - "--log.format=json"
           - "--log.level=INFO"
           - "--accesslog=true"
           - "--accesslog.format=json"
           - "--accesslog.fields.defaultmode=keep"
           - "--accesslog.fields.headers.defaultmode=drop"
+          - "--certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1"
+          - "--certificatesresolvers.cloudflare.acme.email=me@zhaohai.li"
+          - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
+          
         env:
           - name: POD_NAME
             valueFrom:
@@ -264,6 +275,16 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: CF_API_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: api-email
+                name: cloudflare-api-token-secret
+          - name: CF_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: api-token
+                name: cloudflare-api-token-secret
       volumes:
         - name: data
           emptyDir: {}
@@ -282,7 +303,7 @@ metadata:
     ingressclass.kubernetes.io/is-default-class: "true"
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
   name: traefik
@@ -294,10 +315,10 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-dashboard
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -316,10 +337,10 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-wanprivate
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -340,10 +361,10 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: traefik-wanpublic
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app.kubernetes.io/name: traefik
-    app.kubernetes.io/instance: traefik-infra-traefik
+    app.kubernetes.io/instance: traefik-infra
     helm.sh/chart: traefik-37.1.0
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -362,7 +383,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: wanauth
-  namespace: infra-traefik
+  namespace: infra
 spec:
   basicAuth:
     secret: wanauth

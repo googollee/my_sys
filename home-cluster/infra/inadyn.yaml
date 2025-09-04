@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: inadyn
-  namespace: infra-traefik
+  namespace: infra
   labels:
     app: inadyn
 spec:

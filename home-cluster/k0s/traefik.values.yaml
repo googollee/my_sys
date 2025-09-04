@@ -1,14 +1,14 @@
 hostNetwork: true
 deployment:
   enabled: true
-  kind: DaemonSet
+  kind: Deployment
   replicas: 1
 service:
   enabled: true
   single: true
   type: ClusterIP
 updateStrategy:
-  type: OnDelete
+  type: Recreate
 autoscaling:
   enabled: false
 rbac:
@@ -24,17 +24,17 @@ podSecurityContext:
   runAsNonRoot: false
   runAsUser: 0
 
-# env:
-# - name: CF_API_EMAIL
-#   valueFrom:
-#     secretKeyRef:
-#       name: cloudflare-api-token-secret
-#       key: api-email
-# - name: CF_API_KEY
-#   valueFrom:
-#     secretKeyRef:
-#       name: cloudflare-api-token-secret
-#       key: api-token
+env:
+- name: CF_API_EMAIL
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      key: api-email
+- name: CF_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: cloudflare-api-token-secret
+      key: api-token
 
 global:
   checkNewVersion: false
@@ -54,6 +54,7 @@ metrics:
 providers:
   kubernetesIngress:
     enabled: true
+    allowExternalNameServices: true
   kubernetesCRD:
     enabled: true
   kubernetesGateway:
@@ -109,6 +110,10 @@ ports:
     protocol: TCP
     tls:
       enabled: true
+      certResolver: cloudflare
+      domains:
+      - main: zhaohai.li
+        sans: ['*.zhaohai.li']
   wansecure:
     port: 8443
     expose:
@@ -123,7 +128,7 @@ extraObjects:
   kind: Middleware
   metadata:
     name: wanauth
-    namespace: infra-traefik
+    namespace: infra
   spec:
     basicAuth:
       secret: wanauth
@@ -155,12 +160,12 @@ ingressRoute:
       kind: Service
       port: web
 
-# certificatesResolvers:
-#   zhaohai_li:
-#     acme:
-#       email: me@zhaohai.li
-#       caServer: https://acme-v02.api.letsencrypt.org/directory
-#       storage: /data/acme.json       # Path to store the certificate information.
-#       dnsChallenge:
-#         provider: cloudflare
-#         resolvers: ["1.1.1.1"]
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: me@zhaohai.li
+      caServer: https://acme-v02.api.letsencrypt.org/directory
+      storage: /data/acme.json       # Path to store the certificate information.
+      dnsChallenge:
+        provider: cloudflare
+        resolvers: ["1.1.1.1"]
