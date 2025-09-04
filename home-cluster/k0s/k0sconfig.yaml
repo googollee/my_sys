@@ -1,8 +1,0 @@
-apiVersion: k0s.k0sproject.io/v1beta1
-kind: Cluster
-metadata:
-  name: k0s
-spec:
-  network:
-    kubeProxy:
-      nodePortAddresses: 80,443,30000-30500
