@@ -65,14 +65,14 @@ storage:
       overwrite: true
       contents:
         local: coreos.files/smb.conf
-    - path: /etc/rancher/k3s/config.yaml
+    - path: /etc/k0s/config.yaml
       mode: 0644
       contents:
-        local: coreos.files/k3s.yaml
-    - path: /home/googol/install_k3s.sh
+        local: coreos.files/k0s.yaml
+    - path: /home/googol/install_k0s.sh
       mode: 0755
       contents:
-        local: coreos.files/install_k3s.sh
+        local: coreos.files/install_k0s.sh
     - path: /home/googol/start_smb.sh
       mode: 0755
       contents:

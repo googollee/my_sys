@@ -1,4 +1,6 @@
-# export GITHUB_TOKEN=<gh-token>
+# Setup Fluxcd
+# > brew install fluxcd/tap/fluxcd
+# > export GITHUB_TOKEN=<gh-token>
 
 flux bootstrap github \
   --token-auth \

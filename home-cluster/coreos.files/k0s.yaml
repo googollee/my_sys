@@ -1,0 +1,10 @@
+apiVersion: k0s.k0sproject.io/v1beta1
+kind: ClusterConfig
+metadata:
+  name: k0s
+spec:
+  api:
+    sans:
+    - nas
+    - nas.local
+    - nas.zhaohai.li

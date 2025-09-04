@@ -1,108 +1,220 @@
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
 metadata:
   name: traefik
-  namespace: kube-system
+  namespace: flux-system
 spec:
-  valuesContent: |-
-    additionalArguments:
-    - --entryPoints.web.forwardedHeaders.insecure=true
-    - --entryPoints.websecure.forwardedHeaders.insecure=true
-    - --entryPoints.wansecure.address=:8444/tcp
-    - --entryPoints.wansecure.http.tls=true
-    - --entryPoints.wansecure.forwardedHeaders.insecure=true
-    - --api=true
-    - --api.insecure=true
+  interval: 30m
+  url: https://traefik.github.io/charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik-crds
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: traefik-crds
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+  interval: 30m
+  install:
+    createNamespace: true
+  targetNamespace: infra
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: traefik
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+  interval: 30m
+  install:
+    createNamespace: true
+  targetNamespace: infra
+  values:
+    hostNetwork: true
+    deployment:
+      enabled: true
+      kind: Deployment
+      replicas: 1
+    service:
+      enabled: true
+      single: true
+      type: ClusterIP
+    updateStrategy:
+      type: Recreate
+    autoscaling:
+      enabled: false
+    rbac:
+      enabled: true
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
+        add: [NET_BIND_SERVICE]
+      readOnlyRootFilesystem: true
+    podSecurityContext:
+      runAsGroup: 65535
+      runAsNonRoot: false
+      runAsUser: 0
+
+    env:
+    - name: CF_API_EMAIL
+      valueFrom:
+        secretKeyRef:
+          name: cloudflare-api-token-secret
+          key: api-email
+    - name: CF_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: cloudflare-api-token-secret
+          key: api-token
+
+    global:
+      checkNewVersion: false
+      sendAnonymousUsage: false
     logs:
+      general:
+        level: INFO
+        format: json
+        noColor: true
       access:
         enabled: true
         format: json
-        fields:
-          general:
-            defaultMode: keep
-          headers:
-            defaultMode: drop
-            names:
-              User-Agent: keep
-              Content-Type: keep
-              RequestHost: keep
-      general:
-        format: json
+    metrics:
+      prometheus:
+        entryPoint: metrics
+
     providers:
-      kubernetesCRD:
-        allowExternalNameServices: true
-        allowEmptyServices: true
       kubernetesIngress:
+        enabled: true
         allowExternalNameServices: true
-        allowEmptyServices: true
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-wan
-  namespace: kube-system
-  labels:
-    app.kubernetes.io/instance: traefik
-    app.kubernetes.io/name: traefik-wan
-spec:
-  type: LoadBalancer
-  ports:
-  - name: traefik
-    port: 8444
-    targetPort: 8444
-    protocol: TCP
-  selector:
-    app.kubernetes.io/instance: traefik-kube-system
-    app.kubernetes.io/name: traefik
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-dashboard
-  namespace: kube-system
-  labels:
-    app.kubernetes.io/instance: traefik
-    app.kubernetes.io/name: traefik-dashboard
-spec:
-  type: ClusterIP
-  ports:
-  - name: traefik
-    port: 9000
-    targetPort: traefik
-    protocol: TCP
-  selector:
-    app.kubernetes.io/instance: traefik-kube-system
-    app.kubernetes.io/name: traefik
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: gateway
-  namespace: kube-system
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
-spec:
-  ingressClassName: traefik
-  tls:
-  - hosts:
-    - "*.zhaohai.li"
-    secretName: tls-zhaohai-li-ingress-dns
-  rules:
-  - host: gateway-p.zhaohai.li
-    http:
-      paths:
-      - path: /dashboard/
-        pathType: Prefix
-        backend:
-          service:
-            name: traefik-dashboard
-            port:
-              number: 9000
-      - path: /api/
-        pathType: Prefix
-        backend:
-          service:
-            name: traefik-dashboard
-            port:
-              number: 9000
+      kubernetesCRD:
+        enabled: true
+      kubernetesGateway:
+        enabled: false
+      file:
+        enabled: false
+
+    ingressClass:
+      enabled: true
+
+    gateway:
+      enabled: false
+      listeners:
+        web:
+          port: 80
+          hostname: ""
+          protocol: HTTP
+          namespacePolicy:
+        # websecure:
+        #   port: 8443
+        #   hostname:
+        #   protocol: HTTPS
+        #   namespacePolicy:
+        #   certificateRefs:
+        #   mode:
+
+    gatewayClass:
+      enabled: false
+
+    ports:
+      traefik:
+        port: 18888
+        expose:
+          default: false
+        exposedPort: 18888
+        protocol: TCP
+      metrics:
+        port: 9100
+        expose:
+          default: false
+        exposedPort: 9100
+        protocol: TCP
+      web:
+        port: 80
+        expose:
+          default: true
+        exposedPort: 80
+      websecure:
+        port: 443
+        expose:
+          default: true
+        exposedPort: 443
+        protocol: TCP
+        tls:
+          enabled: true
+          certResolver: cloudflare
+          domains:
+          - main: zhaohai.li
+            sans: ['*.zhaohai.li']
+      wansecure:
+        port: 8443
+        expose:
+          default: true
+        exposedPort: 8443
+        protocol: TCP
+        tls:
+          enabled: true
+          certResolver: cloudflare
+          domains:
+          - main: zhaohai.li
+            sans: ['*.zhaohai.li']
+
+    extraObjects:
+    - apiVersion: traefik.io/v1alpha1
+      kind: Middleware
+      metadata:
+        name: wanauth
+        namespace: infra
+      spec:
+        basicAuth:
+          secret: wanauth
+
+    ingressRoute:
+      dashboard:
+        enabled: true
+        entryPoints: [web, websecure]
+        matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
+        services:
+        - name: api@internal
+          kind: TraefikService
+      wanprivate:
+        enabled: true
+        entryPoints: [wansecure]
+        matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
+        middlewares:
+        - name: wanauth
+        services:
+        - name: traefik
+          kind: Service
+          port: web
+      wanpublic:
+        enabled: true
+        entryPoints: [wansecure]
+        matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
+        services:
+        - name: traefik
+          kind: Service
+          port: web
+
+    certificatesResolvers:
+      cloudflare:
+        acme:
+          email: me@zhaohai.li
+          caServer: https://acme-v02.api.letsencrypt.org/directory
+          storage: /data/acme.json       # Path to store the certificate information.
+          dnsChallenge:
+            provider: cloudflare
+            resolvers: ["1.1.1.1"]
