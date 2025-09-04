@@ -100,32 +100,15 @@ spec:
             role = "node"
           }
 
-          // app monitor
-          discovery.relabel "platform_monitor" {
-            targets = discovery.kubernetes.services.targets
-
-            rule {
-              action = "keep"
-              source_labels = ["__meta_kubernetes_service_annotationpresent_platform_montior"]
-              regex = "true"
-            }
-
-            rule {
-              action = "replace"
-              source_labels = ["__meta_kubernetes_service_annotation_platform_montior"]
-              target_label = "__metrics_path__"
-            }
-          }
-
-          prometheus.scrape "platform_monitor" {
-            scheme = "http"
-            targets = discovery.relabel.platform_monitor.output
-            scrape_interval = "30s"
-            forward_to = [prometheus.remote_write.app.receiver]
-          }
-
-          discovery.relabel "prometheus_scrape" {
+          // infra monitor
+          discovery.relabel "pod_scrape_infra" {
             targets = discovery.kubernetes.pods.targets
+
+            rule {
+              action = "drop"
+              source_labels = ["__meta_kubernetes_namespace"]
+              regex = "^default$"
+            }
 
             rule {
               action = "keep"
@@ -149,9 +132,48 @@ spec:
             }
           }
 
-          prometheus.scrape "prometheus_scrape" {
+          prometheus.scrape "infra" {
             scheme = "http"
-            targets = discovery.relabel.prometheus_scrape.output
+            targets = discovery.relabel.pod_scrape_infra.output
+            scrape_interval = "30s"
+            forward_to = [prometheus.remote_write.default.receiver]
+          }
+
+          // app monitor
+          discovery.relabel "pod_scrape_app" {
+            targets = discovery.kubernetes.pods.targets
+
+            rule {
+              action = "keep"
+              source_labels = ["__meta_kubernetes_namespace"]
+              regex = "^default$"
+            }
+
+            rule {
+              action = "keep"
+              source_labels = ["__meta_kubernetes_pod_annotationpresent_prometheus_io_scrape"]
+              regex = "^true$"
+            }
+
+            rule {
+              action = "replace"
+              source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+              target_label = "__metrics_path__"
+            }
+
+            rule {
+              action = "replace"
+              source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+              separator = ":"
+              target_label = "__address__"
+              regex = "^([0-9.]+)([:0-9]*):([0-9]+)$"
+              replacement = "$1:$3"
+            }
+          }
+
+          prometheus.scrape "app" {
+            scheme = "http"
+            targets = discovery.relabel.pod_scrape_app.output
             scrape_interval = "30s"
             forward_to = [prometheus.remote_write.app.receiver]
           }
