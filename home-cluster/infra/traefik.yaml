@@ -190,7 +190,6 @@ spec:
         namespace: infra
       spec:
         serverName: nas.zhaohai.li
-        # insecureSkipVerify: true
 
     ingressRoute:
       dashboard:
@@ -210,6 +209,7 @@ spec:
         - name: traefik
           kind: Service
           port: websecure
+          passHostHeader: true
           serversTransport: inner-redirect
       wanpublic:
         enabled: true
@@ -219,6 +219,7 @@ spec:
         - name: traefik
           kind: Service
           port: websecure
+          passHostHeader: true
           serversTransport: inner-redirect
 
     certificatesResolvers:
