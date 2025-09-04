@@ -1,0 +1,14 @@
+apiVersion: autopilot.k0sproject.io/v1beta2
+kind: UpdateConfig
+metadata:
+  name: update-k0s
+  namespace: default
+spec:
+  channel: stable
+  updateServer: https://updates.k0sproject.io/
+  upgradeStrategy:
+    type: periodic
+    periodic:
+      days: [Saturdays]
+      startTime: "1:00"
+      length: 1h
