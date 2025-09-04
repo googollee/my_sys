@@ -117,6 +117,13 @@ spec:
             }
           }
 
+          prometheus.scrape "platform_monitor" {
+            scheme = "http"
+            targets = discovery.relabel.platform_monitor.output
+            scrape_interval = "30s"
+            forward_to = [prometheus.remote_write.app.receiver]
+          }
+
           discovery.relabel "prometheus_scrape" {
             targets = discovery.kubernetes.pods.targets
 
@@ -142,9 +149,9 @@ spec:
             }
           }
 
-          prometheus.scrape "platform_monitor" {
+          prometheus.scrape "prometheus_scrape" {
             scheme = "http"
-            targets = discovery.relabel.platform_monitor.output
+            targets = discovery.relabel.prometheus_scrape.output
             scrape_interval = "30s"
             forward_to = [prometheus.remote_write.app.receiver]
           }
