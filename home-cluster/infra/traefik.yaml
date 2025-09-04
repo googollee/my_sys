@@ -183,6 +183,14 @@ spec:
       spec:
         basicAuth:
           secret: wanauth
+    - apiVersion: traefik.io/v1alpha1
+      kind: ServersTransport
+      metadata:
+        name: inner-redirect
+        namespace: infra
+      spec:
+        serverName: nas.zhaohai.li
+        # insecureSkipVerify: true
 
     ingressRoute:
       dashboard:
@@ -202,6 +210,7 @@ spec:
         - name: traefik
           kind: Service
           port: websecure
+          serversTransport: inner-redirect
       wanpublic:
         enabled: true
         entryPoints: [wansecure]
@@ -210,6 +219,7 @@ spec:
         - name: traefik
           kind: Service
           port: websecure
+          serversTransport: inner-redirect
 
     certificatesResolvers:
       cloudflare:
