@@ -237,7 +237,6 @@ spec:
           - "--entryPoints.metrics.address=:9100/tcp"
           - "--entryPoints.traefik.address=:18888/tcp"
           - "--entryPoints.wansecure.address=:8443/tcp"
-          - "--entryPoints.wansecure.asDefault=true"
           - "--entryPoints.web.address=:80/tcp"
           - "--entryPoints.websecure.address=:443/tcp"
           - "--entryPoints.websecure.asDefault=true"
@@ -357,7 +356,7 @@ spec:
     services:
       - kind: Service
         name: traefik
-        port: web
+        port: websecure
     middlewares:
       - name: wanauth
 ---
@@ -381,7 +380,7 @@ spec:
     services:
       - kind: Service
         name: traefik
-        port: web
+        port: websecure
 ---
 # Source: traefik/templates/extra-objects.yaml
 apiVersion: traefik.io/v1alpha1

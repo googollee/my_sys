@@ -116,7 +116,6 @@ ports:
       - main: zhaohai.li
         sans: ['*.zhaohai.li']
   wansecure:
-    asDefault: true
     port: 8443
     expose:
       default: true
@@ -156,7 +155,7 @@ ingressRoute:
     services:
     - name: traefik
       kind: Service
-      port: web
+      port: websecure
   wanpublic:
     enabled: true
     entryPoints: [wansecure]
@@ -164,7 +163,7 @@ ingressRoute:
     services:
     - name: traefik
       kind: Service
-      port: web
+      port: websecure
 
 certificatesResolvers:
   cloudflare:
