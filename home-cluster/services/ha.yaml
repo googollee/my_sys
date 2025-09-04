@@ -45,7 +45,7 @@ spec:
             memory: 2Gi
           requests:
             memory: 512Mi
-      # hostNetwork: true
+      hostNetwork: true
       volumes:
       - name: dev-dongle
         hostPath:
@@ -72,8 +72,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: iot
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: wansecure,websecure
 spec:
   tls:
   rules:

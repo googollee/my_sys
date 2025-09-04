@@ -45,13 +45,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: whoami
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
 spec:
-  tls:
-  - hosts:
-    - "*.zhaohai.li"
   rules:
   - host: "whoami-p.zhaohai.li"
     http:

@@ -42,6 +42,7 @@ spec:
   install:
     createNamespace: true
   targetNamespace: infra
+  releaseName: traefik
   values:
     hostNetwork: true
     deployment:
@@ -161,7 +162,6 @@ spec:
           - main: zhaohai.li
             sans: ['*.zhaohai.li']
       wansecure:
-        asDefault: true
         port: 8443
         expose:
           default: true
@@ -187,7 +187,7 @@ spec:
     ingressRoute:
       dashboard:
         enabled: true
-        entryPoints: [web, websecure]
+        entryPoints: [websecure]
         matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
         services:
         - name: api@internal
@@ -201,7 +201,7 @@ spec:
         services:
         - name: traefik
           kind: Service
-          port: web
+          port: websecure
       wanpublic:
         enabled: true
         entryPoints: [wansecure]
@@ -209,7 +209,7 @@ spec:
         services:
         - name: traefik
           kind: Service
-          port: web
+          port: websecure
 
     certificatesResolvers:
       cloudflare:
