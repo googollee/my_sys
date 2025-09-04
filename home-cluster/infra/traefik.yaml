@@ -148,6 +148,7 @@ spec:
           default: true
         exposedPort: 80
       websecure:
+        asDefault: true
         port: 443
         expose:
           default: true
@@ -160,6 +161,7 @@ spec:
           - main: zhaohai.li
             sans: ['*.zhaohai.li']
       wansecure:
+        asDefault: true
         port: 8443
         expose:
           default: true
