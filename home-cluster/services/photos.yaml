@@ -99,7 +99,6 @@ metadata:
   name: photos
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
 spec:
   tls:
   rules:

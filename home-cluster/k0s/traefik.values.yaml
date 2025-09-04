@@ -122,6 +122,10 @@ ports:
     protocol: TCP
     tls:
       enabled: true
+      certResolver: cloudflare
+      domains:
+      - main: zhaohai.li
+        sans: ['*.zhaohai.li']
 
 extraObjects:
 - apiVersion: traefik.io/v1alpha1
