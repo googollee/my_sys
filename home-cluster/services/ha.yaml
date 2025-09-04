@@ -58,20 +58,21 @@ metadata:
   annotations:
     platform_montior: "/api/prometheus"
 spec:
-  type: ExternalName
-  externalName: nas.local
+  type: ClusterIP
+  selector:
+    app: iot
   ports:
   - name: http
     port: 8123
     protocol: TCP
+    targetPort: 8123
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: iot
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    # cert-manager.io/cluster-issuer: "cert-zhaohai-li-dns"
+    traefik.ingress.kubernetes.io/router.entrypoints: wansecure,websecure
 spec:
   tls:
   rules:
