@@ -71,12 +71,7 @@ spec:
       runAsUser: 0
 
     env:
-    - name: CF_API_EMAIL
-      valueFrom:
-        secretKeyRef:
-          name: cloudflare-api-token-secret
-          key: api-email
-    - name: CF_API_KEY
+    - name: CF_DNS_API_TOKEN
       valueFrom:
         secretKeyRef:
           name: cloudflare-api-token-secret
@@ -190,6 +185,7 @@ spec:
         namespace: infra
       spec:
         serverName: nas.zhaohai.li
+        insecureSkipVerify: true
 
     ingressRoute:
       dashboard:

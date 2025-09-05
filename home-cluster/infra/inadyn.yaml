@@ -72,6 +72,6 @@ spec:
         - "/bin/sh"
         - "-c"
         - |
-          apk add inadyn
+          apk add --no-cache inadyn
           echo "$${INADYN_CONFIG}" | sed "s/cloudflare-token/$${CF_DNS_API_TOKEN}/g" > /tmp/config.conf
           exec inadyn --foreground --no-pidfile -f /tmp/config.conf
