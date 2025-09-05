@@ -15,7 +15,6 @@ kind: Ingress
 metadata:
   name: cockpit
 spec:
-  ingressClassName: traefik
   tls:
   - hosts:
     - "*.zhaohai.li"
