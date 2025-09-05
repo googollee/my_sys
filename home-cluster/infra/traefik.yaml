@@ -185,7 +185,6 @@ spec:
         namespace: infra
       spec:
         serverName: nas.zhaohai.li
-        insecureSkipVerify: true
 
     ingressRoute:
       dashboard:
