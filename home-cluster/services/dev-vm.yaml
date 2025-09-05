@@ -102,7 +102,6 @@ kind: Ingress
 metadata:
   name: dev-vm
 spec:
-  tls:
   rules:
   - host: "dev-vm-console-p.zhaohai.li"
     http:

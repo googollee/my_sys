@@ -73,7 +73,6 @@ kind: Ingress
 metadata:
   name: iot
 spec:
-  tls:
   rules:
   - host: "iot.zhaohai.li"
     http:
