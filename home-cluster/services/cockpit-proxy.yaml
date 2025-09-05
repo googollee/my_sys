@@ -88,6 +88,9 @@ kind: Ingress
 metadata:
   name: cockpit-proxy
 spec:
+  ingressClassName: traefik
+  tls:
+  - hosts: ["nas.zhaohai.li"]
   rules:
   - host: nas.zhaohai.li
     http:
