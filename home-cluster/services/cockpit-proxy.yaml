@@ -87,10 +87,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: cockpit-proxy
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
 spec:
   ingressClassName: traefik
   tls:
-  - hosts: ["nas.zhaohai.li"]
+  - hosts:
+    - "*.zhaohai.li"
+    secretName: tls-zhaohai-li-ingress-dns
   rules:
   - host: nas.zhaohai.li
     http:
