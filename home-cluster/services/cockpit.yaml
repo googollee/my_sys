@@ -15,10 +15,6 @@ kind: Ingress
 metadata:
   name: cockpit
 spec:
-  tls:
-  - hosts:
-    - "*.zhaohai.li"
-    secretName: tls-zhaohai-li-ingress-dns
   rules:
   - host: nas.zhaohai.li
     http:
