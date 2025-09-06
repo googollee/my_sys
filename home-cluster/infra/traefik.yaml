@@ -75,7 +75,7 @@ spec:
       valueFrom:
         secretKeyRef:
           name: cloudflare-api-token-secret
-          key: api-token
+          key: dns-api-token
 
     global:
       checkNewVersion: false

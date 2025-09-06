@@ -35,7 +35,7 @@ spec:
           valueFrom:
               secretKeyRef:
                 name: cloudflare-api-token-secret
-                key: api-token
+                key: dns-api-token
         - name: INADYN_CONFIG
           value: |
             period     = 300
