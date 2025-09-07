@@ -1,0 +1,162 @@
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "mimir"
+  namespace: "infra"
+data:
+  config.yaml: |
+    multitenancy_enabled: true
+    limits:
+      compactor_blocks_retention_period: "1y"
+
+    server:
+      http_listen_port: 9009
+      log_level: "error"
+
+    store_gateway:
+      sharding_ring:
+        replication_factor: 1
+
+    blocks_storage:
+      backend: "filesystem"
+      bucket_store:
+        sync_dir: "/mimir/tsdb-sync"
+      filesystem:
+        dir: "/mimir/data/tsdb"
+      tsdb:
+        dir: "/mimir/tsdb"
+
+    compactor:
+      data_dir: "/mimir/compactor"
+      sharding_ring:
+        kvstore:
+          store: "memberlist"
+
+    distributor:
+      ring:
+        instance_addr: "127.0.0.1"
+        kvstore:
+          store: "memberlist"
+
+    ingester:
+      ring:
+        instance_addr: "127.0.0.1"
+        kvstore:
+          store: "memberlist"
+        replication_factor: 1
+
+    ruler_storage:
+      backend: "filesystem"
+      filesystem:
+        dir: "/mimir/rules"
+---
+{
+  apiVersion: "apps/v1",
+  kind: "StatefulSet",
+  metadata: {
+    name: "mimir",
+    namespace: "infra",
+    labels: {
+      app: "mimir",
+    },
+  },
+  spec: {
+    replicas: 1,
+    updateStrategy: {
+      type: "RollingUpdate",
+    },
+    selector: {
+      matchLabels: {
+        app: "mimir",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          app: "mimir",
+        },
+      },
+      spec: {
+        securityContext: {
+          fsGroup: 1001,
+          runAsGroup: 1001,
+          runAsNonRoot: true,
+          runAsUser: 1001,
+        },
+        containers: [{
+          name: "mimir",
+          image: "grafana/mimir:latest",
+          imagePullPolicy: "Always",
+          securityContext: {
+            allowPrivilegeEscalation: false,
+            capabilities: {
+              drop: ["ALL"],
+            },
+            readOnlyRootFilesystem: true,
+          },
+          args: [ "--config.file=/etc/mimir/config.yaml" ],
+          ports: [{
+            name: "http",
+            containerPort: 9009,
+            protocol: "TCP",
+          }],
+          volumeMounts: [{
+            mountPath: "/mimir",
+            name: "data",
+          }, {
+            mountPath: "/etc/mimir",
+            name: "config",
+          }],
+          livenessProbe: {
+            failureThreshold: 10,
+            httpGet: {
+              path: "/ready",
+              port: "http",
+            },
+            initialDelaySeconds: 60,
+            timeoutSeconds: 30,
+          },
+          readinessProbe: {
+            httpGet: {
+              path: "/ready",
+              port: "http",
+            },
+          },
+        }],
+        volumes: [{
+          name: "data",
+          hostPath: {
+            path: "/mnt/data/config/infra/mimir",
+          },
+        }, {
+          name: "config",
+          configMap: {
+            name: "mimir",
+          },
+        }],
+      },
+    },
+  },
+}
+---
+{
+  apiVersion: "v1",
+  kind: "Service",
+  metadata: {
+    name: "mimir",
+    namespace: "infra",
+  },
+  spec: {
+    type: "ClusterIP",
+    selector: {
+      app: "mimir",
+    },
+    ports: [{
+      name: "http",
+      port: 9009,
+      protocol: "TCP",
+      targetPort: "http",
+    }],
+  },
+}
