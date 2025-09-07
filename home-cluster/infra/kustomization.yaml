@@ -4,10 +4,8 @@
   namespace: "infra",
   resources: [
     "alloy.yaml",
-    "config-pv.yaml",
     "grafana.yaml",
     "inadyn.yaml",
-    "kustomization.yaml",
     "loki.yaml",
     "mimir.yaml",
     "exporters.yaml",
