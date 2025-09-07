@@ -12,7 +12,6 @@
     "prom-app.yaml",
     "prom-infra.yaml",
     "prom-smartctl.yaml",
-    "redis.yaml",
     "traefik.yaml",
     "updateconfig.yaml",
   ],
