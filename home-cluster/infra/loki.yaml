@@ -7,6 +7,8 @@ metadata:
     app: loki
 spec:
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: loki
@@ -41,7 +43,6 @@ spec:
           volumeMounts:
             - mountPath: /loki
               name: data
-              subPath: loki
           livenessProbe:
             failureThreshold: 10
             httpGet:
