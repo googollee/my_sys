@@ -6,13 +6,18 @@ metadata:
   namespace: "infra"
 data:
   config.yaml: |
-    multitenancy_enabled: true
-    limits:
-      compactor_blocks_retention_period: "1y"
+    multitenancy_enabled: false
+    # limits:
+    #   compactor_blocks_retention_period: "1y"
 
     server:
+      http_listen_address: "0.0.0.0"
       http_listen_port: 9009
-      log_level: "error"
+      log_level: "info"
+      log_format: "json"
+
+    activity_tracker:
+      filepath: "/dev/stdout"
 
     store_gateway:
       sharding_ring:
