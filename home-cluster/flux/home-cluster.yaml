@@ -36,7 +36,7 @@
       kind: "GitRepository",
       name: "flux-system",
     },
-    targetNamespace: "default",
+    targetNamespace: "infra",
     timeout: "3m0s",
     wait: true,
   },
