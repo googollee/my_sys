@@ -55,8 +55,8 @@ spec:
               port: http
       volumes:
         - name: data
-          persistentVolumeClaim:
-            claimName: config-claim
+          hostPath:
+            path: /mnt/data/config/infra/loki
 ---
 apiVersion: v1
 kind: Service
@@ -72,4 +72,3 @@ spec:
       port: 3100
       protocol: TCP
       targetPort: http
-
