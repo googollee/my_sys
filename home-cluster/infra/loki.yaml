@@ -1,75 +1,106 @@
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: loki
-  namespace: infra
-  labels:
-    app: loki
-spec:
-  replicas: 1
-  updateStrategy:
-    type: RollingUpdate
-  selector:
-    matchLabels:
-      app: loki
-  template:
-    metadata:
-      labels:
-        app: loki
-    spec:
-      securityContext:
-        fsGroup: 1001
-        runAsGroup: 1001
-        runAsNonRoot: true
-        runAsUser: 1001
-      containers:
-        - name: loki
-          image: grafana/loki:latest
-          imagePullPolicy: Always
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-            readOnlyRootFilesystem: true
-          args:
-            - "--compactor.compaction-interval=120m"
-            - "--config.file=/etc/loki/local-config.yaml"
-            - "--store.retention=7d"
-          ports:
-            - name: http
-              containerPort: 3100
-              protocol: TCP
-          volumeMounts:
-            - mountPath: /loki
-              name: data
-          livenessProbe:
-            failureThreshold: 10
-            httpGet:
-              path: /ready
-              port: http
-            initialDelaySeconds: 60
-            timeoutSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: http
-      volumes:
-        - name: data
-          hostPath:
-            path: /mnt/data/config/infra/loki
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: loki
-  namespace: infra
-spec:
-  type: ClusterIP
-  selector:
-    app: loki
-  ports:
-    - name: http
-      port: 3100
-      protocol: TCP
-      targetPort: http
+{
+  apiVersion: "apps/v1",
+  kind: "StatefulSet",
+  metadata: {
+    name: "loki",
+    namespace: "infra",
+    labels: {
+      app: "loki",
+    },
+  },
+  spec: {
+    replicas: 1,
+    updateStrategy: {
+      type: "RollingUpdate",
+    },
+    selector: {
+      matchLabels: {
+        app: "loki",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          app: "loki",
+        },
+      },
+      spec: {
+        securityContext: {
+          fsGroup: 1001,
+          runAsGroup: 1001,
+          runAsNonRoot: true,
+          runAsUser: 1001,
+        },
+        containers: [{
+          name: "loki",
+          image: "grafana/loki:latest",
+          imagePullPolicy: "Always",
+          securityContext: {
+            allowPrivilegeEscalation: false,
+            capabilities: {
+              drop: ["ALL"],
+            },
+            readOnlyRootFilesystem: true,
+          },
+          args: [
+            "--compactor.compaction-interval=120m",
+            "--config.file=/etc/loki/local-config.yaml",
+            "--store.retention=7d",
+          ],
+          ports: [{
+            name: "http",
+            containerPort: 3100,
+            protocol: "TCP",
+          }],
+          volumeMounts: [{
+            mountPath: "/loki",
+            name: "data",
+          }],
+          livenessProbe: {
+            failureThreshold: 10,
+            httpGet: {
+              path: "/ready",
+              port: "http",
+            },
+            initialDelaySeconds: 60,
+            timeoutSeconds: 30,
+          },
+          readinessProbe: {
+            httpGet: {
+              path: "/ready",
+              port: "http",
+            },
+          },
+        }],
+        volumes: [{
+          name: "data",
+          hostPath: {
+            path: "/mnt/data/config/infra/loki",
+          },
+        }],
+      },
+    },
+  },
+}
+---
+{
+  apiVersion: "v1",
+  kind: "Service",
+  metadata: {
+    name: "loki",
+    namespace: "infra",
+  },
+  spec: {
+    type: "ClusterIP",
+    selector: {
+      app: "loki",
+    },
+    ports: [{
+      name: "http",
+      port: 3100,
+      protocol: "TCP",
+      targetPort: "http",
+    }],
+  },
+}
