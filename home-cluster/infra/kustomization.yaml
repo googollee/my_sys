@@ -1,0 +1,19 @@
+{
+  apiVersion: "kustomize.config.k8s.io/v1beta1",
+  kind: "Kustomization",
+  namespace: "infra",
+  resources: [
+    "alloy.yaml",
+    "config-pv.yaml",
+    "grafana.yaml",
+    "inadyn.yaml",
+    "kustomization.yaml",
+    "loki.yaml",
+    "prom-app.yaml",
+    "prom-infra.yaml",
+    "prom-smartctl.yaml",
+    "redis.yaml",
+    "traefik.yaml",
+    "updateconfig.yaml",
+  ],
+}
