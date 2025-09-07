@@ -4,7 +4,7 @@
   metadata: {
     name: "services",
     namespace: "flux-system",
-  }
+  },
   spec: {
     interval: "1h0m0s",
     path: "./home-cluster/services",
@@ -13,11 +13,11 @@
     sourceRef: {
       kind: "GitRepository",
       name: "flux-system",
-    }
+    },
     targetNamespace: "default",
     timeout: "3m0s",
     wait: true,
-  }
+  },
 }
 ---
 {
@@ -26,7 +26,7 @@
   metadata: {
     name: "infra",
     namespace: "flux-system",
-  }
+  },
   spec: {
     interval: "1h0m0s",
     path: "./home-cluster/infra",
@@ -35,9 +35,9 @@
     sourceRef: {
       kind: "GitRepository",
       name: "flux-system",
-    }
+    },
     targetNamespace: "default",
     timeout: "3m0s",
     wait: true,
-  }
+  },
 }
