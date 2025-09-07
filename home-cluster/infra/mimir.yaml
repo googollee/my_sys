@@ -5,10 +5,15 @@ metadata:
   name: "mimir"
   namespace: "infra"
 data:
+  runtime-config.yaml: |
+    overrides:
+      app:
+        compactor_blocks_retention_period: 1y
   config.yaml: |
     multitenancy_enabled: false
-    # limits:
-    #   compactor_blocks_retention_period: "1y"
+
+    limits:
+      compactor_blocks_retention_period: "2w"
 
     server:
       http_listen_address: "0.0.0.0"
@@ -17,7 +22,7 @@ data:
       log_format: "json"
 
     activity_tracker:
-      filepath: "/dev/stdout"
+      filepath: ""
 
     store_gateway:
       sharding_ring:
@@ -31,6 +36,9 @@ data:
         dir: "/mimir/data/tsdb"
       tsdb:
         dir: "/mimir/tsdb"
+
+    memberlist:
+      bind_addr: ["127.0.0.1"]
 
     compactor:
       data_dir: "/mimir/compactor"
@@ -55,6 +63,9 @@ data:
       backend: "filesystem"
       filesystem:
         dir: "/mimir/rules"
+
+    ruler:
+      rule_path: "/mimir/tmp/ruler"
 ---
 {
   apiVersion: "apps/v1",
@@ -100,7 +111,10 @@ data:
             },
             readOnlyRootFilesystem: true,
           },
-          args: [ "--config.file=/etc/mimir/config.yaml" ],
+          args: [
+            "--config.file=/etc/mimir/config.yaml",
+            "--runtime-config.file=/etc/mimir/runtime-config.yaml",
+          ],
           ports: [{
             name: "http",
             containerPort: 9009,

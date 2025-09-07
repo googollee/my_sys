@@ -65,13 +65,16 @@ spec:
 
           prometheus.remote_write "default" {
             endpoint {
-              url = "http://prom-infra.infra.svc/api/v1/write"
+              url = "http://mimir.infra.svc:9009/api/v1/push"
             }
           }
 
           prometheus.remote_write "app" {
             endpoint {
-              url = "http://prom-app.infra.svc/api/v1/write"
+              url = "http://mimir.infra.svc:9009/api/v1/push"
+              headers = {
+                "X-Scope-OrgID" = "app",
+              }
             }
           }
 
