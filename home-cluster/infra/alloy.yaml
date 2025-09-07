@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: grafana
-  namespace: flux-system
+  namespace: infra
 spec:
   interval: 30m
   url: https://grafana.github.io/helm-charts
@@ -11,7 +11,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: alloy
-  namespace: flux-system
+  namespace: infra
 spec:
   chart:
     spec:
@@ -19,7 +19,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
-        namespace: flux-system
+        namespace: infra
   interval: 30m
   install:
     createNamespace: true
