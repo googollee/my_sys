@@ -1,213 +1,384 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: traefik
+  namespace: infra
+automountServiceAccountToken: false
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik-infra
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - nodes
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingressclasses
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - traefik.io
+    resources:
+      - ingressroutes
+      - ingressroutetcps
+      - ingressrouteudps
+      - middlewares
+      - middlewaretcps
+      - serverstransports
+      - serverstransporttcps
+      - tlsoptions
+      - tlsstores
+      - traefikservices
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+      - secrets
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
+      - backendtlspolicies
+      - gatewayclasses
+      - gateways
+      - grpcroutes
+      - httproutes
+      - referencegrants
+      - tcproutes
+      - tlsroutes
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - gateway.networking.k8s.io
+    resources:
+      - backendtlspolicies/status
+      - gatewayclasses/status
+      - gateways/status
+      - grpcroutes/status
+      - httproutes/status
+      - tcproutes/status
+      - tlsroutes/status
+    verbs:
+      - update
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik-infra
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-infra
+subjects:
+  - kind: ServiceAccount
+    name: traefik
+    namespace: infra
+---
+apiVersion: v1
+kind: Service
 metadata:
   name: traefik
   namespace: infra
 spec:
-  interval: 30m
-  url: https://traefik.github.io/charts
+  type: ClusterIP
+  selector:
+    app: traefik
+  ports:
+  - port: 8443
+    name: wansecure
+    targetPort: wansecure
+    protocol: TCP
+  - port: 80
+    name: web
+    targetPort: web
+    protocol: TCP
+  - port: 443
+    name: websecure
+    targetPort: websecure
+    protocol: TCP
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: traefik-crds
-  namespace: infra
-spec:
-  chart:
-    spec:
-      chart: traefik-crds
-      sourceRef:
-        kind: HelmRepository
-        name: traefik
-        namespace: infra
-  interval: 30m
-  install:
-    createNamespace: true
-  targetNamespace: infra
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: traefik
   namespace: infra
 spec:
-  chart:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  strategy:
+    type: Recreate
+  minReadySeconds: 0
+  template: 
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8888"
+      labels:
+        app: traefik
     spec:
-      chart: traefik
-      sourceRef:
-        kind: HelmRepository
+      serviceAccountName: traefik
+      automountServiceAccountToken: true
+      terminationGracePeriodSeconds: 60
+      hostNetwork: true
+      containers:
+      - image: docker.io/traefik:v3.5.1
+        imagePullPolicy: IfNotPresent
         name: traefik
-        namespace: infra
-  interval: 30m
-  install:
-    createNamespace: true
-  targetNamespace: infra
-  releaseName: traefik
-  values:
-    hostNetwork: true
-    deployment:
-      enabled: true
-      kind: Deployment
-      replicas: 1
-    service:
-      enabled: true
-      single: true
-      type: ClusterIP
-    updateStrategy:
-      type: Recreate
-    autoscaling:
-      enabled: false
-    rbac:
-      enabled: true
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop: [ALL]
-        add: [NET_BIND_SERVICE]
-      readOnlyRootFilesystem: true
-    podSecurityContext:
-      runAsGroup: 65535
-      runAsNonRoot: false
-      runAsUser: 0
-
-    env:
-    - name: CF_DNS_API_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: cloudflare-api-token-secret
-          key: dns-api-token
-
-    global:
-      checkNewVersion: false
-      sendAnonymousUsage: false
-    logs:
-      general:
-        level: INFO
-        format: json
-        noColor: true
-      access:
-        enabled: true
-        format: json
-    metrics:
-      prometheus:
-        entryPoint: traefik
-
-    providers:
-      kubernetesIngress:
-        enabled: true
-        allowExternalNameServices: true
-      kubernetesCRD:
-        enabled: true
-      kubernetesGateway:
-        enabled: true
-      file:
-        enabled: false
-
-    ingressClass:
-      enabled: true
-
-    gateway:
-      enabled: true
-      listeners:
-        web:
-          port: 80
-          protocol: HTTP
-
-    gatewayClass:
-      enabled: true
-
-    ports:
-      traefik:
-        port: 8888
-        expose:
-          default: false
-        exposedPort: 8888
-        protocol: TCP
-      web:
-        port: 80
-        expose:
-          default: true
-        exposedPort: 80
-      websecure:
-        asDefault: true
-        port: 443
-        expose:
-          default: true
-        exposedPort: 443
-        protocol: TCP
-        tls:
-          enabled: true
-          certResolver: cloudflare
-          domains:
-          - main: zhaohai.li
-            sans: ['*.zhaohai.li']
-      wansecure:
-        port: 8443
-        expose:
-          default: true
-        exposedPort: 8443
-        protocol: TCP
-        tls:
-          enabled: true
-          certResolver: cloudflare
-          domains:
-          - main: zhaohai.li
-            sans: ['*.zhaohai.li']
-
-    extraObjects:
-    - apiVersion: traefik.io/v1alpha1
-      kind: Middleware
-      metadata:
-        name: wanauth
-        namespace: infra
-      spec:
-        basicAuth:
-          secret: wanauth
-    - apiVersion: traefik.io/v1alpha1
-      kind: ServersTransport
-      metadata:
-        name: inner-redirect
-        namespace: infra
-      spec:
-        serverName: nas.zhaohai.li
-
-    ingressRoute:
-      dashboard:
-        enabled: true
-        entryPoints: [websecure]
-        matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
-        services:
-        - name: api@internal
-          kind: TraefikService
-      wanprivate:
-        enabled: true
-        entryPoints: [wansecure]
-        matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
-        middlewares:
-        - name: wanauth
-        services:
+        resources:
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 8888
+            scheme: HTTP
+          failureThreshold: 1
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8888
+            scheme: HTTP
+          failureThreshold: 3
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        lifecycle:
+        ports:
         - name: traefik
-          kind: Service
-          port: websecure
-          passHostHeader: true
-          serversTransport: inner-redirect
-      wanpublic:
-        enabled: true
-        entryPoints: [wansecure]
-        matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
-        services:
-        - name: traefik
-          kind: Service
-          port: websecure
-          passHostHeader: true
-          serversTransport: inner-redirect
-
-    certificatesResolvers:
-      cloudflare:
-        acme:
-          email: me@zhaohai.li
-          caServer: https://acme-v02.api.letsencrypt.org/directory
-          storage: /data/acme.json       # Path to store the certificate information.
-          dnsChallenge:
-            provider: cloudflare
-            resolvers: ["1.1.1.1"]
+          containerPort: 8888
+          protocol: TCP
+        - name: wansecure
+          containerPort: 8443
+          protocol: TCP
+        - name: web
+          containerPort: 80
+          protocol: TCP
+        - name: websecure
+          containerPort: 443
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+          - name: data
+            mountPath: /data
+          - name: tmp
+            mountPath: /tmp
+        args:
+          - "--global.checkNewVersion=false"
+          - "--entryPoints.traefik.address=:8888/tcp"
+          - "--entryPoints.wansecure.address=:8443/tcp"
+          - "--entryPoints.web.address=:80/tcp"
+          - "--entryPoints.websecure.address=:443/tcp"
+          - "--entryPoints.websecure.asDefault=true"
+          - "--api.dashboard=true"
+          - "--ping=true"
+          - "--metrics.prometheus=true"
+          - "--metrics.prometheus.entrypoint=traefik"
+          - "--providers.kubernetescrd"
+          - "--providers.kubernetescrd.allowEmptyServices=true"
+          - "--providers.kubernetesingress"
+          - "--providers.kubernetesingress.allowExternalNameServices=true"
+          - "--providers.kubernetesingress.allowEmptyServices=true"
+          - "--providers.kubernetesingress.ingressendpoint.publishedservice=infra/traefik"
+          - "--providers.kubernetesgateway"
+          - "--providers.kubernetesgateway.statusaddress.service.name=traefik"
+          - "--providers.kubernetesgateway.statusaddress.service.namespace=infra"
+          - "--entryPoints.wansecure.http.tls=true"
+          - "--entryPoints.wansecure.http.tls.certResolver=cloudflare"
+          - "--entryPoints.wansecure.http.tls.domains[0].main=zhaohai.li"
+          - "--entryPoints.wansecure.http.tls.domains[0].sans=*.zhaohai.li"
+          - "--entryPoints.websecure.http.tls=true"
+          - "--entryPoints.websecure.http.tls.certResolver=cloudflare"
+          - "--entryPoints.websecure.http.tls.domains[0].main=zhaohai.li"
+          - "--entryPoints.websecure.http.tls.domains[0].sans=*.zhaohai.li"
+          - "--log.format=json"
+          - "--log.level=INFO"
+          - "--accesslog=true"
+          - "--accesslog.format=json"
+          - "--accesslog.fields.defaultmode=keep"
+          - "--accesslog.fields.headers.defaultmode=drop"
+          - "--certificatesresolvers.cloudflare.acme.caServer=https://acme-v02.api.letsencrypt.org/directory"
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge.provider=cloudflare"
+          - "--certificatesresolvers.cloudflare.acme.dnsChallenge.resolvers=1.1.1.1"
+          - "--certificatesresolvers.cloudflare.acme.email=me@zhaohai.li"
+          - "--certificatesresolvers.cloudflare.acme.storage=/data/acme.json"
+        env:
+          - name: CF_DNS_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: dns-api-token
+                name: cloudflare-api-token-secret
+      volumes:
+        - name: data
+          hostPath:
+            path: "/mnt/data/config/infra/traefik"
+        - name: tmp
+          emptyDir: {}
+      securityContext:
+        runAsGroup: 65535
+        runAsNonRoot: false
+        runAsUser: 0
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+  name: traefik
+spec:
+  controller: traefik.io/ingress-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: traefik-gateway
+  namespace: infra
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: web
+      port: 80
+      protocol: HTTP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: traefik
+spec:
+  controllerName: traefik.io/gateway-controller
+---
+# Source: traefik/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+  namespace: infra
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+      - kind: TraefikService
+        name: api@internal
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wanprivate
+  namespace: infra
+spec:
+  entryPoints:
+  - wansecure
+  routes:
+  - match: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+      - kind: Service
+        name: traefik
+        passHostHeader: true
+        port: websecure
+        serversTransport: inner-redirect
+    middlewares:
+      - name: wanauth
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wanpublic
+  namespace: infra
+spec:
+  entryPoints:
+  - wansecure
+  routes:
+  - match: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+      - kind: Service
+        name: traefik
+        passHostHeader: true
+        port: websecure
+        serversTransport: inner-redirect
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: wanauth
+  namespace: infra
+spec:
+  basicAuth:
+    secret: wanauth
+---
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: inner-redirect
+  namespace: infra
+spec:
+  serverName: nas.zhaohai.li
