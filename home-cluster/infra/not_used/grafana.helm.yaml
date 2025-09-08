@@ -1,0 +1,79 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: infra
+spec:
+  interval: 30m
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: infra
+spec:
+  chart:
+    spec:
+      chart: grafana
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: infra
+  interval: 30m
+  install:
+    createNamespace: true
+  targetNamespace: infra
+  releaseName: grafana
+  values:
+    replicas: 1
+    admin:
+      existingSecret: service-admin
+    smtp:
+      existingSecret: gmail-smtp
+    securityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
+    extraVolumeMounts:
+    - name: local-storage
+      mountPath: /var/lib/grafana.local
+      readOnly: false
+    extraVolumes:
+    - name: local-storage
+      hostPath:
+        path: /mnt/data/config/infra/grafana
+
+    grafana.ini:
+      log:
+        mode: console
+      paths:
+        data: /var/lib/grafana.local/
+        logs: /var/lib/grafana.local/
+        plugins: /var/lib/grafana.local/plugins
+        provisioning: /etc/grafana/provisioning
+      date_formats:
+        default_timezone: Europe/Berlin
+      smtp:
+        enabled: true
+        from_name: Alert
+        from_address: me+nas_alert@zhaohai.li
+        host: smtp.gmail.com:587
+
+    persistence:
+      enabled: false
+      inMemory:
+        enabled: false
+
+    ingress:
+      enabled: true
+      hosts:
+      - monitor.zhaohai.li
+    initChownData:
+      enabled: false
+    serviceAccount:
+      create: false
+    rbac:
+      create: false
+    testFramework:
+      enabled: false
