@@ -124,12 +124,17 @@ spec:
       enabled: true
 
     ports:
-      metrics: null
-      traefik:
-        port: 8888
+      metrics: 
+        port: 18889
         expose:
           default: false
-        exposedPort: 8888
+        exposedPort: 18889
+        protocol: TCP
+      traefik:
+        port: 18888
+        expose:
+          default: false
+        exposedPort: 18888
         protocol: TCP
       web:
         port: 80
