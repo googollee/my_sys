@@ -9,5 +9,5 @@ resources: [
   "mimir.yaml",
   "exporters.yaml",
   "alloy.yaml",
-  # "grafana.yaml",
+  "grafana.yaml",
 ]
