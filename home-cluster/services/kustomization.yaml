@@ -10,6 +10,5 @@ resources:
   - qbittorrent.yaml
   - photos.yaml
   - metatube.yaml
-  - caldav.yaml
   - zhufeng-vm.yaml
   - dev-vm.yaml
