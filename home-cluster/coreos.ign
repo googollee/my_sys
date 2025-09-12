@@ -73,22 +73,6 @@
         "mode": 420
       },
       {
-        "path": "/etc/modules-load.d/modules.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,nct6775"
-        },
-        "mode": 420
-      },
-      {
-        "path": "/etc/modprobe.d/nct6775.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,options%20nct6775%20force_id%3D0xd801"
-        },
-        "mode": 420
-      },
-      {
         "overwrite": true,
         "path": "/etc/samba/smb.conf",
         "contents": {

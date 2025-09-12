@@ -1,4 +1,4 @@
-# butane --pretty --strict coreos.yaml -d . > coreos.ign
+# butane --pretty --strict -d . coreos.yaml > coreos.ign
 variant: fcos
 version: 1.6.0
 passwd:
@@ -52,14 +52,14 @@ storage:
       contents:
         inline: |
           PasswordAuthentication yes
-    - path: /etc/modules-load.d/modules.conf
-      mode: 0644
-      contents:
-        inline: nct6775
-    - path: /etc/modprobe.d/nct6775.conf
-      mode: 0644
-      contents:
-        inline: options nct6775 force_id=0xd801
+    # - path: /etc/modules-load.d/modules.conf
+    #   mode: 0644
+    #   contents:
+    #     inline: nct6775
+    # - path: /etc/modprobe.d/nct6775.conf
+    #   mode: 0644
+    #   contents:
+    #     inline: options nct6775 force_id=0xd801
     - path: /etc/samba/smb.conf
       mode: 0644
       overwrite: true
