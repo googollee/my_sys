@@ -39,7 +39,7 @@ spec:
         - name: GTS_LETSENCRYPT_ENABLED
           value: "false"
         - name: GTS_TRUSTED_PROXIES
-          value: "10.244.0.1/24,127.0.0.1/32,::1"
+          value: "192.168.10.1/24,127.0.0.1/32,::1"
         - name: TZ
           value: Europe/Berlin
         resources:
