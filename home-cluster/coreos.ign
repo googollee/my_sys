@@ -109,7 +109,7 @@
         "path": "/home/googol/install_samba.sh",
         "contents": {
           "compression": "",
-          "source": "data:;base64,IyEvYmluL3NoCgpycG0tb3N0cmVlIGluc3RhbGwgc2NyZWVuIHNhbWJhCgplY2hvIFJlYm9vdCB0byBlbmFibGUgc2FtZSwgdGhlbiBydW4gLi9zdGFydF9zbWIuc2gK"
+          "source": "data:;base64,IyEvYmluL3NoCgpycG0tb3N0cmVlIGluc3RhbGwgc2NyZWVuIGF2YWhpIHNhbWJhCgplY2hvIFJlYm9vdCB0byBlbmFibGUgc2FtZSwgdGhlbiBydW4gLi9zdGFydF9zbWIuc2gK"
         },
         "mode": 493
       }
