@@ -65,14 +65,6 @@
         "mode": 420
       },
       {
-        "path": "/etc/ssh/sshd_config.d/02-enable-passwords.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,PasswordAuthentication%20yes%0A"
-        },
-        "mode": 420
-      },
-      {
         "overwrite": true,
         "path": "/etc/samba/smb.conf",
         "contents": {
