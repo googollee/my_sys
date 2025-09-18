@@ -26,7 +26,7 @@ spec:
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0
         - name: PHOTOVIEW_LISTEN_PORT
-          value: "80"
+          value: "8080"
         - name: PHOTOVIEW_VIDEO_HARDWARE_ACCELERATION
           value: vaapi
         - name: PHOTOVIEW_DATABASE_DRIVER
@@ -44,7 +44,7 @@ spec:
               key: api-token
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 8080
           protocol: TCP
         volumeMounts:
         - mountPath: /etc/localtime
@@ -89,7 +89,7 @@ spec:
     app: photos-test
   ports:
   - name: http
-    port: 80
+    port: 8080
     protocol: TCP
     targetPort: http
 ---
@@ -108,4 +108,4 @@ spec:
           service:
             name: photos-test
             port:
-              number: 80
+              number: 8080
