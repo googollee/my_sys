@@ -32,6 +32,9 @@ spec:
           - containerPort: 22
             name: ssh
             protocol: TCP
+          - containerPort: 6666
+            name: port
+            protocol: TCP
           - containerPort: 8006
             name: http
             protocol: TCP
@@ -94,6 +97,11 @@ spec:
       protocol: TCP
       targetPort: 22
       nodePort: 32022
+    - name: port
+      port: 6666
+      protocol: TCP
+      targetPort: 6666
+      nodePort: 32023
   selector:
     app: zhufeng-vm
 ---
