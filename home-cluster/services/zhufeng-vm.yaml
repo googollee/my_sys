@@ -97,6 +97,11 @@ spec:
       protocol: TCP
       targetPort: 22
       nodePort: 32022
+    - name: port
+      port: 6666
+      protocol: TCP
+      targetPort: 6666
+      nodePort: 32023
   selector:
     app: zhufeng-vm
 ---
