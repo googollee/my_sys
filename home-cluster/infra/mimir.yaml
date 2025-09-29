@@ -10,7 +10,8 @@ data:
       app:
         compactor_blocks_retention_period: 1y
   config.yaml: |
-    multitenancy_enabled: false
+    multitenancy_enabled: true
+    no_auth_tenant: "anonymous"
 
     limits:
       compactor_blocks_retention_period: "2w"
