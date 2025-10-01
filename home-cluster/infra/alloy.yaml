@@ -67,6 +67,9 @@ spec:
           prometheus.remote_write "default" {
             endpoint {
               url = "http://mimir.infra.svc:9009/api/v1/push"
+              headers = {
+                "X-Scope-OrgID" = "anonymous",
+              }
             }
           }
 
