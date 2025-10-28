@@ -64,6 +64,11 @@ if [ `uname` = "Darwin" ]; then
   fi
 fi
 
+# Linux
+if [ `uname` = "Linux" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # Google Env
 if which lsb_release >/dev/null; then
   if [ $(lsb_release -cs) = "rodete" ]; then

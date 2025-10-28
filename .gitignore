@@ -1,3 +1,4 @@
 playbook/.vault_password
 output/
 home-cluster/services/secrets.yaml
+.aider*
