@@ -1,0 +1,41 @@
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "HelmRepository"
+metadata:
+  name: "valkey"
+  namespace: "infra"
+spec:
+  interval: "30m"
+  url: "https://valkey.io/valkey-helm/"
+---
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "valkey"
+  namespace: "infra"
+spec:
+  chart:
+    spec:
+      chart: "valkey"
+      sourceRef:
+        kind: "HelmRepository"
+        name: "valkey"
+        namespace: "infra"
+  interval: "30m"
+  install:
+    createNamespace: true
+  targetNamespace: "infra"
+  releaseName: "valkey"
+  values:
+    replicaCount: 1
+    podSecurityContext:
+      fsGroup: 65534
+      runAsUser: 65534
+      runAsGroup: 65534
+    securityContext:
+      runAsUser: 65534
+    serviceAccount:
+      create: false
+    dataStorage:
+      enabled: true
+      persistentVolumeClaimName: "local-pvc"
+      subPath: "valkey"
