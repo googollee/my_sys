@@ -11,8 +11,8 @@ return {
 
       -- Set up lspconfig.
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
-      require('lspconfig')['gopls'].setup({ capabilities = capabilities })
-      require('lspconfig')['golangci_lint_ls'].setup({ capabilities = capabilities })
+      vim.lsp.config('gopls', { capabilities = capabilities })
+      vim.lsp.config('golangci_lint_ls', { capabilities = capabilities })
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('go.lsp', {}),
