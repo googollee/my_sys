@@ -1,4 +1,4 @@
-export PATH=~/.local/bin:$PATH
+export PATH=~/.local/bin:/usr/lib/go-1.25/bin/:$PATH
 
 umask 0022
 alias ls='ls -G --color=auto'
@@ -66,7 +66,6 @@ fi
 
 # Linux
 if [ `uname` = "Linux" ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
 # Google Env
