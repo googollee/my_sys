@@ -28,7 +28,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8123
-          # hostPort: 8123
           protocol: TCP
         volumeMounts:
         - mountPath: /dev/ttyACM0
@@ -45,7 +44,7 @@ spec:
             memory: 2Gi
           requests:
             memory: 512Mi
-      hostNetwork: true
+      # hostNetwork: true
       volumes:
       - name: dev-dongle
         hostPath:
