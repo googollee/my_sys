@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: z2mqtt
+  labels:
+    app: z2mqtt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: z2mqtt
+  template:
+    metadata:
+      labels:
+        app: z2mqtt
+    spec:
+      terminationGracePeriodSeconds: 3600
+      securityContext:
+        fsGroup: 65534
+        runAsUser: 65534
+        runAsGroup: 18 # dialout
+      containers:
+      - name: z2mqtt
+        image: ghcr.io/koenkk/zigbee2mqtt:latest
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: zoneinfo
+          readOnly: true
+        - mountPath: /app/data
+          name: data
+        - mountPath: /dev/ttyACM0
+          name: dev-dongle
+      volumes:
+      - name: zoneinfo
+        hostPath:
+          path: /usr/share/zoneinfo
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: dev-dongle
+        hostPath:
+          path: /dev/ttyACM0
+      - name: data
+        hostPath:
+          path: /mnt/data/config/z2mqtt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: z2mqtt
+spec:
+  type: ClusterIP
+  selector:
+    app: z2mqtt
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: z2mqtt
+spec:
+  rules:
+  - host: "z2mqtt-p.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: z2mqtt
+            port:
+              number: 8080

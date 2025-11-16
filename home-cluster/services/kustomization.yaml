@@ -2,12 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: default
 resources:
-  - backup.yaml
-  - ha.yaml
-  - gotosocial.yaml
-  - jellyfin.yaml
-  - qbittorrent.yaml
-  - photos.yaml
-  - metatube.yaml
-  - zhufeng-vm.yaml
-  - dev-vm.yaml
+- backup.yaml
+- ha.yaml
+- gotosocial.yaml
+- jellyfin.yaml
+- qbittorrent.yaml
+- photos.yaml
+- metatube.yaml
+- zhufeng-vm.yaml
+- dev-vm.yaml
+- z2mqtt.yaml
