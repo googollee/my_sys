@@ -7,7 +7,7 @@ return {
     -- Perform action after every checkout
     hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
     opts = {
-      ensure_installed = { 'lua', 'vimdoc' },
+      ensure_installed = { 'lua', 'vimdoc', 'yaml' },
       highlight = { enable = true },
     },
   },
