@@ -5,7 +5,7 @@ metadata:
   namespace: "infra"
 spec:
   interval: "30m"
-  url: "https://charts.bitnami.com/bitnami"
+  url: "oci://registry-1.docker.io/bitnamicharts"
 ---
 apiVersion: "helm.toolkit.fluxcd.io/v2"
 kind: "HelmRelease"
