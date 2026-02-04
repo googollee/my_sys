@@ -1,0 +1,90 @@
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "HelmRepository"
+metadata:
+  name: "bitnami"
+  namespace: "infra"
+spec:
+  interval: "30m"
+  url: "https://charts.bitnami.com/bitnami"
+---
+apiVersion: "helm.toolkit.fluxcd.io/v2"
+kind: "HelmRelease"
+metadata:
+  name: "postgres"
+  namespace: "infra"
+spec:
+  chart:
+    spec:
+      chart: "postgresql"
+      sourceRef:
+        kind: "HelmRepository"
+        name: "bitnami"
+        namespace: "infra"
+  interval: "30m"
+  install:
+    createNamespace: true
+  targetNamespace: "infra"
+  releaseName: "postgres"
+  values:
+    fullnameOverride: "postgres"
+
+    architecture: standalone
+    readReplicas:
+      replicaCount: 0
+
+    auth:
+      existingSecret: "db-admin"
+      secretKeys:
+        adminPasswordKey: "password"
+
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: "local-pvc"
+        subPath: "postgres"
+
+      podSecurityContext:
+        enabled: true
+        fsGroup: 65534
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9187"
+        prometheus.io/path: "/metrics"
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        capabilities:
+          add:
+          - CAP_SYS_NICE
+
+      pgHbaConfiguration: |
+        # TYPE  DATABASE        USER            ADDRESS                 METHOD
+        local   all             all                                     trust
+        host    all             postgres        127.0.0.1/32            md5
+        host    all             postgres        0.0.0.0/0               reject
+        host    all             all             0.0.0.0/0               md5
+
+      networkPolicy:
+        enabled: false
+      pdb:
+        create: false
+
+    volumePermissions:
+      enabled: true
+
+    metrics:
+      enabled: true
+      service:
+        annotations:
+          prometheus.io/scrape: "false"
+      serviceMonitor:
+        enabled: false
+
+    serviceAccount:
+      create: false
+      name: "default"
+
+    rbac:
+      create: false
+

@@ -13,3 +13,4 @@ resources:
 - "grafana.yaml"
 - "nanomq.yaml"
 - "valkey.yaml"
+- "postgres.yaml"
