@@ -16,6 +16,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
+        fsGroup: 1001
         runAsUser: 1001
         runAsGroup: 1001
       containers:
@@ -23,8 +24,10 @@ spec:
         image: ollama/ollama:rocm
         imagePullPolicy: Always
         env:
-        - name: OLLAMA_DEBUG
-          value: '1'
+        - name: OLLAMA_MAX_LOADED_MODELS
+          value: "1"
+        - name: OLLAMA_NUM_PARALLEL
+          value: "1"
         ports:
         - name: http
           containerPort: 11434

@@ -12,3 +12,5 @@ resources:
 - zhufeng-vm.yaml
 - dev-vm.yaml
 - z2mqtt.yaml
+- ollama.yaml
+- openwebui.yaml
