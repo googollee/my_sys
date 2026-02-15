@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: versitygw
+  namespace: infra
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7070
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 7071
+      targetPort: ui
+      protocol: TCP
+      name: ui
+  selector:
+    app.kubernetes.io/name: versitygw
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: versitygw
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: versitygw
+  template:
+    metadata:
+      namespace: infra
+      labels:
+        app.kubernetes.io/name: versitygw
+    spec:
+      securityContext:
+        {}
+      containers:
+        - name: versitygw
+          env:
+          - name: "ROOT_ACCESS_KEY"
+            valueFrom:
+              secretKeyRef:
+                name: "s3-keys"
+                key: "access-key"
+          - name: "ROOT_SECRET_KEY"
+            valueFrom:
+              secretKeyRef:
+                name: "s3-keys"
+                key: "secret-key"
+          - name: "VGW_REGION"
+            value: "us-east-1"
+          securityContext:
+            {}
+          image: "versity/versitygw:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 7070
+              protocol: TCP
+            - name: ui
+              containerPort: 7071 
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: ui
+          readinessProbe:
+            httpGet:
+              path: /
+              port: ui
+          resources:
+            {}
+          args:
+          - "--cors-allow-origin"
+          - "https://s3-ui.zhaohai.li"
+          - "--port"
+          - ":7070"
+          - "--webui"
+          - ":7071"
+          - "--webui-no-tls"
+          - "posix"
+          - "/data/s3"
+          volumeMounts:
+            - mountPath: /data/s3
+              name: file-storage
+              subPath: s3
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: local-pvc
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: cors-header
+  namespace: infra
+spec:
+  headers:
+    accessControlAllowMethods:
+      - "GET"
+      - "OPTIONS"
+      - "PUT"
+      - "HEAD"
+      - "DELETE"
+      - "POST"
+    accessControlAllowHeaders:
+      - "*"
+    accessControlAllowOriginList:
+      - "https://s3-ui.zhaohai.li"
+    accessControlMaxAge: 100
+    addVaryHeader: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: versitygw
+  namespace: infra
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: "infra-cors-header@kubernetescrd"
+spec:
+  rules:
+  - host: "s3.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: versitygw
+            port:
+              number: 7070
+  - host: "s3-ui.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: versitygw
+            port:
+              number: 7071

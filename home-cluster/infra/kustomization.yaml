@@ -14,3 +14,4 @@ resources:
 - "nanomq.yaml"
 - "valkey.yaml"
 - "postgres.yaml"
+- "versitygw.yaml"
