@@ -11,6 +11,6 @@ resources:
 - metatube.yaml
 - zhufeng-vm.yaml
 - dev-vm.yaml
-- z2mqtt.yaml
+# - z2mqtt.yaml
 - ollama.yaml
 - openwebui.yaml
