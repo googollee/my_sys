@@ -11,7 +11,7 @@ resources:
 - "exporters.yaml"
 - "alloy.yaml"
 - "grafana.yaml"
-- "nanomq.yaml"
+# - "nanomq.yaml"
 - "valkey.yaml"
 - "postgres.yaml"
 - "versitygw.yaml"
