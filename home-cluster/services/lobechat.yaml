@@ -64,6 +64,11 @@ spec:
             secretKeyRef:
               name: "lobechat"
               key: "auth-secret"
+        - name: JWKS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "lobechat"
+              key: "jwks-key"
         - name: DBUSER
           valueFrom:
             secretKeyRef:
