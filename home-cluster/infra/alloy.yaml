@@ -220,29 +220,22 @@ spec:
             targets = discovery.kubernetes.nodes.targets
 
             rule {
-              action = "replace"
-              target_label = "__address__"
-              replacement = "kubernetes.default.svc.cluster.local:443"
+              source_labels = ["__address__"]
+              target_label  = "__address__"
+              regex         = "(.*):.*"
+              replacement   = "${1}:10250"
             }
 
             rule {
-              source_labels = ["__meta_kubernetes_node_name"]
-              regex = "(.+)"
-              action = "replace"
-              replacement = "/api/v1/nodes/${1}/proxy/metrics"
               target_label = "__metrics_path__"
-            }
-
-            rule {
-              source_labels = ["__meta_kubernetes_node_name"]
-              target_label  = "k8s_node_name"
+              replacement  = "/metrics"
             }
           }
 
           prometheus.scrape "kubelet" {
             scheme = "https"
             tls_config {
-                server_name = "kubernetes"
+                server_name = "nas"
                 ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
                 insecure_skip_verify = false
             }
