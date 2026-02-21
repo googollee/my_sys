@@ -41,22 +41,6 @@ spec:
       create: true
     rbac:
       create: true
-      clusterRules:
-      # -- Rules required for the Nodes role in the `discovery.kubernetes` component.
-      - apiGroups: [""]
-        resources: ["nodes"]
-        verbs: ["get", "list", "watch"]
-      # -- Rules required for the `discovery.kubelet` component.
-      - apiGroups: [""]
-        resources: ["nodes/pods"]
-        verbs: ["get", "list", "watch"]
-      # -- Rules required accessing metric endpoints on the Node (e.g. Kubelet, cAdvisor, etc...).
-      - apiGroups: [""]
-        resources: ["nodes/metrics"]
-        verbs: ["get", "list", "watch"]
-      # -- Rules required for accessing metrics endpoint.
-      - nonResourceURLs: ["/metrics", "/metrics/cadvisor"]
-        verbs: ["get"]
     serviceAccount:
       create: true
     configReloader:
@@ -206,29 +190,22 @@ spec:
             targets = discovery.kubernetes.nodes.targets
 
             rule {
-              action = "replace"
-              target_label = "__address__"
-              replacement = "kubernetes.default.svc.cluster.local:443"
+              source_labels = ["__address__"]
+              target_label  = "__address__"
+              regex         = "(.*):.*"
+              replacement   = "${1}:10250"
             }
 
             rule {
-              source_labels = ["__meta_kubernetes_node_name"]
-              regex = "(.+)"
-              action = "replace"
-              replacement = "/api/v1/nodes/${1}/proxy/metrics/cadvisor"
               target_label = "__metrics_path__"
-            }
-
-            rule {
-              source_labels = ["__meta_kubernetes_node_name"]
-              target_label  = "k8s_node_name"
+              replacement  = "/metrics/cadvisor"
             }
           }
 
           prometheus.scrape "cadvisor" {
             scheme = "https"
             tls_config {
-                server_name = "kubernetes"
+                server_name = "nas"
                 ca_file = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
                 insecure_skip_verify = false
             }
