@@ -190,6 +190,13 @@ spec:
             targets = discovery.kubernetes.nodes.targets
 
             rule {
+              source_labels = ["__address__"]
+              regex = "(.+):.*"
+              replacement = "${1}:10250"
+              target_label = "__address__"
+            }
+
+            rule {
               target_label = "__metrics_path__"
               replacement = "/metrics/cadvisor"
             }
