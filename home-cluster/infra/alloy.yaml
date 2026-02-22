@@ -121,6 +121,12 @@ spec:
             }
 
             rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              target_label  = "instance"
+              action        = "keep"
+            }
+
+            rule {
               action = "drop"
               source_labels = ["__meta_kubernetes_namespace"]
               regex = "^default$"
@@ -162,6 +168,12 @@ spec:
             rule {
               source_labels = ["__meta_kubernetes_pod_node_name"]
               regex         = sys.env("NODE_NAME")
+              action        = "keep"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              target_label  = "instance"
               action        = "keep"
             }
 
@@ -211,6 +223,12 @@ spec:
             }
 
             rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              target_label  = "instance"
+              action        = "keep"
+            }
+
+            rule {
               source_labels = ["__address__"]
               target_label  = "__address__"
               regex         = "(.*):.*"
@@ -243,6 +261,12 @@ spec:
             rule {
               source_labels = ["__meta_kubernetes_node_name"]
               regex         = sys.env("NODE_NAME")
+              action        = "keep"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_node_name"]
+              target_label  = "instance"
               action        = "keep"
             }
 
