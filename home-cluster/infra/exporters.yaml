@@ -31,6 +31,10 @@ spec:
     service:
       port: 9110
       targetPort: 9110
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/"
+      prometheus.io/port: "9110"
 ---
 apiVersion: "v1"
 kind: "Service"
@@ -64,6 +68,10 @@ spec:
     metadata:
       labels:
         app: "smartctl-exporter"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "9633"
     spec:
       initContainers:
         - name: "init"
