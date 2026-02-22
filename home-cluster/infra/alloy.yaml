@@ -115,15 +115,14 @@ spec:
             targets = discovery.kubernetes.pods.targets
 
             rule {
+              action        = "keep"
               source_labels = ["__meta_kubernetes_pod_node_name"]
               regex         = sys.env("NODE_NAME")
-              action        = "keep"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_pod_node_name"]
               target_label  = "instance"
-              action        = "keep"
             }
 
             rule {
@@ -166,15 +165,14 @@ spec:
             targets = discovery.kubernetes.pods.targets
 
             rule {
+              action        = "keep"
               source_labels = ["__meta_kubernetes_pod_node_name"]
               regex         = sys.env("NODE_NAME")
-              action        = "keep"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_pod_node_name"]
               target_label  = "instance"
-              action        = "keep"
             }
 
             rule {
@@ -217,15 +215,14 @@ spec:
             targets = discovery.kubernetes.nodes.targets
 
             rule {
+              action        = "keep"
               source_labels = ["__meta_kubernetes_node_name"]
               regex         = sys.env("NODE_NAME")
-              action        = "keep"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_node_name"]
               target_label  = "instance"
-              action        = "keep"
             }
 
             rule {
@@ -259,15 +256,14 @@ spec:
             targets = discovery.kubernetes.nodes.targets
 
             rule {
+              action        = "keep"
               source_labels = ["__meta_kubernetes_node_name"]
               regex         = sys.env("NODE_NAME")
-              action        = "keep"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_node_name"]
               target_label  = "instance"
-              action        = "keep"
             }
 
             rule {
