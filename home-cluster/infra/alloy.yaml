@@ -46,6 +46,10 @@ spec:
     controller:
       type: 'daemonset'
       replicas: 1
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "12345"
+        prometheus.io/path: "/metrics"
     service:
       enabled: true
     serviceMonitor:
