@@ -33,7 +33,7 @@ spec:
       targetPort: 9110
     podAnnotations:
       prometheus.io/scrape: "true"
-      prometheus.io/path: "/"
+      prometheus.io/path: "/metrics"
       prometheus.io/port: "9110"
 ---
 apiVersion: "v1"
