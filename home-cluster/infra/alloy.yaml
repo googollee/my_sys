@@ -29,8 +29,6 @@ spec:
   values:
     ingress:
       enabled: true
-      annotations:
-        # traefik.ingress.kubernetes.io/router.entrypoints: websecure
       hosts:
       - collector-p.zhaohai.li
       faroPort: 12345
@@ -56,6 +54,11 @@ spec:
     alloy:
       mounts:
         varlog: true
+      extraEnv:
+      - name: NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
       configMap:
         create: true
         content: |
