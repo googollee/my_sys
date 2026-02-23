@@ -6,7 +6,7 @@ metadata:
   namespace: "flux-system"
 spec:
   selector:
-    matchLabels:
+    matchLabels: {}
   podMetricsEndpoints:
   - port: "http-prom"
     path: "/metrics"
