@@ -153,14 +153,14 @@ spec:
             }
 
             rule {
-              target_label  = "__name_filter_regex__"
+              target_label  = "name_filter_regex"
               replacement  = ".*"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_name_filter_regex"]
               regex         = "(.+)"
-              target_label  = "__name_filter_regex__"
+              target_label  = "name_filter_regex"
               replacement  = "$1"
             }
           }
@@ -177,8 +177,8 @@ spec:
             forward_to = [prometheus.remote_write.default.receiver]
 
             rule {
-              source_labels = ["__name__", "__name_filter_regex__"]
-              regex         = "$1;.*"
+              source_labels = ["__name__", "name_filter_regex"]
+              regex         = "$2;.*"
               action        = "keep"
             }
           }
@@ -226,14 +226,14 @@ spec:
             }
 
             rule {
-              target_label  = "__name_filter_regex__"
+              target_label  = "name_filter_regex"
               replacement  = ".*"
             }
 
             rule {
               source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_name_filter_regex"]
               regex         = "(.+)"
-              target_label  = "__name_filter_regex__"
+              target_label  = "name_filter_regex"
               replacement  = "$1"
             }
           }
@@ -250,8 +250,8 @@ spec:
             forward_to = [prometheus.remote_write.default.receiver]
 
             rule {
-              source_labels = ["__name__", "__name_filter_regex__"]
-              regex         = "$1;.*"
+              source_labels = ["__name__", "name_filter_regex"]
+              regex         = "$2;.*"
               action        = "keep"
             }
           }
