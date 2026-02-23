@@ -151,13 +151,36 @@ spec:
               regex = "^([0-9.]+)([:0-9]*):([0-9]+)$"
               replacement = "$1:$3"
             }
+
+            rule {
+              target_label  = "__name_filter_regex__"
+              replacement  = ".*"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_name_filter_regex"]
+              regex         = "(.+)"
+              target_label  = "__name_filter_regex__"
+              replacement  = "$1"
+            }
           }
 
           prometheus.scrape "infra" {
-            scheme = "http"
             targets = discovery.relabel.pod_scrape_infra.output
+            forward_to = [prometheus.relabel.infra.receiver]
+
+            scheme = "http"
             scrape_interval = "30s"
+          }
+
+          prometheus.relabel "infra" {
             forward_to = [prometheus.remote_write.default.receiver]
+
+            rule {
+              source_labels = ["__name__", "__name_filter_regex__"]
+              regex         = "\\1;.*"
+              action        = "keep"
+            }
           }
 
           // app monitor
@@ -201,13 +224,36 @@ spec:
               regex = "^([0-9.]+)([:0-9]*):([0-9]+)$"
               replacement = "$1:$3"
             }
+
+            rule {
+              target_label  = "__name_filter_regex__"
+              replacement  = ".*"
+            }
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_name_filter_regex"]
+              regex         = "(.+)"
+              target_label  = "__name_filter_regex__"
+              replacement  = "$1"
+            }
           }
 
           prometheus.scrape "app" {
-            scheme = "http"
             targets = discovery.relabel.pod_scrape_app.output
+            forward_to = [prometheus.relabel.app.receiver]
+
+            scheme = "http"
             scrape_interval = "30s"
-            forward_to = [prometheus.remote_write.app.receiver]
+          }
+
+          prometheus.relabel "app" {
+            forward_to = [prometheus.remote_write.default.receiver]
+
+            rule {
+              source_labels = ["__name__", "__name_filter_regex__"]
+              regex         = "\\1;.*"
+              action        = "keep"
+            }
           }
 
           // cadvisor
