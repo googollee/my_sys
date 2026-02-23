@@ -240,7 +240,7 @@ spec:
 
           prometheus.scrape "cadvisor" {
             targets = discovery.relabel.cadvisor.output
-            forward_to = [prometheus.relabel.cadvisor]
+            forward_to = [prometheus.relabel.cadvisor.receiver]
 
             scrape_interval = "30s"
             scheme = "https"
@@ -303,7 +303,7 @@ spec:
 
           prometheus.scrape "kubelet" {
             targets = discovery.relabel.kubelet.output
-            forward_to = [prometheus.relabel.kubelet]
+            forward_to = [prometheus.relabel.kubelet.receiver]
 
             scrape_interval = "30s"
             scheme = "https"
