@@ -178,7 +178,7 @@ spec:
 
             rule {
               source_labels = ["__name__", "__name_filter_regex__"]
-              regex         = "\\1;.*"
+              regex         = "$1;.*"
               action        = "keep"
             }
           }
@@ -251,7 +251,7 @@ spec:
 
             rule {
               source_labels = ["__name__", "__name_filter_regex__"]
-              regex         = "\\1;.*"
+              regex         = "$1;.*"
               action        = "keep"
             }
           }
