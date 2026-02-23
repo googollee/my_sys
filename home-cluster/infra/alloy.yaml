@@ -110,6 +110,33 @@ spec:
             role = "node"
           }
 
+          prometheus.operator.podmonitors "podmointors" {
+            forward_to = [
+              prometheus.relabel.infra.receiver,
+              prometheus.relabel.app.receiver,
+            ]
+          }
+
+          // infra
+          prometheus.relabel "infra" {
+            forward_to = [prometheus.remote_write.infra.receiver]
+            rule {
+              source_labels = ["namespace"]
+              regex         = "default"
+              action        = "drop"
+            }
+          }
+
+          // app
+          prometheus.relabel "app" {
+            forward_to = [prometheus.remote_write.app.receiver]
+            rule {
+              source_labels = ["namespace"]
+              regex         = "default"
+              action        = "keep"
+            }
+          }
+
           // infra monitor
           discovery.relabel "pod_scrape_infra" {
             targets = discovery.kubernetes.pods.targets
