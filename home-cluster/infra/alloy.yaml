@@ -206,7 +206,7 @@ spec:
 
           prometheus.scrape "app" {
             targets = discovery.relabel.pod_scrape_app.output
-            forward_to = [prometheus.remote_write.default.receiver]
+            forward_to = [prometheus.remote_write.app.receiver]
 
             scheme = "http"
             scrape_interval = "30s"
