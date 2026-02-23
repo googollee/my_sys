@@ -1,3 +1,17 @@
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "iot"
+spec:
+  selector:
+    matchLabels:
+      app: iot
+  podMetricsEndpoints:
+  - port: "http"
+    path: "/api/prometheus"
+    interval: "30s"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,11 +29,6 @@ spec:
     metadata:
       labels:
         app: iot
-      annotations:
-        platform_montior: "/api/prometheus"
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/api/prometheus"
-        prometheus.io/port: "8123"
     spec:
       terminationGracePeriodSeconds: 3600
       containers:
@@ -28,6 +37,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8123
+          name: "http"
           protocol: TCP
         volumeMounts:
         - mountPath: /dev/ttyACM0
