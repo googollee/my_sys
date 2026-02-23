@@ -1,3 +1,20 @@
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "postgres"
+  namespace: "infra"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "primary"
+      app.kubernetes.io/instance: "postgres"
+      app.kubernetes.io/name: "postgresql"
+  podMetricsEndpoints:
+  - port: "http-metrics"
+    path: "/metrics"
+    interval: "30s"
+---
 apiVersion: "source.toolkit.fluxcd.io/v1"
 kind: "HelmRepository"
 metadata:
@@ -47,10 +64,6 @@ spec:
       podSecurityContext:
         enabled: true
         fsGroup: 65534
-      podAnnotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9187"
-        prometheus.io/path: "/metrics"
       containerSecurityContext:
         enabled: true
         runAsUser: 65534
