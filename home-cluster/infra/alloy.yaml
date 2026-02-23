@@ -119,7 +119,7 @@ spec:
 
           // infra
           prometheus.relabel "infra" {
-            forward_to = [prometheus.remote_write.infra.receiver]
+            forward_to = [prometheus.remote_write.default.receiver]
             rule {
               source_labels = ["namespace"]
               regex         = "default"
