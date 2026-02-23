@@ -1,0 +1,14 @@
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "gotk"
+  namespace: "flux-system"
+spec:
+  selector:
+    matchLabels:
+  podMetricsEndpoints:
+  - port: "http-prom"
+    path: "/metrics"
+    interval: "30s"
+
