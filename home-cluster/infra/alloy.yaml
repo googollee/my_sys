@@ -22,6 +22,10 @@ spec:
   - port: http-metrics
     path: /metrics
     interval: 30s
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: '(alloy_component_controller_running_components|prometheus_target_scrape_pools_failed_total)'
+      action: keep
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
