@@ -1,4 +1,19 @@
 ---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "node-exporter"
+  namespace: "infra"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: "node-exporter"
+      app.kubernetes.io/name: "node-exporter"
+  podMetricsEndpoints:
+  - port: "metrics"
+    path: "/metrics"
+    interval: 30s
+---
 apiVersion: "helm.toolkit.fluxcd.io/v2"
 kind: "HelmRelease"
 metadata:
@@ -22,10 +37,20 @@ spec:
     service:
       port: 9110
       targetPort: 9110
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/path: "/metrics"
-      prometheus.io/port: "9110"
+---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "smartctl-exporter"
+  namespace: "infra"
+spec:
+  selector:
+    matchLabels:
+      app: "smartctl-exporter"
+  podMetricsEndpoints:
+  - port: "http"
+    path: "/metrics"
+    interval: 30s
 ---
 apiVersion: "v1"
 kind: "Service"
@@ -59,10 +84,6 @@ spec:
     metadata:
       labels:
         app: "smartctl-exporter"
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: "/metrics"
-        prometheus.io/port: "9633"
     spec:
       initContainers:
         - name: "init"
