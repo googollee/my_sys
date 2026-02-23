@@ -89,9 +89,6 @@ spec:
 
     metrics:
       enabled: true
-      service:
-        annotations:
-          prometheus.io/scrape: "false"
       serviceMonitor:
         enabled: false
 
