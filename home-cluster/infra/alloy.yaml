@@ -239,6 +239,10 @@ spec:
           }
 
           prometheus.scrape "cadvisor" {
+            targets = discovery.relabel.cadvisor.output
+            forward_to = [prometheus.relabel.cadvisor]
+
+            scrape_interval = "30s"
             scheme = "https"
             tls_config {
                 server_name = sys.env("NODE_NAME")
@@ -246,9 +250,27 @@ spec:
                 insecure_skip_verify = false
             }
             bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-            targets = discovery.relabel.cadvisor.output
-            scrape_interval = "30s"
+          }
+
+          prometheus.relabel "cadvisor" {
             forward_to = [prometheus.remote_write.default.receiver]
+
+            rule {
+              source_labels = ["__name__"]
+              regex         = "^(container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_quota|container_spec_cpu_period|container_spec_memory_limit_bytes|container_threads|container_file_descriptors)$"
+              action        = "keep"
+            }
+
+            rule {
+              source_labels = ["container"]
+              regex         = "POD"
+              action        = "drop"
+            }
+
+            rule {
+              regex  = "^(id|image_id|container_id|job)$"
+              action = "labeldrop"
+            }
           }
 
           // kubelet
@@ -280,6 +302,10 @@ spec:
           }
 
           prometheus.scrape "kubelet" {
+            targets = discovery.relabel.kubelet.output
+            forward_to = [prometheus.relabel.kubelet]
+
+            scrape_interval = "30s"
             scheme = "https"
             tls_config {
                 server_name = sys.env("NODE_NAME")
@@ -287,9 +313,27 @@ spec:
                 insecure_skip_verify = false
             }
             bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-            targets = discovery.relabel.kubelet.output
-            scrape_interval = "30s"
+          }
+
+          prometheus.relabel "kubelet" {
             forward_to = [prometheus.remote_write.default.receiver]
+
+            rule {
+              source_labels = ["__name__"]
+              regex         = "^(kubelet_.*_pods.*)$"
+              action        = "keep"
+            }
+
+            rule {
+              source_labels = ["container"]
+              regex         = "POD"
+              action        = "drop"
+            }
+
+            rule {
+              regex  = "^(id|image_id|container_id|job)$"
+              action = "labeldrop"
+            }
           }
 
           // logging
