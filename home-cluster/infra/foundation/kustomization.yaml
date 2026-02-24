@@ -4,3 +4,4 @@ namespace: "infra"
 resources: 
 - "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml"
 - "prometheus.yaml"
+- "pv.yaml"
