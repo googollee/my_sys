@@ -1,4 +1,19 @@
 ---
+apiVersion: "monitoring.coreos.com/v1"
+kind: "PodMonitor"
+metadata:
+  name: "node-exporter"
+  namespace: "infra"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: "node-exporter"
+      app.kubernetes.io/name: "node-exporter"
+  podMetricsEndpoints:
+  - port: "metrics"
+    path: "/metrics"
+    interval: "30s"
+---
 apiVersion: "helm.toolkit.fluxcd.io/v2"
 kind: "HelmRelease"
 metadata:
@@ -22,9 +37,6 @@ spec:
     service:
       port: 9110
       targetPort: 9110
-    podMonitor:
-      enabled: true
-      interval: "30s"
 ---
 apiVersion: "monitoring.coreos.com/v1"
 kind: "PodMonitor"
