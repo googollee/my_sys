@@ -200,7 +200,7 @@ spec:
 
             rule {
               source_labels = ["__name__"]
-              regex         = "^(container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_quota|container_spec_cpu_period|container_spec_memory_limit_bytes|container_threads|container_file_descriptors)$"
+              regex         = "^(container_cpu_usage_seconds_total|container_memory_working_set_bytes|container_network_receive_bytes_total|container_network_transmit_bytes_total|container_fs_usage_bytes|container_fs_limit_bytes|container_spec_cpu_quota|container_spec_cpu_period|container_spec_memory_limit_bytes|container_threads|container_file_descriptors|container_start_time_seconds)$"
               action        = "keep"
             }
 
