@@ -10,5 +10,3 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: app
-  labels:
-    kubernetes.io/metadata.name: app
