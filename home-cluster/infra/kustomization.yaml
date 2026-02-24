@@ -9,10 +9,10 @@ resources:
 - "postgres.yaml"
 - "versitygw.yaml"
 # Monitor
+- "grafana.yaml"
+- "alloy.yaml"
 - "gotk-monitor.yaml"
 - "exporters.yaml"
-- "alloy.yaml"
-- "grafana.yaml"
 # Network
 - "traefik.yaml"
 - "inadyn.yaml"
