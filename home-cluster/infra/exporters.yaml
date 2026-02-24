@@ -37,6 +37,10 @@ spec:
     service:
       port: 9110
       targetPort: 9110
+    prometheus:
+      podMonitor:
+        enabled: true
+        interval: "30s"
 ---
 apiVersion: "monitoring.coreos.com/v1"
 kind: "PodMonitor"
@@ -50,22 +54,7 @@ spec:
   podMetricsEndpoints:
   - port: "http"
     path: "/metrics"
-    interval: 30s
----
-apiVersion: "v1"
-kind: "Service"
-metadata:
-  name: "smartctl-exporter"
-  namespace: "infra"
-spec:
-  type: "ClusterIP"
-  selector:
-    app: "smartctl-exporter"
-  ports:
-    - port: 80
-      targetPort: "http"
-      protocol: "TCP"
-      name: "http"
+    interval: "30s"
 ---
 apiVersion: "apps/v1"
 kind: "DaemonSet"
@@ -118,8 +107,7 @@ spec:
             - name: "http"
               containerPort: 9633
               protocol: "TCP"
-          resources:
-            {}
+          resources: {}
           volumeMounts:
             - name: "dev"
               mountPath: "/hostdev"
@@ -132,4 +120,3 @@ spec:
             path: "/dev"
         - name: "drivedb"
           emptyDir: {}
-
