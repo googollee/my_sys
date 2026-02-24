@@ -68,115 +68,83 @@ data:
     ruler:
       rule_path: "/mimir/tmp/ruler"
 ---
-{
-  apiVersion: "apps/v1",
-  kind: "StatefulSet",
-  metadata: {
-    name: "mimir",
-    namespace: "infra",
-    labels: {
-      app: "mimir",
-    },
-  },
-  spec: {
-    replicas: 1,
-    updateStrategy: {
-      type: "RollingUpdate",
-    },
-    selector: {
-      matchLabels: {
-        app: "mimir",
-      },
-    },
-    template: {
-      metadata: {
-        labels: {
-          app: "mimir",
-        },
-      },
-      spec: {
-        securityContext: {
-          fsGroup: 1001,
-          runAsGroup: 1001,
-          runAsNonRoot: true,
-          runAsUser: 1001,
-        },
-        containers: [{
-          name: "mimir",
-          image: "grafana/mimir:latest",
-          imagePullPolicy: "Always",
-          securityContext: {
-            allowPrivilegeEscalation: false,
-            capabilities: {
-              drop: ["ALL"],
-            },
-            readOnlyRootFilesystem: true,
-          },
-          args: [
-            "--config.file=/etc/mimir/config.yaml",
-            "--runtime-config.file=/etc/mimir/runtime-config.yaml",
-          ],
-          ports: [{
-            name: "http",
-            containerPort: 9009,
-            protocol: "TCP",
-          }],
-          volumeMounts: [{
-            mountPath: "/mimir",
-            name: "data",
-          }, {
-            mountPath: "/etc/mimir",
-            name: "config",
-          }],
-          livenessProbe: {
-            failureThreshold: 10,
-            httpGet: {
-              path: "/ready",
-              port: "http",
-            },
-            initialDelaySeconds: 60,
-            timeoutSeconds: 30,
-          },
-          readinessProbe: {
-            httpGet: {
-              path: "/ready",
-              port: "http",
-            },
-          },
-        }],
-        volumes: [{
-          name: "data",
-          hostPath: {
-            path: "/mnt/data/config/infra/mimir",
-          },
-        }, {
-          name: "config",
-          configMap: {
-            name: "mimir",
-          },
-        }],
-      },
-    },
-  },
-}
+apiVersion: "apps/v1"
+kind: "StatefulSet"
+metadata:
+  name: "mimir"
+  namespace: "infra"
+  labels:
+    app: "mimir"
+spec:
+  replicas: 1
+  updateStrategy:
+    type: "RollingUpdate"
+  selector:
+    matchLabels:
+      app: "mimir"
+  template:
+    metadata:
+      labels:
+        app: "mimir"
+    spec:
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      containers:
+      - name: "mimir"
+        image: "grafana/mimir:latest"
+        imagePullPolicy: "Always"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          readOnlyRootFilesystem: true
+        args:
+        - "--config.file=/etc/mimir/config.yaml"
+        - "--runtime-config.file=/etc/mimir/runtime-config.yaml"
+        ports:
+        - name: "http"
+          containerPort: 9009
+          protocol: "TCP"
+        volumeMounts:
+        - name: "storage"
+          mountPath: "/mimir"
+          subPath: "loki"
+        - name: "config"
+          mountPath: "/etc/mimir"
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: "/ready"
+            port: "http"
+          initialDelaySeconds: 60
+          timeoutSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: "/ready"
+            port: "http"
+      volumes:
+      - name: "storage"
+        persistentVolumeClaim:
+          claimName: "local-pvc"
+      - name: "config"
+        configMap:
+          name: "mimir"
 ---
-{
-  apiVersion: "v1",
-  kind: "Service",
-  metadata: {
-    name: "mimir",
-    namespace: "infra",
-  },
-  spec: {
-    type: "ClusterIP",
-    selector: {
-      app: "mimir",
-    },
-    ports: [{
-      name: "http",
-      port: 9009,
-      protocol: "TCP",
-      targetPort: "http",
-    }],
-  },
-}
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "mimir"
+  namespace: "infra"
+spec:
+  type: "ClusterIP"
+  selector:
+    app: "mimir"
+  ports:
+  - name: "http"
+    port: 9009
+    protocol: "TCP"
+    targetPort: "http"
+
