@@ -15,16 +15,6 @@ spec:
     path: "/metrics"
     interval: "30s"
 ---
-apiVersion: "source.toolkit.fluxcd.io/v1"
-kind: "HelmRepository"
-metadata:
-  name: "bitnami"
-  namespace: "infra"
-spec:
-  type: "oci"
-  interval: "30m"
-  url: "oci://registry-1.docker.io/bitnamicharts"
----
 apiVersion: "helm.toolkit.fluxcd.io/v2"
 kind: "HelmRelease"
 metadata:

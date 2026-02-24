@@ -1,13 +1,4 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: grafana-alloy
-  namespace: infra
-spec:
-  interval: 30m
-  url: https://grafana.github.io/helm-charts
----
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -38,7 +29,7 @@ spec:
       chart: alloy
       sourceRef:
         kind: HelmRepository
-        name: grafana-alloy
+        name: grafana
         namespace: infra
   interval: 30m
   install:
