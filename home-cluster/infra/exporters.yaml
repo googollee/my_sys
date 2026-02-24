@@ -25,7 +25,7 @@ spec:
       chart: "prometheus-node-exporter"
       sourceRef:
         kind: "HelmRepository"
-        name: "prometheus"
+        name: "prometheus-community"
         namespace: "infra"
   interval: 30m
   install:

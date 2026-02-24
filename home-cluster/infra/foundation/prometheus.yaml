@@ -2,7 +2,7 @@
 apiVersion: "source.toolkit.fluxcd.io/v1"
 kind: "HelmRepository"
 metadata:
-  name: "prometheus"
+  name: "prometheus-community"
   namespace: "infra"
 spec:
   interval: "30m"
@@ -20,7 +20,7 @@ spec:
       chart: "prometheus-operator-crds"
       sourceRef:
         kind: "HelmRepository"
-        name: "prometheus"
+        name: "prometheus-community"
   install:
     crds: "CreateReplace"
   upgrade:
