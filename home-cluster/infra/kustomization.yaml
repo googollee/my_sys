@@ -3,6 +3,7 @@ kind: "Kustomization"
 namespace: "infra"
 resources: 
 # Storage
+- "pvc.yaml"
 - "mimir.yaml"
 - "loki.yaml"
 - "valkey.yaml"

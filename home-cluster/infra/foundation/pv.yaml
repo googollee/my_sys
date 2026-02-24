@@ -27,16 +27,3 @@ spec:
           operator: "In"
           values:
           - "nas"
----
-apiVersion: "v1"
-kind: "PersistentVolumeClaim"
-metadata:
-  name: "local-pvc"
-  namespace: "infra"
-spec:
-  storageClassName: "local-storage"
-  accessModes:
-  - "ReadWriteOnce"
-  resources:
-    requests:
-      storage: "1Ti"
