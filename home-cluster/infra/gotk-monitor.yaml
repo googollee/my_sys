@@ -3,8 +3,10 @@ apiVersion: "monitoring.coreos.com/v1"
 kind: "PodMonitor"
 metadata:
   name: "gotk"
-  namespace: "flux-system"
 spec:
+  namespaceSelector:
+    matchNames:
+    - "flux-system"
   selector:
     matchLabels: {}
   podMetricsEndpoints:
