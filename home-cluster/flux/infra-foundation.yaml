@@ -13,3 +13,4 @@ spec:
     name: "flux-system"
   targetNamespace: "infra"
   timeout: "15m0s"
+  wait: true

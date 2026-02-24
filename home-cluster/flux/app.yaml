@@ -16,4 +16,3 @@ spec:
   targetNamespace: "default"
   timeout: "15m0s"
   wait: true
- wait: true
