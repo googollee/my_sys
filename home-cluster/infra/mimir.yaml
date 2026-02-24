@@ -111,7 +111,7 @@ spec:
         volumeMounts:
         - name: "storage"
           mountPath: "/mimir"
-          subPath: "loki"
+          subPath: "mimir"
         - name: "config"
           mountPath: "/etc/mimir"
         livenessProbe:
