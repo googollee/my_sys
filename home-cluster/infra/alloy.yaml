@@ -131,6 +131,11 @@ spec:
               regex         = "default"
               action        = "drop"
             }
+
+            rule {
+              target_label  = "node_name"
+              replacement   = sys.env("NODE_NAME")
+            }
           }
 
           // app
@@ -140,6 +145,11 @@ spec:
               source_labels = ["namespace"]
               regex         = "default"
               action        = "keep"
+            }
+
+            rule {
+              target_label  = "node_name"
+              replacement   = sys.env("NODE_NAME")
             }
           }
 
