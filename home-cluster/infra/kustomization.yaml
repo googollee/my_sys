@@ -1,18 +1,17 @@
 apiVersion: "kustomize.config.k8s.io/v1beta1"
 kind: "Kustomization"
 resources: 
-# Storage
-- "pvc.yaml"
-- "mimir.yaml"
-- "loki.yaml"
-- "valkey.yaml"
-- "postgres.yaml"
-- "versitygw.yaml"
-# Monitor
-- "grafana.yaml"
-- "alloy.yaml"
-- "gotk-monitor.yaml"
-- "exporters.yaml"
-# Network
-- "traefik.yaml"
-- "inadyn.yaml"
+- "storage/pvc.yaml"
+- "storage/mimir.yaml"
+- "storage/loki.yaml"
+- "storage/valkey.yaml"
+- "storage/postgres.yaml"
+- "storage/versitygw.yaml"
+
+- "monitor/grafana.yaml"
+- "monitor/alloy.yaml"
+- "monitor/gotk-monitor.yaml"
+- "monitor/exporters.yaml"
+
+- "network/traefik.yaml"
+- "neinadyn.yaml"
