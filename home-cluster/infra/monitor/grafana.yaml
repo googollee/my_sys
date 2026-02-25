@@ -28,11 +28,11 @@ spec:
       runAsGroup: 65534
       fsGroup: 65534
     extraVolumeMounts:
-    - name: "storage"
+    - name: "data"
       mountPath: "/mnt/data/config/infra/grafana"
       subPath: "grafana"
     extraVolumes:
-    - name: "storage"
+    - name: "data"
       persistentVolumeClaim:
         claimName: "local-pvc"
 
