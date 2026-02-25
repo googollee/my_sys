@@ -29,7 +29,7 @@ spec:
       fsGroup: 65534
     extraVolumeMounts:
     - name: "data"
-      mountPath: "/var/run/traefik"
+      mountPath: "/var/run/grafana.local"
       subPath: "grafana"
     extraVolumes:
     - name: "data"
