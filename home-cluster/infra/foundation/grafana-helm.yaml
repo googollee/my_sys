@@ -1,8 +1,9 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+---
+apiVersion: "source.toolkit.fluxcd.io/v1"
+kind: "HelmRepository"
 metadata:
-  name: grafana
-  namespace: infra
+  name: "grafana"
+  namespace: "infra"
 spec:
-  interval: 30m
-  url: https://grafana.github.io/helm-charts
+  interval: "30m"
+  url: "https://grafana.github.io/helm-charts"
