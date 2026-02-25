@@ -4,8 +4,6 @@ metadata:
   name: "infra"
   namespace: "flux-system"
 spec:
-  dependsOn:
-  - name: "infra-foundation"
   interval: "1h0m0s"
   path: "./home-cluster/infra"
   prune: true
