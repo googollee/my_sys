@@ -5,13 +5,14 @@ metadata:
   name: "traefik"
   namespace: "infra"
 spec:
+  type: "oci"
   interval: "30m"
-  url: "https://traefik.github.io/charts"
+  url: "oci://ghcr.io/traefik/helm/traefik"
 ---
 apiVersion: "helm.toolkit.fluxcd.io/v2"
 kind: "HelmRelease"
 metadata:
-  name: "traefik-crds"
+  name: "traefik-crd"
   namespace: "infra"
 spec:
   interval: "30m"
@@ -26,3 +27,4 @@ spec:
     crds: "CreateReplace"
   upgrade:
     crds: "CreateReplace"
+
