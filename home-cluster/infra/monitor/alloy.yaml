@@ -118,17 +118,17 @@ spec:
 
           prometheus.operator.podmonitors "podmointors" {
             forward_to = [
-              prometheus.relabel.infra.receiver,
+              prometheus.relabel.default.receiver,
               prometheus.relabel.app.receiver,
             ]
           }
 
           // infra
-          prometheus.relabel "infra" {
+          prometheus.relabel "default" {
             forward_to = [prometheus.remote_write.default.receiver]
             rule {
               source_labels = ["namespace"]
-              regex         = "default"
+              regex         = "app"
               action        = "drop"
             }
 
@@ -143,13 +143,8 @@ spec:
             forward_to = [prometheus.remote_write.app.receiver]
             rule {
               source_labels = ["namespace"]
-              regex         = "default"
+              regex         = "app"
               action        = "keep"
-            }
-
-            rule {
-              target_label  = "node_name"
-              replacement   = sys.env("NODE_NAME")
             }
           }
 
