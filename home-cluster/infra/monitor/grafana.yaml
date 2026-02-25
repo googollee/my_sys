@@ -38,12 +38,15 @@ spec:
 
     grafana.ini:
       log:
-        mode: console
+        mode: "console"
+      server:
+        domain: "monitor.zhaohai.li"
+        root_url: "https://monitor.zhaohai.li"
       paths:
-        data: /var/lib/grafana.local/
-        logs: /var/lib/grafana.local/
-        plugins: /var/lib/grafana.local/plugins
-        provisioning: /etc/grafana/provisioning
+        data: "/var/lib/grafana.local/"
+        logs: "/var/lib/grafana.local/"
+        plugins: "/var/lib/grafana.local/plugins"
+        provisioning: "/etc/grafana/provisioning"
       date_formats:
         default_timezone: Europe/Berlin
       smtp:
