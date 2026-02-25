@@ -34,8 +34,7 @@ spec:
       subPath: "grafana"
     extraVolumes:
     - name: "local-storage"
-      persistentVolumeClaim:
-        claimName: "local-pvc"
+      existingClaim: "local-pvc"
 
     grafana.ini:
       log:
