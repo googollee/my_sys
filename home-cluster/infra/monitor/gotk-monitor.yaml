@@ -8,7 +8,9 @@ spec:
     matchNames:
     - "flux-system"
   selector:
-    matchLabels: {}
+    matchExpressions:
+    - key: "app"
+      operator: "Exists"
   podMetricsEndpoints:
   - port: "http-prom"
     path: "/metrics"
