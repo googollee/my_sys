@@ -24,17 +24,18 @@ spec:
     smtp:
       existingSecret: gmail-smtp
     securityContext:
-      runAsUser: 1001
-      runAsGroup: 1001
-      fsGroup: 1001
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
     extraVolumeMounts:
-    - name: local-storage
-      mountPath: /var/lib/grafana.local
+    - name: "local-storage"
+      mountPath: "/var/lib/grafana.local"
       readOnly: false
+      subPath: "grafana"
     extraVolumes:
-    - name: local-storage
-      hostPath:
-        path: /mnt/data/config/infra/grafana
+    - name: "local-storage"
+      persistentVolumeClaim:
+        claimName: "local-pvc"
 
     grafana.ini:
       log:
