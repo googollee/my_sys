@@ -14,4 +14,4 @@ resources:
 - "monitor/exporters.yaml"
 
 - "network/traefik.yaml"
-- "neinadyn.yaml"
+- "network/inadyn.yaml"
