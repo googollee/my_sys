@@ -11,5 +11,5 @@ spec:
   sourceRef:
     kind: "GitRepository"
     name: "flux-system"
-  timeout: "15m0s"
+  timeout: "1m0s"
   wait: true
