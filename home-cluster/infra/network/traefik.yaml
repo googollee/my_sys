@@ -50,13 +50,12 @@ spec:
       kind: Deployment
       replicas: 1
       additionalVolumes:
-      - name: "storage"
-        persistentVolumeClaim:
-          claimName: "local-pvc"
+      - name: config
+        hostPath:
+          path: /mnt/data/config/infra/traefik
     additionalVolumeMounts:
-    - name: "storage"
-      mountPath: "/mnt/data/config/infra/traefik"
-      subPath: "traefik"
+      - name: config
+        mountPath: /var/run/traefik
     service:
       enabled: true
       single: true
