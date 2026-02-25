@@ -29,12 +29,12 @@ spec:
       fsGroup: 65534
     extraVolumeMounts:
     - name: "storage"
-      persistentVolumeClaim:
-        claimName: "local-pvc"
-    extraVolumes:
-    - name: "storage"
       mountPath: "/mnt/data/config/infra/grafana"
       subPath: "grafana"
+    extraVolumes:
+    - name: "storage"
+      persistentVolumeClaim:
+        claimName: "local-pvc"
 
     grafana.ini:
       log:
