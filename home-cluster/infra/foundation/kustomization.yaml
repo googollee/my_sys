@@ -4,6 +4,7 @@ resources:
 - "namespaces.yaml"
 - "grafana-helm.yaml"
 - "bitnami-helm.yaml"
+- "jetstack-helm.yaml"
 - "prometheus-helm-crds.yaml"
 - "traefik-helm-crds.yaml"
 - "https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml"

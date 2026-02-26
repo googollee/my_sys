@@ -2,8 +2,9 @@
 apiVersion: "source.toolkit.fluxcd.io/v1"
 kind: "HelmRepository"
 metadata:
-  name: "grafana"
+  name: "jetstack"
   namespace: "infra"
 spec:
+  type: "oci"
   interval: "24h"
-  url: "https://grafana.github.io/helm-charts"
+  url: "oci://quay.io/jetstack/charts"
