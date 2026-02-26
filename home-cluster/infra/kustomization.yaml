@@ -13,5 +13,6 @@ resources:
 - "monitor/gotk-monitor.yaml"
 - "monitor/exporters.yaml"
 
+- "network/cert-manager.yaml"
 - "network/traefik.yaml"
 - "network/inadyn.yaml"
