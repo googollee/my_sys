@@ -38,4 +38,4 @@ spec:
         cloudflare:
           apiTokenSecretRef:
             name: "cloudflare-api-token-secret"
-            dns-api-token: "api-token"
+            key: "dns-api-token"
