@@ -90,8 +90,7 @@ spec:
       enabled: true
 
     gateway:
-      enabled: true
-      listeners: {}
+      enabled: false
 
     gatewayClass:
       enabled: true
