@@ -91,24 +91,12 @@ spec:
 
     gateway:
       enabled: true
-      listeners:
-        web:
-          port: 80
-          protocol: HTTP
+      listeners: {}
 
     gatewayClass:
       enabled: true
 
     ports:
-      https-lan:
-        port: 9443
-        expose:
-          default: true
-        exposedPort: 9443
-        protocol: TCP
-        http:
-          tls:
-            enabled: true
       metrics: 
         port: 18889
         expose:

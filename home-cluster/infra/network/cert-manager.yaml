@@ -39,20 +39,3 @@ spec:
           apiTokenSecretRef:
             name: "cloudflare-api-token-secret"
             key: "dns-api-token"
----
-apiVersion: "cert-manager.io/v1"
-kind: "Certificate"
-metadata:
-  name: "lan-gateway-cert"
-  namespace: "infra"
-spec:
-  secretName: "lan-tls-secret"
-  issuerRef:
-    name: "cloudflare"
-    kind: "ClusterIssuer"
-  dnsNames:
-  - "*.zhaohai.li"
-  - "zhaohai.li"
-  privateKey:
-    algorithm: "ECDSA"
-    size: 256
