@@ -31,4 +31,4 @@ spec:
   - "zhaohai.li"
   privateKey:
     algorithm: "ECDSA"
-    size: 521
+    size: 256
