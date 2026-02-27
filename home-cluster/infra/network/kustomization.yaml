@@ -5,3 +5,4 @@ resources:
 - "traefik.yaml"
 - "inadyn.yaml"
 - "gateway.yaml"
+- "routing.yaml"

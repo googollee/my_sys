@@ -23,14 +23,14 @@ spec:
       enabled: true
       kind: Deployment
       replicas: 1
-      additionalVolumes:
-      - name: "storage"
-        persistentVolumeClaim:
-          claimName: "local-pvc"
-    additionalVolumeMounts:
-      - name: "storage"
-        mountPath: "/var/run/traefik"
-        subPath: "storage"
+    #   additionalVolumes:
+    #   - name: "storage"
+    #     persistentVolumeClaim:
+    #       claimName: "local-pvc"
+    # additionalVolumeMounts:
+    #   - name: "storage"
+    #     mountPath: "/var/run/traefik"
+    #     subPath: "storage"
     service:
       enabled: true
       single: true
@@ -53,12 +53,12 @@ spec:
       runAsNonRoot: false
       runAsUser: 0
 
-    env:
-    - name: CF_DNS_API_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: cloudflare-api-token-secret
-          key: dns-api-token
+    # env:
+    # - name: CF_DNS_API_TOKEN
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: cloudflare-api-token-secret
+    #       key: dns-api-token
 
     global:
       checkNewVersion: false
@@ -73,7 +73,7 @@ spec:
         format: json
     metrics:
       prometheus:
-        entryPoint: traefik
+        entryPoint: metrics
 
     providers:
       kubernetesIngress:
@@ -88,12 +88,10 @@ spec:
 
     ingressClass:
       enabled: true
-
-    gateway:
-      enabled: false
-
     gatewayClass:
       enabled: true
+    gateway:
+      enabled: false
 
     ports:
       metrics: 
@@ -101,12 +99,6 @@ spec:
         expose:
           default: false
         exposedPort: 18889
-        protocol: TCP
-      traefik:
-        port: 18888
-        expose:
-          default: false
-        exposedPort: 18888
         protocol: TCP
       web:
         port: 80
@@ -141,61 +133,61 @@ spec:
             # - main: zhaohai.li
             #   sans: ['*.zhaohai.li']
 
-    extraObjects:
-    - apiVersion: traefik.io/v1alpha1
-      kind: Middleware
-      metadata:
-        name: wanauth
-        namespace: infra
-      spec:
-        basicAuth:
-          secret: wanauth
-    - apiVersion: traefik.io/v1alpha1
-      kind: ServersTransport
-      metadata:
-        name: inner-redirect
-        namespace: infra
-      spec:
-        serverName: nas.zhaohai.li
-        insecureSkipVerify: true
-
-    ingressRoute:
-      dashboard:
-        enabled: true
-        entryPoints: [websecure]
-        matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
-        services:
-        - name: api@internal
-          kind: TraefikService
-      wanprivate:
-        enabled: true
-        entryPoints: [wansecure]
-        matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
-        middlewares:
-        - name: wanauth
-        services:
-        - name: traefik
-          kind: Service
-          port: websecure
-          passHostHeader: true
-          serversTransport: inner-redirect
-      wanpublic:
-        enabled: true
-        entryPoints: [wansecure]
-        matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
-        services:
-        - name: traefik
-          kind: Service
-          port: websecure
-          passHostHeader: true
-          serversTransport: inner-redirect
-
-    certificatesResolvers:
-      cloudflare:
-        acme:
-          email: me@zhaohai.li
-          caServer: https://acme-v02.api.letsencrypt.org/directory
-          storage: /var/run/traefik/acme.json       # Path to store the certificate information.
-          dnsChallenge:
-            provider: cloudflare
-            resolvers: ["1.1.1.1"]
+    # extraObjects:
+    # - apiVersion: traefik.io/v1alpha1
+    #   kind: Middleware
+    #   metadata:
+    #     name: wanauth
+    #     namespace: infra
+    #   spec:
+    #     basicAuth:
+    #       secret: wanauth
+    # - apiVersion: traefik.io/v1alpha1
+    #   kind: ServersTransport
+    #   metadata:
+    #     name: inner-redirect
+    #     namespace: infra
+    #   spec:
+    #     serverName: nas.zhaohai.li
+    #     insecureSkipVerify: true
+    #
+    # ingressRoute:
+    #   dashboard:
+    #     enabled: true
+    #     entryPoints: [websecure]
+    #     matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
+    #     services:
+    #     - name: api@internal
+    #       kind: TraefikService
+    #   wanprivate:
+    #     enabled: true
+    #     entryPoints: [wansecure]
+    #     matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
+    #     middlewares:
+    #     - name: wanauth
+    #     services:
+    #     - name: traefik
+    #       kind: Service
+    #       port: websecure
+    #       passHostHeader: true
+    #       serversTransport: inner-redirect
+    #   wanpublic:
+    #     enabled: true
+    #     entryPoints: [wansecure]
+    #     matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
+    #     services:
+    #     - name: traefik
+    #       kind: Service
+    #       port: websecure
+    #       passHostHeader: true
+    #       serversTransport: inner-redirect
+    #
+    # certificatesResolvers:
+    #   cloudflare:
+    #     acme:
+    #       email: me@zhaohai.li
+    #       caServer: https://acme-v02.api.letsencrypt.org/directory
+    #       storage: /var/run/traefik/acme.json       # Path to store the certificate information.
+    #       dnsChallenge:
+    #         provider: cloudflare
+    #         resolvers: ["1.1.1.1"]
