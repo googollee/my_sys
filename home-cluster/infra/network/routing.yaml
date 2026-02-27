@@ -37,7 +37,7 @@ metadata:
   name: wan-routing
   namespace: infra
 spec:
-  entryPoints: [wanbsecure]
+  entryPoints: [wansecure]
   routes:
   - match: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
     kind: Rule

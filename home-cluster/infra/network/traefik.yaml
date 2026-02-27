@@ -73,7 +73,7 @@ spec:
         format: json
     metrics:
       prometheus:
-        entryPoint: traefik
+        entryPoint: metrics
 
     providers:
       kubernetesIngress:
@@ -99,6 +99,12 @@ spec:
         expose:
           default: false
         exposedPort: 18888
+        protocol: TCP
+      metrics: 
+        port: 18889
+        expose:
+          default: false
+        exposedPort: 18889
         protocol: TCP
       web:
         port: 80
