@@ -13,11 +13,10 @@ spec:
         name: traefik
         namespace: infra
   interval: 30m
-  install:
-    createNamespace: true
   targetNamespace: infra
   releaseName: traefik
   install:
+    createNamespace: true
     crds: "Skip"
   upgrade:
     crds: "Skip"
