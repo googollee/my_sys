@@ -17,6 +17,11 @@ spec:
     createNamespace: true
   targetNamespace: infra
   releaseName: traefik
+  install:
+    crds: "Skip"
+  upgrade:
+    crds: "Skip"
+
   values:
     hostNetwork: true
     deployment:
