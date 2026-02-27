@@ -1,20 +1,20 @@
-# ---
-# apiVersion: "gateway.networking.k8s.io/v1"
-# kind: "Gateway"
-# metadata:
-#   name: "entrypoints"
-#   namespace: "infra"
-# spec:
-#   gatewayClassName: "traefik"
-#   listeners:
-#   - name: "https-lan"
-#     protocol: "HTTPS"
-#     port: 443
-#     tls:
-#       mode: "Terminate"
-#       certificateRefs: [{ name: "lan-tls-secret" }]
-#     allowedRoutes:
-#       namespaces: { from: "All" }
+---
+apiVersion: "gateway.networking.k8s.io/v1"
+kind: "Gateway"
+metadata:
+  name: "entrypoints"
+  namespace: "infra"
+spec:
+  gatewayClassName: "traefik"
+  listeners:
+  - name: "lan-https"
+    protocol: "HTTPS"
+    port: 443
+    tls:
+      mode: "Terminate"
+      certificateRefs: [{ name: "lan-tls-secret" }]
+    allowedRoutes:
+      namespaces: { from: "All" }
 ---
 apiVersion: "cert-manager.io/v1"
 kind: "Certificate"
