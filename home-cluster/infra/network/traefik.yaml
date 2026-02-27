@@ -23,14 +23,6 @@ spec:
       enabled: true
       kind: Deployment
       replicas: 1
-    #   additionalVolumes:
-    #   - name: "storage"
-    #     persistentVolumeClaim:
-    #       claimName: "local-pvc"
-    # additionalVolumeMounts:
-    #   - name: "storage"
-    #     mountPath: "/var/run/traefik"
-    #     subPath: "storage"
     service:
       enabled: true
       single: true
@@ -52,13 +44,6 @@ spec:
       runAsGroup: 65534
       runAsNonRoot: false
       runAsUser: 0
-
-    # env:
-    # - name: CF_DNS_API_TOKEN
-    #   valueFrom:
-    #     secretKeyRef:
-    #       name: cloudflare-api-token-secret
-    #       key: dns-api-token
 
     global:
       checkNewVersion: false
@@ -139,55 +124,6 @@ spec:
             # - main: zhaohai.li
             #   sans: ['*.zhaohai.li']
 
-    # extraObjects:
-    # - apiVersion: traefik.io/v1alpha1
-    #   kind: Middleware
-    #   metadata:
-    #     name: wanauth
-    #     namespace: infra
-    #   spec:
-    #     basicAuth:
-    #       secret: wanauth
-    # - apiVersion: traefik.io/v1alpha1
-    #   kind: ServersTransport
-    #   metadata:
-    #     name: inner-redirect
-    #     namespace: infra
-    #   spec:
-    #     serverName: nas.zhaohai.li
-    #     insecureSkipVerify: true
-    #
-    # ingressRoute:
-    #   dashboard:
-    #     enabled: true
-    #     entryPoints: [websecure]
-    #     matchRule: Host(`gateway-p.zhaohai.li`) && PathPrefix(`/`)
-    #     services:
-    #     - name: api@internal
-    #       kind: TraefikService
-    #   wanprivate:
-    #     enabled: true
-    #     entryPoints: [wansecure]
-    #     matchRule: HostRegexp(`[a-zA-Z\-_.]+-p\.zhaohai\.li`) && PathPrefix(`/`)
-    #     middlewares:
-    #     - name: wanauth
-    #     services:
-    #     - name: traefik
-    #       kind: Service
-    #       port: websecure
-    #       passHostHeader: true
-    #       serversTransport: inner-redirect
-    #   wanpublic:
-    #     enabled: true
-    #     entryPoints: [wansecure]
-    #     matchRule: HostRegexp(`[a-zA-Z\-_.]+([^-][^p]|[^-].|.[^p])\.zhaohai\.li`) && PathPrefix(`/`)
-    #     services:
-    #     - name: traefik
-    #       kind: Service
-    #       port: websecure
-    #       passHostHeader: true
-    #       serversTransport: inner-redirect
-    #
     # certificatesResolvers:
     #   cloudflare:
     #     acme:
