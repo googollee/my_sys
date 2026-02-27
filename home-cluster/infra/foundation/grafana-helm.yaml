@@ -5,5 +5,6 @@ metadata:
   name: "grafana"
   namespace: "infra"
 spec:
+  type: "oci"
   interval: "24h"
-  url: "https://grafana.github.io/helm-charts"
+  url: "oci://ghcr.io/grafana/helm-charts"
