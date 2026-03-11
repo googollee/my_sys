@@ -16,9 +16,9 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
-        fsGroup: 0
-        runAsUser: 0
-        runAsGroup: 0
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
       - name: vault
         image: vaultwarden/server:latest
@@ -27,15 +27,16 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: [ALL]
-            add: 
-            - NET_BIND_SERVICE
-            - NET_ADMIN
         env:
         - name: "DOMAIN"
           value: "https://vault.zhaohai.li"
+        - name: "ROCKET_PORT"
+          value: "8000"
+        - name: "SIGNUPS_ALLOWED"
+          value: "false"
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 8000
           protocol: TCP
         volumeMounts:
         - mountPath: /etc/localtime
