@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  labels:
+    app: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      terminationGracePeriodSeconds: 3600
+      securityContext:
+        fsGroup: 0
+        runAsUser: 0
+        runAsGroup: 0
+      containers:
+      - name: vault
+        image: vaultwarden/server:latest
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+            add: 
+            - NET_BIND_SERVICE
+            - NET_ADMIN
+        env:
+        - name: "DOMAIN"
+          value: "https://vault.zhaohai.li"
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/localtime
+          name: localtime
+          readOnly: true
+        - mountPath: /usr/share/zoneinfo
+          name: zoneinfo
+          readOnly: true
+        - mountPath: /data
+          name: data
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/data/config/vaultwarden
+      - name: zoneinfo
+        hostPath:
+          path: /usr/share/zoneinfo
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+spec:
+  type: ClusterIP
+  selector:
+    app: vault
+  ports:
+  - name: http
+    port: 8000
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vault
+spec:
+  rules:
+  - host: "vault.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vault
+            port:
+              number: 8000
