@@ -3,6 +3,7 @@ kind: "Kustomization"
 resources: 
 - "cert-manager.yaml"
 - "traefik.yaml"
-- "inadyn.yaml"
+# - "inadyn.yaml"
+# - "cloudflare-ddns.yaml"
 - "gateway.yaml"
 - "routing.yaml"

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+  namespace: infra
+  labels:
+    app: cloudflare-ddns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        app: cloudflare-ddns
+    spec:
+      containers:
+      - name: cloudflare-ddns
+        image: favonia/cloudflare-ddns:1
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            memory: 64Mi
+        env:
+        - name: "IP6_PROVIDER"
+          value: "none"
+        - name: "CLOUDFLARE_API_TOKEN"
+          valueFrom:
+              secretKeyRef:
+                name: cloudflare-api-token-secret
+                key: dns-api-token
+        - name: "DOMAINS"
+          value: "zhaohai.li,*.zhaohai.li,zhufeng-vm.zhaohai.li,dev-vm.zhaohai.li"
+        - name: "PROXIED"
+          value: "true"
