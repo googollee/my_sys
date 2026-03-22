@@ -14,7 +14,7 @@ metadata:
   name: inner-redirect
   namespace: infra
 spec:
-  serverName: nas.zhaohai.li
+  serverName: 192.168.10.2
   insecureSkipVerify: true
 ---
 apiVersion: traefik.io/v1alpha1
