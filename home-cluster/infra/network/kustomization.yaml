@@ -4,6 +4,6 @@ resources:
 - "cert-manager.yaml"
 - "traefik.yaml"
 # - "inadyn.yaml"
-# - "cloudflare-ddns.yaml"
+- "cloudflare-ddns.yaml"
 - "gateway.yaml"
 - "routing.yaml"
