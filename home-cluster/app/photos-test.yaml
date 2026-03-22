@@ -20,7 +20,8 @@ spec:
         runAsGroup: 1001
       containers:
       - name: photos-test
-        image: ghcr.io/googollee/photoview:self-exiftool
+        image: ghcr.io/googollee/photoview:cleanup-invalid-cookie
+        # image: ghcr.io/googollee/photoview:self-exiftool
         imagePullPolicy: Always
         env:
         - name: PHOTOVIEW_LISTEN_IP

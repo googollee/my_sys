@@ -1,4 +1,5 @@
 export PATH=~/.local/bin:/usr/lib/go-1.25/bin/:$PATH
+export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 
 umask 0022
 alias ls='ls -G --color=auto'
