@@ -1,5 +1,4 @@
 export PATH=~/.local/bin:/usr/lib/go-1.25/bin/:$PATH
-export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 
 umask 0022
 alias ls='ls -G --color=auto'
@@ -89,3 +88,5 @@ if which lsb_release >/dev/null; then
     tmux attach-session -t ssh_tmux || tmux new-session -s ssh_tmux
   fi
 fi
+
+export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
