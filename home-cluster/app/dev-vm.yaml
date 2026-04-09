@@ -25,7 +25,7 @@ spec:
         - name: DISK_SIZE
           value: "64G"
         - name: RAM_SIZE
-          value: "2G"
+          value: "4G"
         - name: CPU_CORES
           value: "2"
         ports:
