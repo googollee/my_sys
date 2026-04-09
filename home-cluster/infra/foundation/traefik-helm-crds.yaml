@@ -19,7 +19,7 @@ spec:
   chart:
     spec:
       chart: "traefik-crds"
-      version: "crds_v1.13.0"
+      version: "1.13.0"
       sourceRef:
         kind: "HelmRepository"
         namespace: "infra"
