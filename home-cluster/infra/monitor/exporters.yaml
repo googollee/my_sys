@@ -77,7 +77,7 @@ spec:
             - name: "drivedb"
               mountPath: "/usr/share/smartmontools"
       containers:
-        - name: "main"
+        - name: "smartctl-exporter"
           image: "quay.io/prometheuscommunity/smartctl-exporter:latest"
           imagePullPolicy: "IfNotPresent"
           args:
