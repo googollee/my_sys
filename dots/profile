@@ -1,4 +1,10 @@
-export PATH=~/.local/bin:/usr/local/go/bin/:$PATH
+export PATH=~/.local/bin:$PATH
+
+if [ -e "/home/linuxbrew/.linuxbrew/bin" ]
+then
+  export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
+fi
 
 umask 0022
 alias ls='ls -G --color=auto'
