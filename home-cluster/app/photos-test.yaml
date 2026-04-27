@@ -20,7 +20,7 @@ spec:
         runAsGroup: 1001
       containers:
       - name: photos-test
-        image: ghcr.io/googollee/photoview:darktable
+        image: googollee/photoview:clean_script
         imagePullPolicy: Always
         env:
         - name: PHOTOVIEW_LISTEN_IP
