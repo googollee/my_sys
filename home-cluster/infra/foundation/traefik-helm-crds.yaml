@@ -8,31 +8,31 @@ spec:
   type: "oci"
   interval: "24h"
   url: "oci://ghcr.io/traefik/helm/"
----
-apiVersion: "helm.toolkit.fluxcd.io/v2"
-kind: "HelmRelease"
-metadata:
-  name: "traefik-crds"
-  namespace: "infra"
-spec:
-  interval: "30m"
-  chart:
-    spec:
-      chart: "traefik-crds"
-      sourceRef:
-        kind: "HelmRepository"
-        namespace: "infra"
-        name: "traefik"
-  install:
-    crds: "CreateReplace"
-  upgrade:
-    crds: "CreateReplace"
-
-  values:
-    enabled: true
-    traefik: true
-    gatewayAPI: false
-    gatewayAPIExperimental: false
-    knative: false
-    hub: false
-    deleteOnUninstall: true
+# ---
+# apiVersion: "helm.toolkit.fluxcd.io/v2"
+# kind: "HelmRelease"
+# metadata:
+#   name: "traefik-crds"
+#   namespace: "infra"
+# spec:
+#   interval: "30m"
+#   chart:
+#     spec:
+#       chart: "traefik-crds"
+#       sourceRef:
+#         kind: "HelmRepository"
+#         namespace: "infra"
+#         name: "traefik"
+#   install:
+#     crds: "CreateReplace"
+#   upgrade:
+#     crds: "CreateReplace"
+#
+#   values:
+#     enabled: true
+#     traefik: true
+#     gatewayAPI: false
+#     gatewayAPIExperimental: false
+#     knative: false
+#     hub: false
+#     deleteOnUninstall: true
