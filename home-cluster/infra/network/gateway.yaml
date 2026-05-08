@@ -29,6 +29,3 @@ spec:
   dnsNames:
   - "*.zhaohai.li"
   - "zhaohai.li"
-  privateKey:
-    algorithm: "ECDSA"
-    size: 256

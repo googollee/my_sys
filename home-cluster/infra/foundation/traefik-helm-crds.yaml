@@ -19,7 +19,6 @@ spec:
   chart:
     spec:
       chart: "traefik-crds"
-      version: "1.15.0"
       sourceRef:
         kind: "HelmRepository"
         namespace: "infra"
