@@ -8,5 +8,6 @@ resources:
 - "traefik-helm-crds.yaml"
 - "prometheus-helm-crds.yaml"
 - "https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml"
+- "https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml"
 - "pv.yaml"
 - "k0s-updateconfig.yaml"

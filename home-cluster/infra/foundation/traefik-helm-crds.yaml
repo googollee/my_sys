@@ -31,7 +31,7 @@ spec:
   values:
     enabled: true
     traefik: true
-    gatewayAPI: true
+    gatewayAPI: false
     gatewayAPIExperimental: false
     knative: false
     hub: false
