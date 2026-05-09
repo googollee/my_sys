@@ -9,7 +9,5 @@ resources:
 - "prometheus-helm-crds.yaml"
 - "https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml"
 - "https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml"
-- "https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml"
-- "https://raw.githubusercontent.com/traefik/traefik/v3.7/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml"
 - "pv.yaml"
 - "k0s-updateconfig.yaml"
