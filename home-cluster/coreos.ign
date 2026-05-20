@@ -65,15 +65,6 @@
         "mode": 420
       },
       {
-        "overwrite": true,
-        "path": "/etc/samba/smb.conf",
-        "contents": {
-          "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/2xU74sjRRD93n9FQYTTDyar3t7BQUAXQURyd+wqIssx1HTXJO12dzVVNcnGv156ZnK7e/opzHv1472q6qzgjgg092vPZVjTI+aaCAYWQMgsBIEMY6IALSDuYYiJgMWtQAgD2OEpHTKWintauxXcjgVeGalVlPwKjOFIEofzlLCUigqeRcgb4GDUap55hMwhDpECRFu7lVvBezZ651Zwt7v5riWFqNg3Sf0ZAg04JlvD74eokAmLgk+Riimcoh14NNCxVhabXN3tbr6f5d/tbn4AFILCkLjsSaBVbVI9l9JUGTdvAb5+avTN2rn7feIe0yeXY4EqbOw5wXaq7WLxaQwEWxDaRzU5u0LWR1YomBteUF0O5el7pp2SHElATWLZz3GgmHuEmXH7kdQAveexWAvgnsPZTWWElNOxbSaQwBZ6j2pwYDVIuf20cRR17jgocP83eVPYwiBjtNaSMGv3iGbi3AS+o+I5XJRYPNKCZzIMaAjbJe+Cc6A2hR36u6Z6gStrfOyEFrNn0oU4knGHtSYKPLbBN0MLVwbt0JM+x06xUheLUbHIBVM6d4kG6/qE5aGTgeXhRf1AiYw6ytXOHYZ2t/oi4B8S7hrcxbAQ7sTysBceK2zhzw+3v/1y++GPj07JjxLtDFsYlcS5iqqhhx79A5WWbKFXzM5VicXmofmx6vztsV52PYGJMcDEkFwkNQK4NmsNEjw5t4JfixqmNJ/Bt623HlBIoaJ/wP38UJfzfnZ5GzK/mXI2TznTE3Xu/tL4k/OcM02X9FNK8HHBXUU7tCJHlI3lOnvAeUN/NalCaAQZtQ386s3VleuFT0pLzHu+dPnqeY+lPvws8fhlmxT7RW9Y2JNEI0hRW+qPs4TQ3pswmxtYPMFlUc/o/4h789qF2P5iWM6f0bdvr527zxQiPle4O8OuYZ+l5WKbduqbKXTWtJhsO3vhugF17FP0l41+oeT1/yq5vn5pdbqvfwMAAP//OWTKw5YFAAA="
-        },
-        "mode": 420
-      },
-      {
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
@@ -86,22 +77,6 @@
         "contents": {
           "compression": "",
           "source": "data:;base64,IyEvYmluL3NoCgpjdXJsIC0tcHJvdG8gJz1odHRwcycgLS10bHN2MS4yIC1zU2YgaHR0cHM6Ly9nZXQuazBzLnNoIHwgc2gKazBzIGluc3RhbGwgY29udHJvbGxlciAtLXNpbmdsZSAtYyAvZXRjL2swcy9jb25maWcueWFtbAprMHMgc3RhcnQK"
-        },
-        "mode": 493
-      },
-      {
-        "path": "/home/googol/start_smb.sh",
-        "contents": {
-          "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/4TOQYrDMAwF0H1OoWEWmRlITA4Q5gq9gZFtNQnYVrDUJr19CU0ptIXuhHj/87+/jJuykbGq5BQY5CJKyWsEyugigSTXCpXz5Any437WhUSx6AdOKuSYIzQHEEwOLa0zF7UYoy3cd2++S9/d0wkzDgRHz1lpVWgQGt0jMmIhq1CblNUEVDSJwoQ/pv37/a9vFdtKLuQ5v7hdSHIziixhKx+YB47VNQAA//+tS4m7JAEAAA=="
-        },
-        "mode": 493
-      },
-      {
-        "path": "/home/googol/install_samba.sh",
-        "contents": {
-          "compression": "",
-          "source": "data:;base64,IyEvYmluL3NoCgpycG0tb3N0cmVlIGluc3RhbGwgc2NyZWVuIGF2YWhpIHNhbWJhCgplY2hvIFJlYm9vdCB0byBlbmFibGUgc2FtZSwgdGhlbiBydW4gLi9zdGFydF9zbWIuc2gK"
         },
         "mode": 493
       }
