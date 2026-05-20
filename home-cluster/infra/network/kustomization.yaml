@@ -6,3 +6,4 @@ resources:
 - "cloudflare-ddns.yaml"
 - "gateway.yaml"
 - "routing.yaml"
+- "samba.yaml"

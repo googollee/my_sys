@@ -10,22 +10,19 @@ spec:
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
 
+  volumes:
+    - name: config
+      configMap:
+        name: samba-config
+    - name: host-storage
+      hostPath:
+        path: /mnt/data/media
+    - name: samba-log
+      emptyDir: {}
   containers:
     - name: samba
       image: alpine:latest
       imagePullPolicy: Always
-      securityContext:
-        allowPrivilegeEscalation: true
-        capabilities:
-          drop:
-            - ALL
-          add:
-            - CHOWN
-            - DAC_OVERRIDE
-            - SETUID
-            - SETGID
-            - SYS_CHROOT
-            - NET_BIND_SERVICE
       env:
         - name: SMB_USER
           valueFrom:
@@ -51,16 +48,18 @@ spec:
           useradd -u ${SMB_UID} -g ${SMB_GROUP} -s /sbin/nologin -M ${SMB_USER}
 
           rm -rf /etc/samba/*
-          sed "s/__SMB_GROUP__/${SMB_GROUP}/g" /etc/samba/templates/smb.conf.template > /etc/samba/smb.conf
+          sed "s/__SMB_GROUP__/${SMB_GROUP}/g" /run/samba/smb.conf.template > /etc/samba/smb.conf
           echo -e "${SMB_PASS}\n${SMB_PASS}" | smbpasswd -a -s ${SMB_USER}
 
-          exec su-exec ${SMB_USER}:${SMB_GROUP} smbd -F --no-process-group </dev/null
+          exec /usr/sbin/smbd -F --no-process-group </dev/null
       volumeMounts:
         - name: config
-          mountPath: /etc/samba/templates/smb.conf.template
+          mountPath: /run/samba/smb.conf.template
           subPath: smb.conf.template
         - name: host-storage
           mountPath: /mnt/data/media
+        - name: samba-log
+          mountPath: /var/log/samba
       ports:
         - containerPort: 445
           hostPort: 445
@@ -68,40 +67,25 @@ spec:
     - name: avahi
       image: alpine:latest
       imagePullPolicy: Always
-      securityContext:
-        runAsUser: 65534
-        runAsGroup: 65534
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-          add:
-            - NET_ADMIN
-            - NET_BIND_SERVICE
       command: ["/bin/sh", "-c"]
       args:
         - |
           apk add --no-cache avahi
-          exec avahi-daemon -F
+          rm -rf /etc/avahi/services/*
+          cp /run/smb.service /etc/avahi/services/
+          exec /usr/sbin/avahi-daemon
       volumeMounts:
         - name: config
           mountPath: /etc/avahi/avahi-daemon.conf
           subPath: avahi-daemon.conf
         - name: config
-          mountPath: /etc/avahi/services/smb.service
+          mountPath: /run/smb.service
           subPath: avahi.smb.service
       ports:
         - containerPort: 5353
           hostPort: 5353
           protocol: UDP
           name: mdns-port
-  volumes:
-    - name: config
-      configMap:
-        name: samba-configs
-    - name: host-storage
-      hostPath:
-        path: /mnt/data/media
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -117,6 +101,7 @@ data:
       server role = standalone server
       logging = stdout
       log level = 1
+      max log size = 0
       guest account = nobody
       
       aio read size = 16384
@@ -149,8 +134,6 @@ data:
     publish-hinfo=no
     publish-workstation=no
     publish-domain=no
-
-    [refuse-options]
   avahi.smb.service: |
     <?xml version="1.0" standalone='no'?>
     <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
