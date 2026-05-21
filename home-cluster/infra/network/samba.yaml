@@ -84,10 +84,18 @@ spec:
               apk add --no-cache avahi
               rm -rf /etc/avahi/services/*
               cp /run/smb.service /etc/avahi/services/
+              cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
+
+              PHYSICAL=$(ip -o link show | awk -F': ' '$2 ~ /^en/ {print $2}' | paste -sd, -)
+              echo "Detected physical interfaces: ${PHYSICAL}"
+              if [ ! -z "${PHYSICAL}" ]; then
+                sed -i "/\[server\]/a allow-interfaces=${PHYSICAL}" /etc/avahi/avahi-daemon.conf
+              fi
+
               exec /usr/sbin/avahi-daemon
           volumeMounts:
             - name: config
-              mountPath: /etc/avahi/avahi-daemon.conf
+              mountPath: /run/avahi-daemon.conf
               subPath: avahi-daemon.conf
             - name: config
               mountPath: /run/smb.service
