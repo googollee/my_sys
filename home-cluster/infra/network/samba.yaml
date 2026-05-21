@@ -119,6 +119,12 @@ data:
       aio write size = 16384
       use sendfile = yes
 
+      vfs objects = catia fruit streams_xattr
+      fruit:aapl = yes
+      fruit:metadata = stream
+      fruit:model = Macmini
+      fruit:posix_metadata = yes
+
     [media]
       comment = My Media
       path = /mnt/data/media
@@ -131,6 +137,8 @@ data:
       valid users = @__SMB_GROUP__
   avahi-daemon.conf: |
     [server]
+    host-name=nas
+    domain-name=local
     enable-dbus=no
     use-ipv4=yes
     use-ipv6=no
