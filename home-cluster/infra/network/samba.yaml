@@ -78,19 +78,24 @@ spec:
         - name: avahi
           image: alpine:latest
           imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
           command: ["/bin/sh", "-c"]
           args:
             - |
-              apk add --no-cache avahi
+              apk add --no-cache avahi tcpdump iptables
               rm -rf /etc/avahi/services/*
               cp /run/smb.service /etc/avahi/services/
               cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
 
-              PHYSICAL=$(ip -o link show | awk -F': ' '$2 ~ /^en/ {print $2}' | paste -sd, -)
-              echo "Detected physical interfaces: ${PHYSICAL}"
-              if [ ! -z "${PHYSICAL}" ]; then
-                sed -i "/\[server\]/a allow-interfaces=${PHYSICAL}" /etc/avahi/avahi-daemon.conf
+              REAL_NIC=$(ip route show | grep default | awk '{print $5}')
+              echo "The real physical NIC is: ${REAL_NIC}"
+              if [ ! -z "${REAL_NIC}" ]; then
+                sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
               fi
+
+              iptables -t mangle -A POSTROUTING -p udp --dport 5353 -d 224.0.0.251 -j CHECKSUM --checksum-fill
 
               exec /usr/sbin/avahi-daemon
           volumeMounts:
