@@ -18,8 +18,8 @@ spec:
         app: samba
     spec:
       nodeName: nas
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      # hostNetwork: true
+      # dnsPolicy: ClusterFirstWithHostNet
 
       volumes:
         - name: config
@@ -74,7 +74,12 @@ spec:
           ports:
             - containerPort: 445
               hostPort: 445
-              name: smb-port
+              protocol: TCP
+              name: smb-tcp
+            - containerPort: 445
+              hostPort: 445
+              protocol: UDP
+              name: smb-udp
         - name: avahi
           image: alpine:latest
           imagePullPolicy: Always
@@ -95,7 +100,7 @@ spec:
                 sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
               fi
 
-              iptables -t mangle -A POSTROUTING -p udp --dport 5353 -d 224.0.0.251 -j CHECKSUM --checksum-fill
+              # iptables -t mangle -A POSTROUTING -p udp --dport 5353 -d 224.0.0.251 -j CHECKSUM --checksum-fill
 
               exec /usr/sbin/avahi-daemon
           volumeMounts:
@@ -109,7 +114,7 @@ spec:
             - containerPort: 5353
               hostPort: 5353
               protocol: UDP
-              name: mdns-port
+              name: mdns
 ---
 apiVersion: v1
 kind: ConfigMap
