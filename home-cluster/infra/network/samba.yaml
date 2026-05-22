@@ -18,8 +18,8 @@ spec:
         app: samba
     spec:
       nodeName: nas
-      # hostNetwork: true
-      # dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
 
       volumes:
         - name: config
@@ -80,13 +80,18 @@ spec:
               hostPort: 445
               protocol: UDP
               name: smb-udp
-        - name: avahi
+        - name: mdns
+          # image: python:3-alpine
           image: alpine:latest
           imagePullPolicy: Always
           securityContext:
             capabilities:
               add: ["NET_ADMIN"]
           command: ["/bin/sh", "-c"]
+          # args:
+          # - |
+          #   pip install --no-cache-dir zeroconf
+          #   exec python3 /app/mdns.py
           args:
             - |
               apk add --no-cache avahi tcpdump iptables
@@ -110,6 +115,9 @@ spec:
             - name: config
               mountPath: /run/smb.service
               subPath: avahi.smb.service
+            - name: config
+              mountPath: /app/mdns.py
+              subPath: mdns.py
           ports:
             - containerPort: 5353
               hostPort: 5353
@@ -186,3 +194,38 @@ data:
         <txt-record>model=Macmini</txt-record>
       </service>
     </service-group>
+  mdns.py: |
+    import socket
+    import time
+    from zeroconf import IPVersion, ServiceInfo, Zeroconf
+
+    def publish_samba():
+        desc = {
+            'model': 'Macmini',
+        }
+        
+        info = ServiceInfo(
+            type_="_smb._tcp.local.",                     # 严格符合 DNS-SD 规范的注册类型
+            name="nas._smb._tcp.local.",                  # 实例名.注册类型
+            addresses=[socket.inet_aton("192.168.10.2")], # 你的 NAS 宿主机物理 IP
+            port=445,                                     # Samba 核心端口
+            properties=desc,
+            server="nas.local."                           # 对应的 A 记录域名
+        )
+
+        zc = Zeroconf(ip_version=IPVersion.V4Only)
+        
+        print("[mDNS] publishing samba (nas.local -> 192.168.10.2:445)...\n")
+        zc.register_service(info)
+
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("[mDNS] stopping...\n")
+        finally:
+            zc.unregister_service(info)
+            zc.close()
+
+    if __name__ == "__main__":
+        publish_samba()
