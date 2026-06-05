@@ -60,6 +60,8 @@ if [ `uname` = "Darwin" ]; then
 
     autoload -Uz compinit
     compinit
+
+    export PATH=$(brew --prefix rustup)/bin:$PATH
   fi
 fi
 
