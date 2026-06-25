@@ -77,8 +77,6 @@ if which lsb_release >/dev/null && [ $(lsb_release -cs) = "rodete" ]; then
       gcert
     fi
   fi
-else
-  export SSH_AUTH_SOCK=~/.bitwarden-ssh-agent.sock
 fi
 
 # Linux
