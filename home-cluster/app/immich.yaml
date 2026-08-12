@@ -1,0 +1,129 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich
+  labels:
+    app: immich
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: immich
+  template:
+    metadata:
+      labels:
+        app: immich
+    spec:
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+        runAsGroup: 1001
+      volumes:
+      - name: dev-dri
+        hostPath:
+          path: /dev/dri
+      - name: dev-kfd
+        hostPath:
+          path: /dev/kfd
+      - name: media
+        hostPath:
+          path: /mnt/data/media
+      - name: models
+        hostPath:
+          path: /mnt/data/config/immich/models
+      containers:
+      - name: immich
+        image: ghcr.io/immich-app/immich-server:v3
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /dev/dri
+          name: dev-dri
+        - mountPath: /data
+          name: media
+          subPath: 'immich'
+        env:
+        - name: TZ
+          value: "Europe/Berlin"
+        - name: IMMICH_HOST
+          value: '0.0.0.0'
+        - name: IMMICH_PORT
+          value: '2283'
+        - name: UPLOAD_LOCATION
+          value: "/media/immich"
+        - name: DB_HOSTNAME
+          value: "postgres.infra.svc"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: "immich"
+              key: "dbname"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: "immich"
+              key: "dbuser"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "immich"
+              key: "dbpass"
+        - name: DB_STORAGE_TYPE
+          value: "HDD"
+        - name: REDIS_HOSTNAME
+          value: "valkey.infra.svc"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_DBINDEX
+          value: "1"
+        ports:
+        - name: http
+          containerPort: 2283
+          protocol: TCP
+      - name: immich-ml
+        image: ghcr.io/immich-app/immich-machine-learning:v3
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /dev/dri
+          name: dev-dri
+        - mountPath: /dev/kfd
+          name: dev-kfd
+        - mountPath: /cache
+          name: models
+        env:
+        - name: IMMICH_PORT
+          value: '3003'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich
+spec:
+  type: ClusterIP
+  selector:
+    app: immich
+  ports:
+  - name: http
+    port: 2283
+    protocol: TCP
+    targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich
+spec:
+  rules:
+  - host: "immich.zhaohai.li"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: immich
+            port:
+              number: 2283

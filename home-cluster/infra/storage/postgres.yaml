@@ -51,6 +51,7 @@ spec:
         existingClaim: "local-pvc"
         subPath: "postgres"
 
+      resourcesPreset: "xlarge"
       podSecurityContext:
         enabled: true
         fsGroup: 65534
