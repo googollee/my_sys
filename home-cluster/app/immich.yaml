@@ -33,6 +33,10 @@ spec:
       - name: models
         hostPath:
           path: /mnt/data/config/immich/models
+      - name: ml-config
+        emptyDir: {}
+      - name: ml-cache
+        emptyDir: {}
       containers:
       - name: immich
         image: ghcr.io/immich-app/immich-server:v3
@@ -40,6 +44,8 @@ spec:
         volumeMounts:
         - mountPath: /dev/dri
           name: dev-dri
+        - mountPath: /media
+          name: media
         - mountPath: /data
           name: media
           subPath: 'immich'
@@ -86,6 +92,7 @@ spec:
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3
         imagePullPolicy: Always
+        # args: ["DEVICE=rocm"]
         volumeMounts:
         - mountPath: /dev/dri
           name: dev-dri
@@ -93,6 +100,10 @@ spec:
           name: dev-kfd
         - mountPath: /cache
           name: models
+        - mountPath: /.config
+          name: ml-config
+        - mountPath: /.cache
+          name: ml-cache
         env:
         - name: IMMICH_PORT
           value: '3003'

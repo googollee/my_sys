@@ -52,14 +52,11 @@ spec:
     global:
       checkNewVersion: false
       sendAnonymousUsage: false
-    logs:
-      general:
-        level: INFO
-        format: json
-        noColor: true
-      access:
-        enabled: true
-        format: json
+    log:
+      level: INFO
+    accessLog:
+      enabled: true
+      format: json
     metrics:
       prometheus:
         entryPoint: metrics
