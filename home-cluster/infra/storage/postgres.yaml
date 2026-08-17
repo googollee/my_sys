@@ -1,95 +1,135 @@
 ---
-apiVersion: "monitoring.coreos.com/v1"
-kind: "PodMonitor"
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "postgres-hba"
+  namespace: "infra"
+data:
+  pg_hba.conf: |
+    # TYPE  DATABASE        USER            ADDRESS                 METHOD
+    local   all             all                                     trust
+    host    all             postgres        127.0.0.1/32            md5
+    host    all             postgres        0.0.0.0/0               reject
+    host    all             all             0.0.0.0/0               md5
+---
+apiVersion: "v1"
+kind: "Service"
 metadata:
   name: "postgres"
   namespace: "infra"
 spec:
+  clusterIP: "None"
+  selector:
+    app.kubernetes.io/name: "postgresql"
+  ports:
+  - name: "postgresql"
+    port: 5432
+    targetPort: "postgresql"
+---
+apiVersion: "apps/v1"
+kind: "StatefulSet"
+metadata:
+  name: "postgres"
+  namespace: "infra"
+spec:
+  serviceName: "postgres"
+  replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: "primary"
-      app.kubernetes.io/instance: "postgres"
       app.kubernetes.io/name: "postgresql"
-  podMetricsEndpoints:
-  - port: "http-metrics"
-    path: "/metrics"
-    interval: "30s"
----
-apiVersion: "helm.toolkit.fluxcd.io/v2"
-kind: "HelmRelease"
-metadata:
-  name: "postgres"
-  namespace: "infra"
-spec:
-  chart:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "postgresql"
     spec:
-      chart: "postgresql"
-      sourceRef:
-        kind: "HelmRepository"
-        name: "bitnami"
-        namespace: "infra"
-  interval: "30m"
-  install:
-    createNamespace: true
-  targetNamespace: "infra"
-  releaseName: "postgres"
-  values:
-    fullnameOverride: "postgres"
-
-    architecture: standalone
-    readReplicas:
-      replicaCount: 0
-
-    auth:
-      existingSecret: "db-admin"
-      secretKeys:
-        adminPasswordKey: "password"
-
-    primary:
-      persistence:
-        enabled: true
-        existingClaim: "local-pvc"
-        subPath: "postgres"
-
-      resourcesPreset: "xlarge"
-      podSecurityContext:
-        enabled: true
-        fsGroup: 65534
-      containerSecurityContext:
-        enabled: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        capabilities:
-          add:
-          - CAP_SYS_NICE
-
-      pgHbaConfiguration: |
-        # TYPE  DATABASE        USER            ADDRESS                 METHOD
-        local   all             all                                     trust
-        host    all             postgres        127.0.0.1/32            md5
-        host    all             postgres        0.0.0.0/0               reject
-        host    all             all             0.0.0.0/0               md5
-
-      networkPolicy:
-        enabled: false
-      pdb:
-        create: false
-
-    volumePermissions:
-      enabled: true
-
-    metrics:
-      enabled: true
-      service:
-        annotations:
-          prometheus.io/scrape: "false"
-      serviceMonitor:
-        enabled: false
-
-    serviceAccount:
-      create: false
-      name: "default"
-
-    rbac:
-      create: false
-
+      automountServiceAccountToken: false
+      initContainers:
+      - name: "install-extensions"
+        image: "postgres:17"
+        securityContext:
+          runAsUser: 0
+        env:
+        - name: "VCHORD_VERSION"
+          value: "1.1.1"
+        command:
+        - "sh"
+        - "-c"
+        - |
+          set -eu
+          apt-get update
+          apt-get install -y --no-install-recommends curl ca-certificates postgresql-17-pgvector
+          curl -fsSL -o /tmp/vchord.deb \
+            "https://github.com/supervc-stack/VectorChord/releases/download/${VCHORD_VERSION}/postgresql-17-vchord_${VCHORD_VERSION}-1_amd64.deb"
+          apt-get install -y --no-install-recommends /tmp/vchord.deb
+          cp -a /usr/lib/postgresql/17/lib/. /mnt/pglib/
+          cp -a /usr/share/postgresql/17/extension/. /mnt/pgext/
+        volumeMounts:
+        - name: "pg-lib"
+          mountPath: "/mnt/pglib"
+        - name: "pg-share-extension"
+          mountPath: "/mnt/pgext"
+      containers:
+      - name: "postgres"
+        image: "postgres:17"
+        args:
+        - "-c"
+        - "hba_file=/etc/postgresql-custom/pg_hba.conf"
+        - "-c"
+        - "shared_preload_libraries=vchord"
+        securityContext:
+          capabilities:
+            add:
+            - "SYS_NICE"
+        env:
+        - name: "POSTGRES_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: "db-admin"
+              key: "password"
+        ports:
+        - name: "postgresql"
+          containerPort: 5432
+        readinessProbe:
+          exec:
+            command:
+            - "pg_isready"
+            - "-U"
+            - "postgres"
+            - "-h"
+            - "127.0.0.1"
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - "pg_isready"
+            - "-U"
+            - "postgres"
+            - "-h"
+            - "127.0.0.1"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: "data"
+          mountPath: "/var/lib/postgresql/data"
+          subPath: "postgres"
+        - name: "pg-hba"
+          mountPath: "/etc/postgresql-custom"
+          readOnly: true
+        - name: "pg-lib"
+          mountPath: "/usr/lib/postgresql/17/lib"
+          readOnly: true
+        - name: "pg-share-extension"
+          mountPath: "/usr/share/postgresql/17/extension"
+          readOnly: true
+      volumes:
+      - name: "data"
+        persistentVolumeClaim:
+          claimName: "local-pvc"
+      - name: "pg-hba"
+        configMap:
+          name: "postgres-hba"
+      - name: "pg-lib"
+        emptyDir: {}
+      - name: "pg-share-extension"
+        emptyDir: {}
