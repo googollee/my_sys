@@ -138,3 +138,37 @@ spec:
             name: immich
             port:
               number: 2283
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: immich-stacker
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300 # 5min
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: immich-stacker
+            image: mattdavis90/immich-stacker:latest
+            imagePullPolicy: Always
+            env:
+            - name: IMMICH_ENDPOINT
+              value: "http://immich:2283/api"
+            - name: IMMICH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: 'immich'
+                  key: 'apikey-stacker'
+            - name: IMMICH_MATCH_RAW
+              value: '\.(?i:jpg|jpeg|raw|arw|dng|cr2|cr3|nef|rw2)$ '
+            - name: IMMICH_PARENT_RAW
+              value: '\.(?i:jpg|jpeg)$'
+            - name: IMMICH_LOG_LEVEL
+              value: 'DEBUG'
+          restartPolicy: Never
