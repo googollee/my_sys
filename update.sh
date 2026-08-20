@@ -17,3 +17,7 @@ if command -v go >/dev/null 2>&1; then
   go install github.com/nametake/golangci-lint-langserver@latest
   go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 fi
+
+if command -v nvim >/dev/null 2>&1; then
+  nvim --headless "+Lazy! sync" +qa
+fi
