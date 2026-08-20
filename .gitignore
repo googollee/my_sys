@@ -1,5 +1,3 @@
-playbook/.vault_password
+nvim/lazy-lock.json
 output/
 secrets.yaml
-secret.yaml
-.aider*
