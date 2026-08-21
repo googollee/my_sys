@@ -166,7 +166,7 @@ spec:
                   name: 'immich'
                   key: 'apikey-stacker'
             - name: IMMICH_MATCH_RAW
-              value: '\.(?i:jpg|jpeg|raf|raw|arw|dng|cr2|cr3|nef|rw2)$ '
+              value: '\.(?i:jpg|jpeg|raf|raw|arw|dng|cr2|cr3|nef|rw2)$'
             - name: IMMICH_PARENT_RAW
               value: '\.(?i:jpg|jpeg)$'
             - name: IMMICH_LOG_LEVEL
