@@ -172,3 +172,41 @@ spec:
             - name: IMMICH_LOG_LEVEL
               value: 'DEBUG'
           restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: immich-album-creator
+spec:
+  schedule: "0 4 * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300 # 5min
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: album-creator
+            image: salvoxia/immich-folder-album-creator:latest
+            imagePullPolicy: Always
+            env:
+            - name: IMMICH_URL
+              value: "http://immich:2283/api"
+            - name: IMMICH_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: 'immich'
+                  key: 'apikey-stacker'
+            - name: ROOT_PATH
+              value: "/media/photos/Googol图库"
+            - name: ALBUM_LEVELS
+              value: "-1"
+            - name: ALBUM_SEPARATOR
+              value: " - "
+            - name: UNATTENDED
+              value: "1" # 无人值守直接创建
+            - name: SYNC_MODE
+              value: "1"
