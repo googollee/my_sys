@@ -51,40 +51,40 @@ spec:
           subPath: 'immich'
         env:
         - name: TZ
-          value: "Europe/Berlin"
+          value: 'Europe/Berlin'
         - name: IMMICH_HOST
           value: '0.0.0.0'
         - name: IMMICH_PORT
           value: '2283'
         - name: UPLOAD_LOCATION
-          value: "/media/immich"
+          value: '/media/immich'
         - name: DB_HOSTNAME
-          value: "postgres.infra.svc"
+          value: 'postgres.infra.svc'
         - name: DB_PORT
-          value: "5432"
+          value: '5432'
         - name: DB_DATABASE_NAME
           valueFrom:
             secretKeyRef:
-              name: "immich"
-              key: "dbname"
+              name: 'immich'
+              key: 'dbname'
         - name: DB_USERNAME
           valueFrom:
             secretKeyRef:
-              name: "immich"
-              key: "dbuser"
+              name: 'immich'
+              key: 'dbuser'
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: "immich"
-              key: "dbpass"
+              name: 'immich'
+              key: 'dbpass'
         - name: DB_STORAGE_TYPE
-          value: "HDD"
+          value: 'HDD'
         - name: REDIS_HOSTNAME
-          value: "valkey.infra.svc"
+          value: 'valkey.infra.svc'
         - name: REDIS_PORT
-          value: "6379"
+          value: '6379'
         - name: REDIS_DBINDEX
-          value: "1"
+          value: '1'
         ports:
         - name: http
           containerPort: 2283
@@ -92,7 +92,7 @@ spec:
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3
         imagePullPolicy: Always
-        # args: ["DEVICE=rocm"]
+        # args: ['DEVICE=rocm']
         volumeMounts:
         - mountPath: /dev/dri
           name: dev-dri
@@ -128,7 +128,7 @@ metadata:
   name: immich
 spec:
   rules:
-  - host: "immich.zhaohai.li"
+  - host: 'immich.zhaohai.li'
     http:
       paths:
       - path: /
@@ -144,7 +144,7 @@ kind: CronJob
 metadata:
   name: immich-stacker
 spec:
-  schedule: "0 3 * * *"
+  schedule: '0 3 * * *'
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 300 # 5min
   successfulJobsHistoryLimit: 1
@@ -159,7 +159,7 @@ spec:
             imagePullPolicy: Always
             env:
             - name: IMMICH_ENDPOINT
-              value: "http://immich:2283/api"
+              value: 'http://immich:2283/api'
             - name: IMMICH_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -178,7 +178,7 @@ kind: CronJob
 metadata:
   name: immich-album-creator
 spec:
-  schedule: "0 4 * * *"
+  schedule: '0 4 * * *'
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 300 # 5min
   successfulJobsHistoryLimit: 1
@@ -193,20 +193,22 @@ spec:
             image: salvoxia/immich-folder-album-creator:latest
             imagePullPolicy: Always
             env:
-            - name: IMMICH_URL
-              value: "http://immich:2283/api"
-            - name: IMMICH_API_KEY
+            - name: API_URL
+              value: 'http://immich:2283/api'
+            - name: API_KEY
               valueFrom:
                 secretKeyRef:
                   name: 'immich'
                   key: 'apikey-stacker'
             - name: ROOT_PATH
-              value: "/media/photos/Googol图库"
+              value: '/media/photos/Googol图库'
             - name: ALBUM_LEVELS
-              value: "-1"
+              value: '-1'
             - name: ALBUM_SEPARATOR
-              value: " - "
+              value: ' - '
             - name: UNATTENDED
-              value: "1" # 无人值守直接创建
+              value: '1' # 无人值守直接创建
             - name: SYNC_MODE
-              value: "1"
+              value: '1'
+            - name: LOG_LEVEL
+              value: 'DEBUG'
