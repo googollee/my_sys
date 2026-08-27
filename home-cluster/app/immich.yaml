@@ -20,6 +20,10 @@ spec:
         fsGroup: 1001
         runAsUser: 1001
         runAsGroup: 1001
+        supplementalGroups:
+        - 0 # root
+        - 39 # video
+        - 105 # render
       volumes:
       - name: dev-dri
         hostPath:
@@ -50,6 +54,8 @@ spec:
           name: media
           subPath: 'immich'
         env:
+        - name: HSA_OVERRIDE_GFX_VERSION
+          value: '10.3.0'
         - name: TZ
           value: 'Europe/Berlin'
         - name: IMMICH_HOST
@@ -90,14 +96,16 @@ spec:
           containerPort: 2283
           protocol: TCP
       - name: immich-ml
-        image: ghcr.io/immich-app/immich-machine-learning:v3
+        image: ghcr.io/immich-app/immich-machine-learning:v3 # -rocm
         imagePullPolicy: Always
-        # args: ['DEVICE=rocm']
+        # env:
+        # - name: HSA_OVERRIDE_GFX_VERSION
+        #   value: '10.3.0'
         volumeMounts:
-        - mountPath: /dev/dri
-          name: dev-dri
-        - mountPath: /dev/kfd
-          name: dev-kfd
+        # - mountPath: /dev/dri
+        #   name: dev-dri
+        # - mountPath: /dev/kfd
+        #   name: dev-kfd
         - mountPath: /cache
           name: models
         - mountPath: /.config
