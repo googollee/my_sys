@@ -77,6 +77,10 @@ if which lsb_release >/dev/null && [ $(lsb_release -cs) = "rodete" ]; then
       gcert
     fi
   fi
+
+  if [ -r /google/data/ro/teams/dmgi/configs/google_xm_bashrc ] ; then
+    source /google/data/ro/teams/dmgi/configs/google_xm_bashrc
+  fi
 fi
 
 # Linux
