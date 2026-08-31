@@ -115,6 +115,11 @@ spec:
         env:
         - name: IMMICH_PORT
           value: '3003'
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 4Gi
 ---
 apiVersion: v1
 kind: Service
