@@ -95,6 +95,11 @@ spec:
         - name: http
           containerPort: 2283
           protocol: TCP
+        resources:
+          requests:
+            memory: 1Gi
+          limits:
+            memory: 2Gi
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3 # -rocm
         imagePullPolicy: Always
