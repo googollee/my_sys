@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if command -v apt >/dev/null 2>&1; then
-  sudo apt update
-  sudo apt full-upgrade
+  sudo apt-get update
+  sudo apt-get -y full-upgrade
 fi
 
 if command -v brew >/dev/null 2>&1; then
   brew update
-  brew upgrade
+  brew upgrade -y
   brew cleanup
 fi
 
