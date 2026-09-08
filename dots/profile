@@ -49,6 +49,8 @@ if [ "$(which nvim)" != "nvim not found" ]; then
   export EDITOR=nvim
   alias vi='nvim'
   alias nv='nvim'
+  alias ndiff='nvim -d'
+  export DIFFPROG='nvim -d'
 fi
 
 # macOS
