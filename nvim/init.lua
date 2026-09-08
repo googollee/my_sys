@@ -50,7 +50,12 @@ vim.opt.conceallevel = 1
 vim.opt.updatetime = 1000
 vim.opt.mouse = ''
 vim.opt.showtabline = 2
-
+vim.opt.diffopt:append({
+  "algorithm:histogram",
+  "linematch:60",
+  "inline:char",
+  "indent-heuristic",
+})
 vim.api.nvim_set_hl(0, 'TabLineSel', {ctermfg = 'white'})
 
 vim.cmd 'syntax on'
