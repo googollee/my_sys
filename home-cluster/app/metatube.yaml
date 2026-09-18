@@ -43,19 +43,22 @@ spec:
     protocol: TCP
     targetPort: http
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: metatube
 spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "metatube-p.zhaohai.li"
   rules:
-  - host: "metatube-p.zhaohai.li"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: metatube
-            port:
-              number: 8080
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: metatube
+      port: 8080

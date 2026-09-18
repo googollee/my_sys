@@ -111,32 +111,56 @@ spec:
     accessControlMaxAge: 100
     addVaryHeader: true
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: versitygw
+  name: versitygw-s3
   namespace: infra
-  annotations:
-    traefik.ingress.kubernetes.io/router.middlewares: "infra-cors-header@kubernetescrd"
 spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "s3.zhaohai.li"
   rules:
-  - host: "s3.zhaohai.li"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: versitygw
-            port:
-              number: 7070
-  - host: "s3-ui.zhaohai.li"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: versitygw
-            port:
-              number: 7071
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: traefik.io
+        kind: Middleware
+        name: cors-header
+    backendRefs:
+    - name: versitygw
+      port: 7070
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: versitygw-s3-ui
+  namespace: infra
+spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "s3-ui.zhaohai.li"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    filters:
+    - type: ExtensionRef
+      extensionRef:
+        group: traefik.io
+        kind: Middleware
+        name: cors-header
+    backendRefs:
+    - name: versitygw
+      port: 7071

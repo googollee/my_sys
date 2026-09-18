@@ -105,19 +105,22 @@ spec:
   selector:
     app: zhufeng-vm
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: zhufeng-vm
 spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "zhufeng-vm-console-p.zhaohai.li"
   rules:
-  - host: "zhufeng-vm-console-p.zhaohai.li"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: zhufeng-vm
-            port:
-              number: 8006
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: zhufeng-vm
+      port: 8006
