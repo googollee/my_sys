@@ -93,19 +93,22 @@ spec:
     protocol: TCP
     targetPort: http
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: photos
 spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "photos.zhaohai.li"
   rules:
-  - host: "photos.zhaohai.li"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: photos
-            port:
-              number: 8000
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: photos
+      port: 8000

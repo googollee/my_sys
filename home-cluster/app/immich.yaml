@@ -140,22 +140,25 @@ spec:
     protocol: TCP
     targetPort: http
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: immich
 spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - 'immich.zhaohai.li'
   rules:
-  - host: 'immich.zhaohai.li'
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: immich
-            port:
-              number: 2283
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: immich
+      port: 2283
 ---
 apiVersion: batch/v1
 kind: CronJob
