@@ -1,4 +1,25 @@
 ---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana
+  namespace: infra
+spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - "monitor.zhaohai.li"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: grafana
+      port: 80
+---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -61,9 +82,7 @@ spec:
         enabled: false
 
     ingress:
-      enabled: true
-      hosts:
-      - monitor.zhaohai.li
+      enabled: false
     initChownData:
       enabled: false
     serviceAccount:
