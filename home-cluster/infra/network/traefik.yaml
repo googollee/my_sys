@@ -107,10 +107,6 @@ spec:
         http:
           tls:
             enabled: true
-            # certResolver: cloudflare
-            # domains:
-            # - main: zhaohai.li
-            #   sans: ['*.zhaohai.li']
       wansecure:
         port: 8443
         expose:
@@ -120,17 +116,3 @@ spec:
         http:
           tls:
             enabled: true
-            # certResolver: cloudflare
-            # domains:
-            # - main: zhaohai.li
-            #   sans: ['*.zhaohai.li']
-
-    # certificatesResolvers:
-    #   cloudflare:
-    #     acme:
-    #       email: me@zhaohai.li
-    #       caServer: https://acme-v02.api.letsencrypt.org/directory
-    #       storage: /var/run/traefik/acme.json       # Path to store the certificate information.
-    #       dnsChallenge:
-    #         provider: cloudflare
-    #         resolvers: ["1.1.1.1"]
