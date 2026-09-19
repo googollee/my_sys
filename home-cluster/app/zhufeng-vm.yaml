@@ -21,26 +21,26 @@ spec:
         image: qemux/qemu
         env:
         - name: BOOT
-          value: "debian"
+          value: 'debian'
         - name: DISK_SIZE
-          value: "32G"
+          value: '32G'
         - name: RAM_SIZE
-          value: "512M"
+          value: '512M'
         - name: CPU_CORES
-          value: "1"
+          value: '1'
         ports:
-          - containerPort: 22
-            name: ssh
-            protocol: TCP
-          - containerPort: 6666
-            name: port
-            protocol: TCP
-          - containerPort: 8006
-            name: http
-            protocol: TCP
-          - containerPort: 5900
-            name: vnc
-            protocol: TCP
+        - containerPort: 22
+          name: ssh
+          protocol: TCP
+        - containerPort: 6666
+          name: port
+          protocol: TCP
+        - containerPort: 8006
+          name: http
+          protocol: TCP
+        - containerPort: 5900
+          name: vnc
+          protocol: TCP
         securityContext:
           capabilities:
             add:
@@ -74,14 +74,14 @@ spec:
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ports:
-    - name: http
-      port: 8006
-      protocol: TCP
-      targetPort: 8006
-    - name: vnc
-      port: 5900
-      protocol: TCP
-      targetPort: 5900
+  - name: http
+    port: 8006
+    protocol: TCP
+    targetPort: 8006
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
   selector:
     app: zhufeng-vm
 ---
@@ -92,16 +92,16 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: ssh
-      port: 22
-      protocol: TCP
-      targetPort: 22
-      nodePort: 32022
-    - name: port
-      port: 6666
-      protocol: TCP
-      targetPort: 6666
-      nodePort: 32023
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+    nodePort: 32022
+  - name: port
+    port: 6666
+    protocol: TCP
+    targetPort: 6666
+    nodePort: 32023
   selector:
     app: zhufeng-vm
 ---
@@ -115,7 +115,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "zhufeng-vm-console-p.zhaohai.li"
+  - 'zhufeng-vm-console-p.zhaohai.li'
   rules:
   - matches:
     - path:

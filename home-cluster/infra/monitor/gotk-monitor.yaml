@@ -1,18 +1,18 @@
 ---
-apiVersion: "monitoring.coreos.com/v1"
-kind: "PodMonitor"
+apiVersion: 'monitoring.coreos.com/v1'
+kind: 'PodMonitor'
 metadata:
-  name: "gotk"
+  name: 'gotk'
 spec:
   namespaceSelector:
     matchNames:
-    - "flux-system"
+    - 'flux-system'
   selector:
     matchExpressions:
-    - key: "app"
-      operator: "Exists"
+    - key: 'app'
+      operator: 'Exists'
   podMetricsEndpoints:
-  - port: "http-prom"
-    path: "/metrics"
-    interval: "30s"
+  - port: 'http-prom'
+    path: '/metrics'
+    interval: '30s'
 

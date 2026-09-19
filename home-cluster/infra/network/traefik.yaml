@@ -17,9 +17,9 @@ spec:
   releaseName: traefik
   install:
     createNamespace: true
-    crds: "CreateReplace"
+    crds: 'CreateReplace'
   upgrade:
-    crds: "CreateReplace"
+    crds: 'CreateReplace'
 
   values:
     hostNetwork: true
@@ -80,13 +80,13 @@ spec:
       enabled: false
 
     ports:
-      traefik: 
+      traefik:
         port: 18888
         expose:
           default: false
         exposedPort: 18888
         protocol: TCP
-      metrics: 
+      metrics:
         port: 18889
         expose:
           default: false

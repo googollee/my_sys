@@ -1,20 +1,20 @@
 ---
-apiVersion: "monitoring.coreos.com/v1"
-kind: "PodMonitor"
+apiVersion: 'monitoring.coreos.com/v1'
+kind: 'PodMonitor'
 metadata:
-  name: "iot"
+  name: 'iot'
 spec:
   selector:
     matchLabels:
       app: iot
   podMetricsEndpoints:
-  - port: "http"
-    path: "/api/prometheus"
-    interval: "30s"
+  - port: 'http'
+    path: '/api/prometheus'
+    interval: '30s'
     metricRelabelings:
-    - sourceLabels: ["__name__"]
+    - sourceLabels: ['__name__']
       regex: 'hass_.*'
-      action: "keep"
+      action: 'keep'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,7 +41,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8123
-          name: "http"
+          name: 'http'
           protocol: TCP
         volumeMounts:
         - mountPath: /dev/ttyACM0
@@ -51,8 +51,8 @@ spec:
         securityContext:
           privileged: true
         env:
-        - name: "TZ"
-          value: "Europe/Berlin"
+        - name: 'TZ'
+          value: 'Europe/Berlin'
         resources:
           limits:
             memory: 2Gi
@@ -91,7 +91,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "iot.zhaohai.li"
+  - 'iot.zhaohai.li'
   rules:
   - matches:
     - path:

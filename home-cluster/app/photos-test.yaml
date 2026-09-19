@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,7 +27,7 @@ spec:
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0
         - name: PHOTOVIEW_LISTEN_PORT
-          value: "8080"
+          value: '8080'
         - name: PHOTOVIEW_VIDEO_HARDWARE_ACCELERATION
           value: vaapi
         - name: PHOTOVIEW_DATABASE_DRIVER
@@ -103,7 +104,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "photos-test.zhaohai.li"
+  - 'photos-test.zhaohai.li'
   rules:
   - matches:
     - path:

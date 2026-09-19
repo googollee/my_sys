@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -6,14 +7,14 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-    - port: 7070
-      targetPort: http
-      protocol: TCP
-      name: http
-    - port: 7071
-      targetPort: ui
-      protocol: TCP
-      name: ui
+  - port: 7070
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 7071
+    targetPort: ui
+    protocol: TCP
+    name: ui
   selector:
     app.kubernetes.io/name: versitygw
 ---
@@ -33,62 +34,59 @@ spec:
       labels:
         app.kubernetes.io/name: versitygw
     spec:
-      securityContext:
-        {}
+      securityContext: {}
       containers:
-        - name: versitygw
-          env:
-          - name: "ROOT_ACCESS_KEY"
-            valueFrom:
-              secretKeyRef:
-                name: "s3-keys"
-                key: "access-key"
-          - name: "ROOT_SECRET_KEY"
-            valueFrom:
-              secretKeyRef:
-                name: "s3-keys"
-                key: "secret-key"
-          - name: "VGW_REGION"
-            value: "us-east-1"
-          securityContext:
-            {}
-          image: "versity/versitygw:latest"
-          imagePullPolicy: Always
-          ports:
-            - name: http
-              containerPort: 7070
-              protocol: TCP
-            - name: ui
-              containerPort: 7071 
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: ui
-          readinessProbe:
-            httpGet:
-              path: /
-              port: ui
-          resources:
-            {}
-          args:
-          - "--cors-allow-origin"
-          - "https://s3-ui.zhaohai.li"
-          - "--port"
-          - ":7070"
-          - "--webui"
-          - ":7071"
-          - "--webui-no-tls"
-          - "posix"
-          - "/data/s3"
-          volumeMounts:
-            - mountPath: /data/s3
-              name: file-storage
-              subPath: s3
+      - name: versitygw
+        env:
+        - name: 'ROOT_ACCESS_KEY'
+          valueFrom:
+            secretKeyRef:
+              name: 's3-keys'
+              key: 'access-key'
+        - name: 'ROOT_SECRET_KEY'
+          valueFrom:
+            secretKeyRef:
+              name: 's3-keys'
+              key: 'secret-key'
+        - name: 'VGW_REGION'
+          value: 'us-east-1'
+        securityContext: {}
+        image: 'versity/versitygw:latest'
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 7070
+          protocol: TCP
+        - name: ui
+          containerPort: 7071
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: ui
+        readinessProbe:
+          httpGet:
+            path: /
+            port: ui
+        resources: {}
+        args:
+        - '--cors-allow-origin'
+        - 'https://s3-ui.zhaohai.li'
+        - '--port'
+        - ':7070'
+        - '--webui'
+        - ':7071'
+        - '--webui-no-tls'
+        - 'posix'
+        - '/data/s3'
+        volumeMounts:
+        - mountPath: /data/s3
+          name: file-storage
+          subPath: s3
       volumes:
-        - name: file-storage
-          persistentVolumeClaim:
-            claimName: local-pvc
+      - name: file-storage
+        persistentVolumeClaim:
+          claimName: local-pvc
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -98,16 +96,16 @@ metadata:
 spec:
   headers:
     accessControlAllowMethods:
-      - "GET"
-      - "OPTIONS"
-      - "PUT"
-      - "HEAD"
-      - "DELETE"
-      - "POST"
+    - 'GET'
+    - 'OPTIONS'
+    - 'PUT'
+    - 'HEAD'
+    - 'DELETE'
+    - 'POST'
     accessControlAllowHeaders:
-      - "*"
+    - '*'
     accessControlAllowOriginList:
-      - "https://s3-ui.zhaohai.li"
+    - 'https://s3-ui.zhaohai.li'
     accessControlMaxAge: 100
     addVaryHeader: true
 ---
@@ -122,7 +120,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "s3.zhaohai.li"
+  - 's3.zhaohai.li'
   rules:
   - matches:
     - path:
@@ -149,7 +147,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "s3-ui.zhaohai.li"
+  - 's3-ui.zhaohai.li'
   rules:
   - matches:
     - path:

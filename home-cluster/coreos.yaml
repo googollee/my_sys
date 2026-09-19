@@ -1,68 +1,69 @@
+---
 # butane --pretty --strict -d . coreos.yaml > coreos.ign
 variant: fcos
 version: 1.6.0
 passwd:
   groups:
-    - name: www-data
-      should_exist: true
-      system: true
+  - name: www-data
+    should_exist: true
+    system: true
   users:
-    - name: googol
-      system: false
-      ssh_authorized_keys:
-        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop
-      groups:
-        - docker
-        - wheel
-        - sudo
-        - systemd-journal
-    - name: www-data
-      system: true
-      no_create_home: true
-      no_user_group: true
-      primary_group: www-data
-      home_dir: /nonexistent
-      shell: /usr/sbin/nologin
-      groups:
-        - www-data
+  - name: googol
+    system: false
+    ssh_authorized_keys:
+    - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILRbXerF24s/H59FsEaPYfHZ1113Eij81+1ED7VGPK+p googol@mbp-laptop
+    groups:
+    - docker
+    - wheel
+    - sudo
+    - systemd-journal
+  - name: www-data
+    system: true
+    no_create_home: true
+    no_user_group: true
+    primary_group: www-data
+    home_dir: /nonexistent
+    shell: /usr/sbin/nologin
+    groups:
+    - www-data
 systemd:
   units:
-    - name: cpu-governor.service
-      enabled: true
-      contents_local: coreos.files/cpu-governor.service
-    - name: var-mnt-data.mount
-      enabled: false
-      contents_local: coreos.files/var-mnt-data.mount
+  - name: cpu-governor.service
+    enabled: true
+    contents_local: coreos.files/cpu-governor.service
+  - name: var-mnt-data.mount
+    enabled: false
+    contents_local: coreos.files/var-mnt-data.mount
 storage:
   files:
-    - path: /etc/hostname
-      mode: 0644
-      contents:
-        inline: nas
-    - path: /etc/zincati/config.d/55-updates-strategy.toml
-      mode: 0644
-      contents:
-        local: coreos.files/updates-strategy.toml
-    - path: /etc/systemd/system/raid-check.timer.d/override.conf
-      mode: 0644
-      contents:
-        local: coreos.files/raid-check.timer.override
-    # - path: /etc/modules-load.d/modules.conf
-    #   mode: 0644
-    #   contents:
-    #     inline: nct6775
-    # - path: /etc/modprobe.d/nct6775.conf
-    #   mode: 0644
-    #   contents:
-    #     inline: options nct6775 force_id=0xd801
-    - path: /etc/k0s/config.yaml
-      mode: 0644
-      contents:
-        local: coreos.files/k0s.yaml
-    - path: /home/googol/install_k0s.sh
-      mode: 0755
-      contents:
-        local: coreos.files/install_k0s.sh
+  - path: /etc/hostname
+    mode: 0644
+    contents:
+      inline: nas
+  - path: /etc/zincati/config.d/55-updates-strategy.toml
+    mode: 0644
+    contents:
+      local: coreos.files/updates-strategy.toml
+  - path: /etc/systemd/system/raid-check.timer.d/override.conf
+    mode: 0644
+    contents:
+      local: coreos.files/raid-check.timer.override
+  # - path: /etc/modules-load.d/modules.conf
+  #   mode: 0644
+  #   contents:
+  #     inline: nct6775
+  # - path: /etc/modprobe.d/nct6775.conf
+  #   mode: 0644
+  #   contents:
+  #     inline: options nct6775 force_id=0xd801
+  - path: /etc/k0s/config.yaml
+    mode: 0644
+    contents:
+      local: coreos.files/k0s.yaml
+  - path: /home/googol/install_k0s.sh
+    mode: 0755
+    contents:
+      local: coreos.files/install_k0s.sh
   links:
-    - path: /etc/localtime
-      target: ../usr/share/zoneinfo/Europe/Berlin
+  - path: /etc/localtime
+    target: ../usr/share/zoneinfo/Europe/Berlin

@@ -1,9 +1,10 @@
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: rclone
 spec:
-  schedule: "30 2 * * *"
+  schedule: '30 2 * * *'
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 300 # 5min
   successfulJobsHistoryLimit: 1
@@ -16,7 +17,7 @@ spec:
           - name: rclone
             image: rclone/rclone:latest
             imagePullPolicy: Always
-            command: ["/bin/sh"]
+            command: ['/bin/sh']
             args:
             - -c
             - |

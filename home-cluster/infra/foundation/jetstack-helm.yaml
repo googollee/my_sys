@@ -1,10 +1,10 @@
 ---
-apiVersion: "source.toolkit.fluxcd.io/v1"
-kind: "HelmRepository"
+apiVersion: 'source.toolkit.fluxcd.io/v1'
+kind: 'HelmRepository'
 metadata:
-  name: "jetstack"
-  namespace: "infra"
+  name: 'jetstack'
+  namespace: 'infra'
 spec:
-  type: "oci"
-  interval: "24h"
-  url: "oci://quay.io/jetstack/charts"
+  type: 'oci'
+  interval: '24h'
+  url: 'oci://quay.io/jetstack/charts'

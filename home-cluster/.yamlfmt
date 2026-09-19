@@ -1,0 +1,21 @@
+line_ending: lf
+
+include:
+  - "**/*.yaml"
+  - "**/*.yml"
+
+exclude:
+  - "**/.git/**"
+
+gitignore_excludes: true
+
+formatter:
+  type: basic
+  indent: 2
+  include_document_start: true
+  retain_line_breaks: true
+  eof_newline: true
+  indentless_arrays: true
+  force_quote_style: single
+  trim_trailing_whitespace: true
+  scan_folded_as_literal: true

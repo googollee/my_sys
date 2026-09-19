@@ -21,29 +21,29 @@ spec:
         image: qemux/qemu
         env:
         - name: BOOT
-          value: "debian"
+          value: 'debian'
         - name: DISK_SIZE
-          value: "64G"
+          value: '64G'
         - name: DISK_TYPE
-          value: "blk"
+          value: 'blk'
         - name: DISK_IO
-          value: "io_uring"
+          value: 'io_uring'
         - name: DISK_CACHE
-          value: "none"
+          value: 'none'
         - name: RAM_SIZE
-          value: "8G"
+          value: '8G'
         - name: CPU_CORES
-          value: "2"
+          value: '2'
         ports:
-          - containerPort: 22
-            name: ssh
-            protocol: TCP
-          - containerPort: 8006
-            name: http
-            protocol: TCP
-          - containerPort: 5900
-            name: vnc
-            protocol: TCP
+        - containerPort: 22
+          name: ssh
+          protocol: TCP
+        - containerPort: 8006
+          name: http
+          protocol: TCP
+        - containerPort: 5900
+          name: vnc
+          protocol: TCP
         securityContext:
           capabilities:
             add:
@@ -77,14 +77,14 @@ spec:
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ports:
-    - name: http
-      port: 8006
-      protocol: TCP
-      targetPort: 8006
-    - name: vnc
-      port: 5900
-      protocol: TCP
-      targetPort: 5900
+  - name: http
+    port: 8006
+    protocol: TCP
+    targetPort: 8006
+  - name: vnc
+    port: 5900
+    protocol: TCP
+    targetPort: 5900
   selector:
     app: dev-vm
 ---
@@ -95,11 +95,11 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: ssh
-      port: 22
-      protocol: TCP
-      targetPort: 22
-      nodePort: 32222
+  - name: ssh
+    port: 22
+    protocol: TCP
+    targetPort: 22
+    nodePort: 32222
   selector:
     app: dev-vm
 ---
@@ -113,7 +113,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "dev-vm-console-p.zhaohai.li"
+  - 'dev-vm-console-p.zhaohai.li'
   rules:
   - matches:
     - path:

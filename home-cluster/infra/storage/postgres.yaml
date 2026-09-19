@@ -1,9 +1,9 @@
 ---
-apiVersion: "v1"
-kind: "ConfigMap"
+apiVersion: 'v1'
+kind: 'ConfigMap'
 metadata:
-  name: "postgres-hba"
-  namespace: "infra"
+  name: 'postgres-hba'
+  namespace: 'infra'
 data:
   pg_hba.conf: |
     # TYPE  DATABASE        USER            ADDRESS                 METHOD
@@ -12,48 +12,48 @@ data:
     host    all             postgres        0.0.0.0/0               reject
     host    all             all             0.0.0.0/0               md5
 ---
-apiVersion: "v1"
-kind: "Service"
+apiVersion: 'v1'
+kind: 'Service'
 metadata:
-  name: "postgres"
-  namespace: "infra"
+  name: 'postgres'
+  namespace: 'infra'
 spec:
-  clusterIP: "None"
+  clusterIP: 'None'
   selector:
-    app.kubernetes.io/name: "postgresql"
+    app.kubernetes.io/name: 'postgresql'
   ports:
-  - name: "postgresql"
+  - name: 'postgresql'
     port: 5432
-    targetPort: "postgresql"
+    targetPort: 'postgresql'
 ---
-apiVersion: "apps/v1"
-kind: "StatefulSet"
+apiVersion: 'apps/v1'
+kind: 'StatefulSet'
 metadata:
-  name: "postgres"
-  namespace: "infra"
+  name: 'postgres'
+  namespace: 'infra'
 spec:
-  serviceName: "postgres"
+  serviceName: 'postgres'
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: "postgresql"
+      app.kubernetes.io/name: 'postgresql'
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: "postgresql"
+        app.kubernetes.io/name: 'postgresql'
     spec:
       automountServiceAccountToken: false
       initContainers:
-      - name: "install-extensions"
-        image: "postgres:17"
+      - name: 'install-extensions'
+        image: 'postgres:17'
         securityContext:
           runAsUser: 0
         env:
-        - name: "VCHORD_VERSION"
-          value: "1.1.1"
+        - name: 'VCHORD_VERSION'
+          value: '1.1.1'
         command:
-        - "sh"
-        - "-c"
+        - 'sh'
+        - '-c'
         - |
           set -eu
           apt-get update
@@ -64,72 +64,72 @@ spec:
           cp -a /usr/lib/postgresql/17/lib/. /mnt/pglib/
           cp -a /usr/share/postgresql/17/extension/. /mnt/pgext/
         volumeMounts:
-        - name: "pg-lib"
-          mountPath: "/mnt/pglib"
-        - name: "pg-share-extension"
-          mountPath: "/mnt/pgext"
+        - name: 'pg-lib'
+          mountPath: '/mnt/pglib'
+        - name: 'pg-share-extension'
+          mountPath: '/mnt/pgext'
       containers:
-      - name: "postgres"
-        image: "postgres:17"
+      - name: 'postgres'
+        image: 'postgres:17'
         args:
-        - "-c"
-        - "hba_file=/etc/postgresql-custom/pg_hba.conf"
-        - "-c"
-        - "shared_preload_libraries=vchord"
+        - '-c'
+        - 'hba_file=/etc/postgresql-custom/pg_hba.conf'
+        - '-c'
+        - 'shared_preload_libraries=vchord'
         securityContext:
           capabilities:
             add:
-            - "SYS_NICE"
+            - 'SYS_NICE'
         env:
-        - name: "POSTGRES_PASSWORD"
+        - name: 'POSTGRES_PASSWORD'
           valueFrom:
             secretKeyRef:
-              name: "db-admin"
-              key: "password"
+              name: 'db-admin'
+              key: 'password'
         ports:
-        - name: "postgresql"
+        - name: 'postgresql'
           containerPort: 5432
         readinessProbe:
           exec:
             command:
-            - "pg_isready"
-            - "-U"
-            - "postgres"
-            - "-h"
-            - "127.0.0.1"
+            - 'pg_isready'
+            - '-U'
+            - 'postgres'
+            - '-h'
+            - '127.0.0.1'
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           exec:
             command:
-            - "pg_isready"
-            - "-U"
-            - "postgres"
-            - "-h"
-            - "127.0.0.1"
+            - 'pg_isready'
+            - '-U'
+            - 'postgres'
+            - '-h'
+            - '127.0.0.1'
           initialDelaySeconds: 30
           periodSeconds: 10
         volumeMounts:
-        - name: "data"
-          mountPath: "/var/lib/postgresql/data"
-          subPath: "postgres"
-        - name: "pg-hba"
-          mountPath: "/etc/postgresql-custom"
+        - name: 'data'
+          mountPath: '/var/lib/postgresql/data'
+          subPath: 'postgres'
+        - name: 'pg-hba'
+          mountPath: '/etc/postgresql-custom'
           readOnly: true
-        - name: "pg-lib"
-          mountPath: "/usr/lib/postgresql/17/lib"
+        - name: 'pg-lib'
+          mountPath: '/usr/lib/postgresql/17/lib'
           readOnly: true
-        - name: "pg-share-extension"
-          mountPath: "/usr/share/postgresql/17/extension"
+        - name: 'pg-share-extension'
+          mountPath: '/usr/share/postgresql/17/extension'
           readOnly: true
       volumes:
-      - name: "data"
+      - name: 'data'
         persistentVolumeClaim:
-          claimName: "local-pvc"
-      - name: "pg-hba"
+          claimName: 'local-pvc'
+      - name: 'pg-hba'
         configMap:
-          name: "postgres-hba"
-      - name: "pg-lib"
+          name: 'postgres-hba'
+      - name: 'pg-lib'
         emptyDir: {}
-      - name: "pg-share-extension"
+      - name: 'pg-share-extension'
         emptyDir: {}

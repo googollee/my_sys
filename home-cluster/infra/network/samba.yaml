@@ -22,97 +22,97 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
 
       volumes:
-        - name: config
-          configMap:
-            name: samba-config
-        - name: host-storage
-          hostPath:
-            path: /mnt/data/media
-        - name: samba-log
-          emptyDir: {}
+      - name: config
+        configMap:
+          name: samba-config
+      - name: host-storage
+        hostPath:
+          path: /mnt/data/media
+      - name: samba-log
+        emptyDir: {}
       containers:
-        - name: samba
-          image: alpine:latest
-          imagePullPolicy: Always
-          env:
-            - name: SMB_USER
-              valueFrom:
-                secretKeyRef: { name: smb-auth, key: SMB_USER }
-            - name: SMB_UID
-              valueFrom:
-                secretKeyRef: { name: smb-auth, key: SMB_UID }
-            - name: SMB_GROUP
-              valueFrom:
-                secretKeyRef: { name: smb-auth, key: SMB_GROUP }
-            - name: SMB_GID
-              valueFrom:
-                secretKeyRef: { name: smb-auth, key: SMB_GID }
-            - name: SMB_PASS
-              valueFrom:
-                secretKeyRef: { name: smb-auth, key: SMB_PASS }
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              apk add --no-cache samba shadow su-exec
+      - name: samba
+        image: alpine:latest
+        imagePullPolicy: Always
+        env:
+        - name: SMB_USER
+          valueFrom:
+            secretKeyRef: {name: smb-auth, key: SMB_USER}
+        - name: SMB_UID
+          valueFrom:
+            secretKeyRef: {name: smb-auth, key: SMB_UID}
+        - name: SMB_GROUP
+          valueFrom:
+            secretKeyRef: {name: smb-auth, key: SMB_GROUP}
+        - name: SMB_GID
+          valueFrom:
+            secretKeyRef: {name: smb-auth, key: SMB_GID}
+        - name: SMB_PASS
+          valueFrom:
+            secretKeyRef: {name: smb-auth, key: SMB_PASS}
+        command: ['/bin/sh', '-c']
+        args:
+        - |
+          apk add --no-cache samba shadow su-exec
 
-              groupadd -g ${SMB_GID} ${SMB_GROUP}
-              useradd -u ${SMB_UID} -g ${SMB_GROUP} -s /sbin/nologin -M ${SMB_USER}
+          groupadd -g ${SMB_GID} ${SMB_GROUP}
+          useradd -u ${SMB_UID} -g ${SMB_GROUP} -s /sbin/nologin -M ${SMB_USER}
 
-              rm -rf /etc/samba/*
-              sed "s/__SMB_GROUP__/${SMB_GROUP}/g" /run/samba/smb.conf.template > /etc/samba/smb.conf
-              echo -e "${SMB_PASS}\n${SMB_PASS}" | smbpasswd -a -s ${SMB_USER}
+          rm -rf /etc/samba/*
+          sed "s/__SMB_GROUP__/${SMB_GROUP}/g" /run/samba/smb.conf.template > /etc/samba/smb.conf
+          echo -e "${SMB_PASS}\n${SMB_PASS}" | smbpasswd -a -s ${SMB_USER}
 
-              exec /usr/sbin/smbd -F --no-process-group </dev/null
-          volumeMounts:
-            - name: config
-              mountPath: /run/samba/smb.conf.template
-              subPath: smb.conf.template
-            - name: host-storage
-              mountPath: /mnt/data/media
-            - name: samba-log
-              mountPath: /var/log/samba
-          ports:
-            - containerPort: 445
-              hostPort: 445
-              protocol: TCP
-              name: smb-tcp
-            - containerPort: 445
-              hostPort: 445
-              protocol: UDP
-              name: smb-udp
-        - name: avahi
-          image: alpine:latest
-          imagePullPolicy: Always
-          securityContext:
-            capabilities:
-              add: ["NET_ADMIN"]
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              apk add --no-cache avahi tcpdump iptables
-              rm -rf /etc/avahi/services/*
-              cp /run/smb.service /etc/avahi/services/
-              cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
+          exec /usr/sbin/smbd -F --no-process-group </dev/null
+        volumeMounts:
+        - name: config
+          mountPath: /run/samba/smb.conf.template
+          subPath: smb.conf.template
+        - name: host-storage
+          mountPath: /mnt/data/media
+        - name: samba-log
+          mountPath: /var/log/samba
+        ports:
+        - containerPort: 445
+          hostPort: 445
+          protocol: TCP
+          name: smb-tcp
+        - containerPort: 445
+          hostPort: 445
+          protocol: UDP
+          name: smb-udp
+      - name: avahi
+        image: alpine:latest
+        imagePullPolicy: Always
+        securityContext:
+          capabilities:
+            add: ['NET_ADMIN']
+        command: ['/bin/sh', '-c']
+        args:
+        - |
+          apk add --no-cache avahi tcpdump iptables
+          rm -rf /etc/avahi/services/*
+          cp /run/smb.service /etc/avahi/services/
+          cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
 
-              REAL_NIC=$(ip route show | grep default | awk '{print $5}')
-              echo "The real physical NIC is: ${REAL_NIC}"
-              if [ ! -z "${REAL_NIC}" ]; then
-                sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
-              fi
+          REAL_NIC=$(ip route show | grep default | awk '{print $5}')
+          echo "The real physical NIC is: ${REAL_NIC}"
+          if [ ! -z "${REAL_NIC}" ]; then
+            sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
+          fi
 
-              exec /usr/sbin/avahi-daemon
-          volumeMounts:
-            - name: config
-              mountPath: /run/avahi-daemon.conf
-              subPath: avahi-daemon.conf
-            - name: config
-              mountPath: /run/smb.service
-              subPath: avahi.smb.service
-          ports:
-            - containerPort: 5353
-              hostPort: 5353
-              protocol: UDP
-              name: mdns
+          exec /usr/sbin/avahi-daemon
+        volumeMounts:
+        - name: config
+          mountPath: /run/avahi-daemon.conf
+          subPath: avahi-daemon.conf
+        - name: config
+          mountPath: /run/smb.service
+          subPath: avahi.smb.service
+        ports:
+        - containerPort: 5353
+          hostPort: 5353
+          protocol: UDP
+          name: mdns
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -169,7 +169,7 @@ data:
     publish-hinfo=no
     publish-workstation=no
     publish-domain=no
-  avahi.smb.service: |
+  avahi.smb.service: |-
     <?xml version="1.0" standalone='no'?>
     <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
     <service-group>

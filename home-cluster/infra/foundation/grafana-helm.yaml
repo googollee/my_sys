@@ -1,10 +1,10 @@
 ---
-apiVersion: "source.toolkit.fluxcd.io/v1"
-kind: "HelmRepository"
+apiVersion: 'source.toolkit.fluxcd.io/v1'
+kind: 'HelmRepository'
 metadata:
-  name: "grafana"
-  namespace: "infra"
+  name: 'grafana'
+  namespace: 'infra'
 spec:
-  type: "oci"
-  interval: "24h"
-  url: "oci://ghcr.io/grafana/helm-charts"
+  type: 'oci'
+  interval: '24h'
+  url: 'oci://ghcr.io/grafana/helm-charts'

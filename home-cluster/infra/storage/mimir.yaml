@@ -1,9 +1,9 @@
 ---
-apiVersion: "v1"
-kind: "ConfigMap"
+apiVersion: 'v1'
+kind: 'ConfigMap'
 metadata:
-  name: "mimir"
-  namespace: "infra"
+  name: 'mimir'
+  namespace: 'infra'
 data:
   runtime-config.yaml: |
     overrides:
@@ -68,24 +68,24 @@ data:
     ruler:
       rule_path: "/mimir/tmp/ruler"
 ---
-apiVersion: "apps/v1"
-kind: "StatefulSet"
+apiVersion: 'apps/v1'
+kind: 'StatefulSet'
 metadata:
-  name: "mimir"
-  namespace: "infra"
+  name: 'mimir'
+  namespace: 'infra'
   labels:
-    app: "mimir"
+    app: 'mimir'
 spec:
   replicas: 1
   updateStrategy:
-    type: "RollingUpdate"
+    type: 'RollingUpdate'
   selector:
     matchLabels:
-      app: "mimir"
+      app: 'mimir'
   template:
     metadata:
       labels:
-        app: "mimir"
+        app: 'mimir'
     spec:
       securityContext:
         fsGroup: 65534
@@ -93,58 +93,58 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
       containers:
-      - name: "mimir"
-        image: "grafana/mimir:latest"
-        imagePullPolicy: "Always"
+      - name: 'mimir'
+        image: 'grafana/mimir:latest'
+        imagePullPolicy: 'Always'
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
-            drop: ["ALL"]
+            drop: ['ALL']
           readOnlyRootFilesystem: true
         args:
-        - "--config.file=/etc/mimir/config.yaml"
-        - "--runtime-config.file=/etc/mimir/runtime-config.yaml"
+        - '--config.file=/etc/mimir/config.yaml'
+        - '--runtime-config.file=/etc/mimir/runtime-config.yaml'
         ports:
-        - name: "http"
+        - name: 'http'
           containerPort: 9009
-          protocol: "TCP"
+          protocol: 'TCP'
         volumeMounts:
-        - name: "storage"
-          mountPath: "/mimir"
-          subPath: "mimir"
-        - name: "config"
-          mountPath: "/etc/mimir"
+        - name: 'storage'
+          mountPath: '/mimir'
+          subPath: 'mimir'
+        - name: 'config'
+          mountPath: '/etc/mimir'
         livenessProbe:
           failureThreshold: 10
           httpGet:
-            path: "/ready"
-            port: "http"
+            path: '/ready'
+            port: 'http'
           initialDelaySeconds: 60
           timeoutSeconds: 30
         readinessProbe:
           httpGet:
-            path: "/ready"
-            port: "http"
+            path: '/ready'
+            port: 'http'
       volumes:
-      - name: "storage"
+      - name: 'storage'
         persistentVolumeClaim:
-          claimName: "local-pvc"
-      - name: "config"
+          claimName: 'local-pvc'
+      - name: 'config'
         configMap:
-          name: "mimir"
+          name: 'mimir'
 ---
-apiVersion: "v1"
-kind: "Service"
+apiVersion: 'v1'
+kind: 'Service'
 metadata:
-  name: "mimir"
-  namespace: "infra"
+  name: 'mimir'
+  namespace: 'infra'
 spec:
-  type: "ClusterIP"
+  type: 'ClusterIP'
   selector:
-    app: "mimir"
+    app: 'mimir'
   ports:
-  - name: "http"
+  - name: 'http'
     port: 9009
-    protocol: "TCP"
-    targetPort: "http"
+    protocol: 'TCP'
+    targetPort: 'http'
 

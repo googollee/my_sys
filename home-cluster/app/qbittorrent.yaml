@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,14 +30,14 @@ spec:
         - mountPath: /config
           name: config
         env:
-        - name: "WEBUI_PORT"
-          value: "8080"
-        - name: "TZ"
-          value: "Europe/Berlin"
-        - name: "PUID"
-          value: "1001"
-        - name: "PGID"
-          value: "1001"
+        - name: 'WEBUI_PORT'
+          value: '8080'
+        - name: 'TZ'
+          value: 'Europe/Berlin'
+        - name: 'PUID'
+          value: '1001'
+        - name: 'PGID'
+          value: '1001'
       volumes:
       - name: media
         hostPath:
@@ -69,7 +70,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "bt.zhaohai.li"
+  - 'bt.zhaohai.li'
   rules:
   - matches:
     - path:

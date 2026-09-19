@@ -10,7 +10,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "collector-p.zhaohai.li"
+  - 'collector-p.zhaohai.li'
   rules:
   - matches:
     - path:
@@ -86,7 +86,7 @@ spec:
             fieldPath: spec.nodeName
       configMap:
         create: true
-        content: |
+        content: |-
           logging {
             level  = "info"
             format = "logfmt"

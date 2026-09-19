@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -51,7 +52,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "whoami-p.zhaohai.li"
+  - 'whoami-p.zhaohai.li'
   rules:
   - matches:
     - path:

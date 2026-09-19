@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,9 +26,9 @@ spec:
         imagePullPolicy: Always
         env:
         - name: OLLAMA_MAX_LOADED_MODELS
-          value: "1"
+          value: '1'
         - name: OLLAMA_NUM_PARALLEL
-          value: "1"
+          value: '1'
         ports:
         - name: http
           containerPort: 11434
@@ -64,7 +65,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "ollama-p.zhaohai.li"
+  - 'ollama-p.zhaohai.li'
   rules:
   - matches:
     - path:

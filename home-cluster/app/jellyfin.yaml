@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,8 +36,8 @@ spec:
         securityContext:
           privileged: true
         env:
-        - name: "JELLYFIN_PublishedServerUrl"
-          value: "https://media.zhaohai.li"
+        - name: 'JELLYFIN_PublishedServerUrl'
+          value: 'https://media.zhaohai.li'
         resources:
           limits:
             memory: 2Gi
@@ -80,7 +81,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "media.zhaohai.li"
+  - 'media.zhaohai.li'
   rules:
   - matches:
     - path:

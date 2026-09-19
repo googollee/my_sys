@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,14 +32,14 @@ spec:
           requests:
             memory: 64Mi
         env:
-        - name: "IP6_PROVIDER"
-          value: "none"
-        - name: "CLOUDFLARE_API_TOKEN"
+        - name: 'IP6_PROVIDER'
+          value: 'none'
+        - name: 'CLOUDFLARE_API_TOKEN'
           valueFrom:
-              secretKeyRef:
-                name: cloudflare-api-token-secret
-                key: dns-api-token
-        - name: "DOMAINS"
-          value: "zhaohai.li,*.zhaohai.li,zhufeng-vm.zhaohai.li,dev-vm.zhaohai.li"
-        - name: "PROXIED"
-          value: "true"
+            secretKeyRef:
+              name: cloudflare-api-token-secret
+              key: dns-api-token
+        - name: 'DOMAINS'
+          value: 'zhaohai.li,*.zhaohai.li,zhufeng-vm.zhaohai.li,dev-vm.zhaohai.li'
+        - name: 'PROXIED'
+          value: 'true'

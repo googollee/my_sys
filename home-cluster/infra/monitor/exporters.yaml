@@ -1,107 +1,107 @@
 ---
-apiVersion: "helm.toolkit.fluxcd.io/v2"
-kind: "HelmRelease"
+apiVersion: 'helm.toolkit.fluxcd.io/v2'
+kind: 'HelmRelease'
 metadata:
-  name: "node-exporter"
-  namespace: "infra"
+  name: 'node-exporter'
+  namespace: 'infra'
 spec:
   chart:
     spec:
-      chart: "prometheus-node-exporter"
+      chart: 'prometheus-node-exporter'
       sourceRef:
-        kind: "HelmRepository"
-        name: "prometheus-community"
-        namespace: "infra"
-  interval: "30m"
+        kind: 'HelmRepository'
+        name: 'prometheus-community'
+        namespace: 'infra'
+  interval: '30m'
   install:
     createNamespace: true
-  targetNamespace: "infra"
-  releaseName: "node-exporter"
+  targetNamespace: 'infra'
+  releaseName: 'node-exporter'
   values:
-    nameOverride: "node-exporter"
+    nameOverride: 'node-exporter'
     service:
       port: 9110
       targetPort: 9110
     prometheus:
       podMonitor:
         enabled: true
-        interval: "30s"
+        interval: '30s'
 ---
-apiVersion: "monitoring.coreos.com/v1"
-kind: "PodMonitor"
+apiVersion: 'monitoring.coreos.com/v1'
+kind: 'PodMonitor'
 metadata:
-  name: "smartctl-exporter"
-  namespace: "infra"
+  name: 'smartctl-exporter'
+  namespace: 'infra'
 spec:
   selector:
     matchLabels:
-      app: "smartctl-exporter"
+      app: 'smartctl-exporter'
   podMetricsEndpoints:
-  - port: "http"
-    path: "/metrics"
-    interval: "30s"
+  - port: 'http'
+    path: '/metrics'
+    interval: '30s'
 ---
-apiVersion: "apps/v1"
-kind: "DaemonSet"
+apiVersion: 'apps/v1'
+kind: 'DaemonSet'
 metadata:
-  name: "smartctl-exporter"
-  namespace: "infra"
+  name: 'smartctl-exporter'
+  namespace: 'infra'
 spec:
-  updateStrategy: 
-    type: "RollingUpdate"
+  updateStrategy:
+    type: 'RollingUpdate'
     rollingUpdate:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app: "smartctl-exporter"
+      app: 'smartctl-exporter'
   template:
     metadata:
       labels:
-        app: "smartctl-exporter"
+        app: 'smartctl-exporter'
     spec:
       initContainers:
-        - name: "init"
-          image: "quay.io/prometheuscommunity/smartctl-exporter:latest"
-          imagePullPolicy: "Always"
-          command: ["/bin/sh"]
-          args:
-            - "-c"
-            - |
-              CMD=`update-smart-drivedb --dryrun --no-verify | sed 's/--max-redirect=0 //' | sed 's/-O [^ ]*/-O \/tmp\/drivedb.h/'`
-              $CMD
-              update-smart-drivedb --file /tmp/drivedb.h --no-verify
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          volumeMounts:
-            - name: "drivedb"
-              mountPath: "/usr/share/smartmontools"
+      - name: 'init'
+        image: 'quay.io/prometheuscommunity/smartctl-exporter:latest'
+        imagePullPolicy: 'Always'
+        command: ['/bin/sh']
+        args:
+        - '-c'
+        - |
+          CMD=`update-smart-drivedb --dryrun --no-verify | sed 's/--max-redirect=0 //' | sed 's/-O [^ ]*/-O \/tmp\/drivedb.h/'`
+          $CMD
+          update-smart-drivedb --file /tmp/drivedb.h --no-verify
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        volumeMounts:
+        - name: 'drivedb'
+          mountPath: '/usr/share/smartmontools'
       containers:
-        - name: "smartctl-exporter"
-          image: "quay.io/prometheuscommunity/smartctl-exporter:latest"
-          imagePullPolicy: "IfNotPresent"
-          args:
-            - "--smartctl.path=/usr/sbin/smartctl"
-            - "--smartctl.interval=120s"
-            - "--web.listen-address=0.0.0.0:9633"
-            - "--web.telemetry-path=/metrics"
-          securityContext:
-            privileged: true
-            runAsUser: 0
-          ports:
-            - name: "http"
-              containerPort: 9633
-              protocol: "TCP"
-          resources: {}
-          volumeMounts:
-            - name: "dev"
-              mountPath: "/hostdev"
-            - name: "drivedb"
-              mountPath: "/usr/share/smartmontools"
-      restartPolicy: "Always"
+      - name: 'smartctl-exporter'
+        image: 'quay.io/prometheuscommunity/smartctl-exporter:latest'
+        imagePullPolicy: 'IfNotPresent'
+        args:
+        - '--smartctl.path=/usr/sbin/smartctl'
+        - '--smartctl.interval=120s'
+        - '--web.listen-address=0.0.0.0:9633'
+        - '--web.telemetry-path=/metrics'
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        ports:
+        - name: 'http'
+          containerPort: 9633
+          protocol: 'TCP'
+        resources: {}
+        volumeMounts:
+        - name: 'dev'
+          mountPath: '/hostdev'
+        - name: 'drivedb'
+          mountPath: '/usr/share/smartmontools'
+      restartPolicy: 'Always'
       volumes:
-        - name: "dev"
-          hostPath:
-            path: "/dev"
-        - name: "drivedb"
-          emptyDir: {}
+      - name: 'dev'
+        hostPath:
+          path: '/dev'
+      - name: 'drivedb'
+        emptyDir: {}

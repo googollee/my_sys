@@ -1,31 +1,31 @@
 ---
-apiVersion: "gateway.networking.k8s.io/v1"
-kind: "Gateway"
+apiVersion: 'gateway.networking.k8s.io/v1'
+kind: 'Gateway'
 metadata:
-  name: "entrypoints"
-  namespace: "infra"
+  name: 'entrypoints'
+  namespace: 'infra'
 spec:
-  gatewayClassName: "traefik"
+  gatewayClassName: 'traefik'
   listeners:
-  - name: "lan-https"
-    protocol: "HTTPS"
+  - name: 'lan-https'
+    protocol: 'HTTPS'
     port: 443
     tls:
-      mode: "Terminate"
-      certificateRefs: [{ name: "lan-tls-secret" }]
+      mode: 'Terminate'
+      certificateRefs: [{name: 'lan-tls-secret'}]
     allowedRoutes:
-      namespaces: { from: "All" }
+      namespaces: {from: 'All'}
 ---
-apiVersion: "cert-manager.io/v1"
-kind: "Certificate"
+apiVersion: 'cert-manager.io/v1'
+kind: 'Certificate'
 metadata:
-  name: "lan-gateway-cert"
-  namespace: "infra"
+  name: 'lan-gateway-cert'
+  namespace: 'infra'
 spec:
-  secretName: "lan-tls-secret"
+  secretName: 'lan-tls-secret'
   issuerRef:
-    name: "cloudflare"
-    kind: "ClusterIssuer"
+    name: 'cloudflare'
+    kind: 'ClusterIssuer'
   dnsNames:
-  - "*.zhaohai.li"
-  - "zhaohai.li"
+  - '*.zhaohai.li'
+  - 'zhaohai.li'

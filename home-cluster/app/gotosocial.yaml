@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,13 +38,13 @@ spec:
         - name: GTS_DB_ADDRESS
           value: /gotosocial/storage/sqlite.db
         - name: GTS_LETSENCRYPT_ENABLED
-          value: "false"
+          value: 'false'
         - name: GTS_ADVANCED_RATE_LIMIT_REQUESTS
-          value: "0"
+          value: '0'
         - name: GTS_TRUSTED_PROXIES
-          value: "10.244.0.255/24,192.168.10.255/24,127.0.0.1/32"
+          value: '10.244.0.255/24,192.168.10.255/24,127.0.0.1/32'
         - name: GTS_ADVANCED_RATE_LIMIT_EXCEPTIONS
-          value: "10.244.0.255/24,192.168.10.255/24,127.0.0.1/32"
+          value: '10.244.0.255/24,192.168.10.255/24,127.0.0.1/32'
         - name: TZ
           value: Europe/Berlin
         resources:
@@ -80,7 +81,7 @@ spec:
     namespace: infra
     sectionName: lan-https
   hostnames:
-  - "mblog.zhaohai.li"
+  - 'mblog.zhaohai.li'
   rules:
   - matches:
     - path:

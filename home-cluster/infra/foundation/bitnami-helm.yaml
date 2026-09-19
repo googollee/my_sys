@@ -1,10 +1,10 @@
 ---
-apiVersion: "source.toolkit.fluxcd.io/v1"
-kind: "HelmRepository"
+apiVersion: 'source.toolkit.fluxcd.io/v1'
+kind: 'HelmRepository'
 metadata:
-  name: "bitnami"
-  namespace: "infra"
+  name: 'bitnami'
+  namespace: 'infra'
 spec:
-  type: "oci"
-  interval: "24h"
-  url: "oci://registry-1.docker.io/bitnamicharts"
+  type: 'oci'
+  interval: '24h'
+  url: 'oci://registry-1.docker.io/bitnamicharts'
