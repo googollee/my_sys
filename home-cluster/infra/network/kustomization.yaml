@@ -8,3 +8,4 @@ resources:
 - 'gateway.yaml'
 - 'routing.yaml'
 - 'samba.yaml'
+- 'matter-server.yaml'

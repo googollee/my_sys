@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matter-server
+  namespace: infra
+  labels:
+    app: matter-server
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: matter-server
+  template:
+    metadata:
+      labels:
+        app: matter-server
+    spec:
+      nodeName: nas
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+      containers:
+      - name: matter-server
+        image: ghcr.io/matter-js/matterjs-server:stable
+        imagePullPolicy: Always
+        env:
+        - name: PRIMARY_INTERFACE
+          value: enp2s0.3
+        - name: TZ
+          value: Europe/Berlin
+        ports:
+        - containerPort: 5580
+          hostPort: 5580
+          protocol: TCP
+          name: ws
+        volumeMounts:
+        - name: local-storage
+          mountPath: /data
+          subPath: matter-server
+      volumes:
+      - name: local-storage
+        persistentVolumeClaim:
+          claimName: local-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: matter-server
+  namespace: infra
+spec:
+  type: ClusterIP
+  selector:
+    app: matter-server
+  ports:
+  - name: ws
+    port: 5580
+    protocol: TCP
+    targetPort: 5580
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: matter-server
+  namespace: infra
+spec:
+  parentRefs:
+  - name: entrypoints
+    namespace: infra
+    sectionName: lan-https
+  hostnames:
+  - 'matter-p.zhaohai.li'
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: matter-server
+      port: 5580
