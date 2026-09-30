@@ -30,10 +30,12 @@ spec:
         image: ghcr.io/matter-js/matterjs-server:stable
         imagePullPolicy: Always
         env:
-        - name: PRIMARY_INTERFACE
-          value: enp2s0.3
         - name: TZ
           value: Europe/Berlin
+        - name: PRIMARY_INTERFACE
+          value: enp2s0.3
+        - name: ENABLE_TEST_NET_DCL
+          value: true
         ports:
         - containerPort: 5580
           hostPort: 5580
