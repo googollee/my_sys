@@ -56,6 +56,10 @@ storage:
   #   mode: 0644
   #   contents:
   #     inline: options nct6775 force_id=0xd801
+  - path: /etc/NetworkManager/system-connections/enp2s0.3.nmconnection
+    mode: 0600
+    contents:
+      local: coreos.files/enp2s0.3.nmconnection
   - path: /etc/k0s/config.yaml
     mode: 0644
     contents:

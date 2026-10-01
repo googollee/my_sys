@@ -65,18 +65,26 @@
         "mode": 420
       },
       {
+        "path": "/etc/NetworkManager/system-connections/enp2s0.3.nmconnection",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/4TLQQrCMBBG4f3cJaJW3M1JShZD528NtJOQTgLeXooFl67f98Ypm2HylC1SUoaV+369DOTvAu6rGCVz1FkmBJMNP0HjkSPNqyw73457oCIV5iciGlPpj0gb/JWVpXkmQ0cNilna6uy14cuekUS1hgUWtqzgk/ybPwEAAP//yK6a/sIAAAA="
+        },
+        "mode": 384
+      },
+      {
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/0zLMbLCMAwE0N6n0AW+f9K6zR3oF0cQYUfyWIaC0zOBAqp9uzOLJifuLqaJyuSxTN663TiPKPb/mM88MIciuiZa6t0H98X0Itew88CKgRSIFDu//8Eb52NBkyOIHOof/ZHCv4rVMupPf26wDRKrhFcAAAD//4qIYaSWAAAA"
+          "source": "data:;base64,H4sIAAAAAAAC/0zLMRaCQAwE0D6nyAV2hZaWO9iPECWyJPvIauHpfWih1fyZ9yalRKh6lj3UbeC1i7x2UXe/y9Sy+unZX6Shp1VtHngsj2iyj25XvdEmDTMaBmI2bPL5U1SZjgVVj2AOWHyV2BA/5eITyl9/LfAFmovSOwAA//8M/2MMmgAAAA=="
         },
         "mode": 420
       },
       {
         "path": "/home/googol/install_k0s.sh",
         "contents": {
-          "compression": "",
-          "source": "data:;base64,IyEvYmluL3NoCgpjdXJsIC0tcHJvdG8gJz1odHRwcycgLS10bHN2MS4yIC1zU2YgaHR0cHM6Ly9nZXQuazBzLnNoIHwgc2gKazBzIGluc3RhbGwgY29udHJvbGxlciAtLXNpbmdsZSAtYyAvZXRjL2swcy9jb25maWcueWFtbAprMHMgc3RhcnQK"
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/xzNPU7FMAwA4D2nMI/hTc5PBwRIPQUnSIObRDFJFbsIJA6PXtdv+Z6f3Fa7k2JMOicD4jGHDrivRfWQOyAqy3ewC6B87HDpu3OZ1DYvVgr8gRTTvEDtopEZ0ug6BzNNQJTaMxNgAkeaXPPi0uh7zfY3fj2+dm7EpEg/OiPGmWW9IfbxSViPNbwtNry82uDtcrsW0TjV/AcAAP//b1uckrgAAAA="
         },
         "mode": 493
       }
