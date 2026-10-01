@@ -58,7 +58,7 @@ spec:
             memory: 2Gi
           requests:
             memory: 512Mi
-      hostNetwork: true
+      # hostNetwork: true
       volumes:
       - name: dev-dongle
         hostPath:
