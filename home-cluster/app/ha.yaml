@@ -34,7 +34,8 @@ spec:
       labels:
         app: iot
     spec:
-      nodeName: nas
+      nodeSelector:
+        kubernetes.io/hostname: nas
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       terminationGracePeriodSeconds: 3600

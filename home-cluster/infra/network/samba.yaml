@@ -17,7 +17,8 @@ spec:
       labels:
         app: samba
     spec:
-      nodeName: nas
+      nodeSelector:
+        kubernetes.io/hostname: nas
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
 
