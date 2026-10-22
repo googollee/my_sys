@@ -19,6 +19,8 @@ spec:
       securityContext:
         runAsUser: 1001
         runAsGroup: 1001
+        supplementalGroups:
+        - 105 # render
       containers:
       - name: photos
         image: photoview/photoview:master
@@ -59,14 +61,10 @@ spec:
           readOnly: true
         - mountPath: /home/photoview
           name: data
-        - mountPath: /dev/dri
-          name: dev-dri
-        securityContext:
-          privileged: true
+        resources:
+          limits:
+            devic.es/dri: 1
       volumes:
-      - name: dev-dri
-        hostPath:
-          path: /dev/dri
       - name: data
         hostPath:
           path: /mnt/data/config/photoview

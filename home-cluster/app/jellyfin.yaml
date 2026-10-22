@@ -25,28 +25,22 @@ spec:
           containerPort: 8096
           protocol: TCP
         volumeMounts:
-        - mountPath: /dev/dri
-          name: dev-dri
         - mountPath: /media
           name: media
         - mountPath: /config
           name: config
         - mountPath: /cache
           name: cache
-        securityContext:
-          privileged: true
         env:
         - name: 'JELLYFIN_PublishedServerUrl'
           value: 'https://media.zhaohai.li'
         resources:
           limits:
             memory: 2Gi
+            devic.es/dri: 1
           requests:
             memory: 512Mi
       volumes:
-      - name: dev-dri
-        hostPath:
-          path: /dev/dri
       - name: media
         hostPath:
           path: /mnt/data/media
