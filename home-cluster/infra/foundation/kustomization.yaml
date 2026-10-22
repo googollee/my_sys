@@ -12,3 +12,4 @@ resources:
 - 'https://github.com/kubernetes-sigs/gateway-api/releases/latest/download/standard-install.yaml'
 - 'pv.yaml'
 - 'k0s-updateconfig.yaml'
+- 'device-plugin.yaml'
