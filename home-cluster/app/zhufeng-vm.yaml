@@ -8,6 +8,8 @@ metadata:
     name: zhufeng-vm
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: zhufeng-vm
@@ -45,26 +47,18 @@ spec:
           capabilities:
             add:
             - NET_ADMIN
-          privileged: true
+        resources:
+          limits:
+            devic.es/kvm: 1
+            devic.es/tun: 1
         volumeMounts:
         - mountPath: /storage
           name: storage
-        - mountPath: /dev/kvm
-          name: dev-kvm
-        - mountPath: /dev/net/tun
-          name: dev-tun
       terminationGracePeriodSeconds: 120
       volumes:
       - name: storage
         hostPath:
           path: /mnt/data/config/zhufeng-vm
-      - hostPath:
-          path: /dev/kvm
-        name: dev-kvm
-      - hostPath:
-          path: /dev/net/tun
-          type: CharDevice
-        name: dev-tun
 ---
 apiVersion: v1
 kind: Service
