@@ -36,6 +36,10 @@ spec:
           value: '8G'
         - name: CPU_CORES
           value: '2'
+        - name: NETWORK
+          value: 'passt'
+        - name: USER_PORTS
+          value: '22'
         ports:
         - containerPort: 22
           name: ssh
@@ -46,14 +50,9 @@ spec:
         - containerPort: 5900
           name: vnc
           protocol: TCP
-        securityContext:
-          capabilities:
-            add:
-            - NET_ADMIN
         resources:
           limits:
             devic.es/kvm: 1
-            devic.es/tun: 1
         volumeMounts:
         - mountPath: /storage
           name: storage
