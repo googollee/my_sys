@@ -48,24 +48,18 @@ spec:
           name: 'http'
           protocol: TCP
         volumeMounts:
-        - mountPath: /dev/ttyACM0
-          name: dev-dongle
         - mountPath: /config
           name: config
-        securityContext:
-          privileged: true
         env:
         - name: 'TZ'
           value: 'Europe/Berlin'
         resources:
           limits:
             memory: 2Gi
+            devic.es/zigbee: 1
           requests:
             memory: 512Mi
       volumes:
-      - name: dev-dongle
-        hostPath:
-          path: /dev/ttyACM0
       - name: config
         hostPath:
           path: /mnt/data/config/ha

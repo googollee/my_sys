@@ -25,12 +25,6 @@ spec:
         - 39 # video
         - 105 # render
       volumes:
-      - name: dev-dri
-        hostPath:
-          path: /dev/dri
-      - name: dev-kfd
-        hostPath:
-          path: /dev/kfd
       - name: media
         hostPath:
           path: /mnt/data/media
@@ -46,8 +40,6 @@ spec:
         image: ghcr.io/immich-app/immich-server:v3
         imagePullPolicy: Always
         volumeMounts:
-        - mountPath: /dev/dri
-          name: dev-dri
         - mountPath: /media
           name: media
         - mountPath: /data
@@ -58,6 +50,8 @@ spec:
           value: '10.3.0'
         - name: TZ
           value: 'Europe/Berlin'
+        - name: XDG_CACHE_HOME
+          value: '/tmp'
         - name: IMMICH_HOST
           value: '0.0.0.0'
         - name: IMMICH_PORT
@@ -100,17 +94,15 @@ spec:
             memory: 1Gi
           limits:
             memory: 2Gi
+            devic.es/dri: 1
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3 # -rocm
         imagePullPolicy: Always
         # env:
         # - name: HSA_OVERRIDE_GFX_VERSION
         #   value: '10.3.0'
+        # ROCm 需要 devic.es/dri，以及在 device plugin 中增加 /dev/kfd 设备组
         volumeMounts:
-        # - mountPath: /dev/dri
-        #   name: dev-dri
-        # - mountPath: /dev/kfd
-        #   name: dev-kfd
         - mountPath: /cache
           name: models
         - mountPath: /.config
