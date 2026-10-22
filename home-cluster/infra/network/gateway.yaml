@@ -9,7 +9,7 @@ spec:
   listeners:
   - name: 'lan-https'
     protocol: 'HTTPS'
-    port: 443
+    port: 7443 # -> hostPort 443
     tls:
       mode: 'Terminate'
       certificateRefs: [{name: 'lan-tls-secret'}]
