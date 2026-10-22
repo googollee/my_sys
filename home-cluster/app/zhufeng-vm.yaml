@@ -33,7 +33,7 @@ spec:
         - name: NETWORK
           value: 'passt'
         - name: USER_PORTS
-          value: '6666'
+          value: '22,6666'
         ports:
         - containerPort: 22
           name: ssh
