@@ -59,7 +59,8 @@ spec:
     service:
       enabled: true
       single: true
-      type: ClusterIP
+      spec:
+        type: ClusterIP
     updateStrategy:
       type: Recreate
     autoscaling:

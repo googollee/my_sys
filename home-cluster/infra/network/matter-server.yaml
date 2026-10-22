@@ -37,6 +37,10 @@ spec:
           value: 'enp2s0.3'
         - name: ENABLE_TEST_NET_DCL
           value: 'true'
+        - name: LISTEN_ADDRESS
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
         ports:
         - containerPort: 5580
           hostPort: 5580

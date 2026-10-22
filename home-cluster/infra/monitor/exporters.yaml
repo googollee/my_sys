@@ -22,6 +22,7 @@ spec:
     service:
       port: 9110
       targetPort: 9110
+      listenOnAllInterfaces: false
     prometheus:
       podMonitor:
         enabled: true
