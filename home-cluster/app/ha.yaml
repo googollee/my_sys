@@ -59,8 +59,20 @@ spec:
             memory: 512Mi
       volumes:
       - name: config
-        hostPath:
-          path: /mnt/data/config/ha
+        persistentVolumeClaim:
+          claimName: ha-data
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'ha-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
 ---
 apiVersion: v1
 kind: Service
