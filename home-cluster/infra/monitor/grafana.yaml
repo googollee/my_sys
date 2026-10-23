@@ -52,10 +52,9 @@ spec:
     - name: 'local-storage'
       mountPath: '/var/lib/grafana.local'
       readOnly: false
-      subPath: 'grafana'
     extraVolumes:
     - name: 'local-storage'
-      existingClaim: 'local-pvc'
+      existingClaim: 'grafana-data'
 
     grafana.ini:
       log:
@@ -91,3 +90,16 @@ spec:
       create: false
     testFramework:
       enabled: false
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'grafana-data'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
