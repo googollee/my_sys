@@ -148,3 +148,54 @@ spec:
         http:
           tls:
             enabled: true
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: traefik
+  namespace: infra
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: 'traefik'
+  policyTypes: ['Ingress', 'Egress']
+  ingress:
+  # 客户端，任意来源。hostPort 80/443/8443 经 DNAT 后是容器端口
+  - ports:
+    - {protocol: 'TCP', port: 7080}
+    - {protocol: 'TCP', port: 7443}
+    - {protocol: 'TCP', port: 8443}
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: 'alloy'
+    ports:
+    - {protocol: 'TCP', port: 18889}
+  # kubelet 探针
+  - from:
+    - ipBlock: {cidr: '10.244.0.1/32'}
+    - ipBlock: {cidr: '192.168.10.2/32'}
+    ports:
+    - {protocol: 'TCP', port: 18888}
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'kube-system'}
+      podSelector:
+        matchLabels: {k8s-app: 'kube-dns'}
+    ports:
+    - {protocol: 'UDP', port: 53}
+    - {protocol: 'TCP', port: 53}
+  # API server，DNAT 之后的地址
+  - to:
+    - ipBlock: {cidr: '192.168.10.2/32'}
+    ports:
+    - {protocol: 'TCP', port: 6443}
+  # 后端，含 traefik 自身（wan-routing）
+  - to:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'app'}
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'infra'}
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'default'}
