@@ -92,17 +92,17 @@ spec:
 
     providers:
       kubernetesIngress:
-        enabled: true
-        allowExternalNameServices: true
+        enabled: false
       kubernetesCRD:
         enabled: true
+        allowExternalNameServices: true
       kubernetesGateway:
         enabled: true
       file:
         enabled: false
 
     ingressClass:
-      enabled: true
+      enabled: false
     gatewayClass:
       enabled: true
     gateway:
