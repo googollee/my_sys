@@ -7,6 +7,8 @@ metadata:
     app: bt
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: bt
@@ -16,10 +18,18 @@ spec:
         app: bt
     spec:
       terminationGracePeriodSeconds: 3600
+      securityContext:
+        runAsUser: 1001 # googol，与 media 属主一致
+        runAsGroup: 1001
       containers:
       - name: bt
         image: linuxserver/qbittorrent:latest
         imagePullPolicy: Always
+        command: ['/app/qbittorrent-nox', '--webui-port=8080']
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         ports:
         - name: http
           containerPort: 8080
@@ -30,21 +40,27 @@ spec:
         - mountPath: /config
           name: config
         env:
-        - name: 'WEBUI_PORT'
-          value: '8080'
         - name: 'TZ'
           value: 'Europe/Berlin'
-        - name: 'PUID'
-          value: '1001'
-        - name: 'PGID'
-          value: '1001'
       volumes:
       - name: media
         hostPath:
           path: /mnt/data/media
       - name: config
-        hostPath:
-          path: /mnt/data/config/qbittorrent
+        persistentVolumeClaim:
+          claimName: qbittorrent-data
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'qbittorrent-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
 ---
 apiVersion: v1
 kind: Service
