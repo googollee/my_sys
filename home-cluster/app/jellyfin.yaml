@@ -42,6 +42,8 @@ spec:
         - mountPath: /cache
           name: cache
         env:
+        - name: 'HOME'
+          value: '/cache'
         - name: 'JELLYFIN_PublishedServerUrl'
           value: 'https://media.zhaohai.li'
         resources:
