@@ -11,4 +11,3 @@ resources:
 - metatube.yaml
 - zhufeng-vm.yaml
 - dev-vm.yaml
-- vaultwarden.yaml
