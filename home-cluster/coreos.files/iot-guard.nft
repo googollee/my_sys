@@ -1,0 +1,33 @@
+#!/usr/sbin/nft -f
+# Restrict what the IoT VLAN (enp2s0.3) can reach on nas. See secure-network.md 4.7.
+# Only drops: an accept here does not skip kube-proxy / kube-router chains, and they cannot undo a drop.
+table inet iot_guard
+delete table inet iot_guard
+
+table inet iot_guard {
+  chain input {
+    type filter hook input priority filter; policy accept;
+    iifname != "enp2s0.3" accept
+    ct state established,related accept
+    ct state invalid drop
+    # ND, MLD
+    meta l4proto ipv6-icmp accept
+    ip protocol igmp accept
+    # LLMNR (systemd-resolved)
+    udp dport 5355 drop
+    # mDNS, DHCP, Matter (matter-js binds a random UDP port; device reports may arrive after conntrack expires)
+    ip saddr 192.168.20.0/24 meta l4proto udp accept
+    ip6 saddr fe80::/10 meta l4proto udp accept
+    drop
+  }
+
+  chain forward {
+    type filter hook forward priority filter; policy accept;
+    # Replies to pods (e.g. HA) talking to IoT devices
+    iifname "enp2s0.3" ct state established,related accept
+    # IoT -> anything via nas, including DNAT to pods (hostPort / NodePort)
+    iifname "enp2s0.3" drop
+    # Main LAN hosts routing to IoT via nas
+    iifname "enp2s0" oifname "enp2s0.3" drop
+  }
+}

@@ -73,6 +73,14 @@
         "mode": 384
       },
       {
+        "path": "/etc/nftables/iot-guard.nft",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/4xUTW/aQBC9+1e8hAtIYAj5aJqolaJySCWgUZL2Wi3eAU+xd1e7YxKryn+v1jEtSKTKyR6/mdn3Zt+4czSsgh+GBZuhWQoGy6SDewriORM85UogOeGrfcSP6c0cXTJuHEbpaQ+ZMvCkshzWwKiQ4oEIgbLK08CQPFm/TkuNs/RDmnTwzRQ1tLcuXEEZqCwjJ8jJE7SlAGMFYc0O62pBA+ftc43ha+BtJeSR5YpN6EMZHUnVkUGsqoy2UE3vNBG1KAhsSMBWfq4q5XWiqSAhHMQOVuB3gtfzwMZV0sSA1I6w5CKyya1dt6DzbD1L3ULXcLbgrG41XjelzEujSsLRJxxvZ3jcZjQJmSCIEgKFyIhDTrrvqVBC+mAem40qWDe6G6SD+aSP2XTSRCWJQnHmvBULdpuLAWel2+3EDg2a2QK82sc6mE5n83t0Qx2ESj3wFGyxId1r4Eo7aGe94Pz0/HyXQjmZP/Qxuf1y18dMSZxUt2yeg18BCzY6QMEro22J75M7xC7X0LThjOAphgGlqqG85w1BLZu7t8aIV9ka9OzYU+htJQSltcfJx3F6cnGZjkfpaDg+21cf2e7pvmirlnQ5uroanoz+m9+qe0n+emJp/dPWJQdcsYXf44u4ba5gChALZ3VAl9JVitubHkQVazariMQFfJ1R2LPTjpfea6BO02zwGcrUksf+G1ZxgftgkxWVjp8m85vHf4xyG+Qu3vYQc6spvvbeorHjhVmcVfxrxPqAuMY7ctpTD/U5hn2z8UvykvwJAAD//+o6GSW2BAAA"
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
@@ -107,6 +115,11 @@
         "contents": "[Unit]\nRequires=systemd-fsck@dev-md-data.service\nAfter=systemd-fsck@dev-md-data.service\n\n[Mount]\nWhere=/var/mnt/data\nWhat=/dev/md/data\nType=none\n\n[Install]\nRequiredBy=local-fs.target\n",
         "enabled": false,
         "name": "var-mnt-data.mount"
+      },
+      {
+        "contents": "[Unit]\nDescription=Restrict IoT VLAN access to host\nWants=network-pre.target\nBefore=network-pre.target shutdown.target\nConflicts=shutdown.target\nDefaultDependencies=no\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/nft -f /etc/nftables/iot-guard.nft\nExecStop=/usr/sbin/nft delete table inet iot_guard\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "iot-guard.service"
       }
     ]
   }
