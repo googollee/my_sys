@@ -11,10 +11,6 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
-  - port: 7071
-    targetPort: ui
-    protocol: TCP
-    name: ui
   selector:
     app.kubernetes.io/name: versitygw
 ---
@@ -57,108 +53,35 @@ spec:
         - name: http
           containerPort: 7070
           protocol: TCP
-        - name: ui
-          containerPort: 7071
-          protocol: TCP
         livenessProbe:
-          httpGet:
-            path: /
-            port: ui
+          tcpSocket:
+            port: http
         readinessProbe:
-          httpGet:
-            path: /
-            port: ui
+          tcpSocket:
+            port: http
         resources: {}
         args:
-        - '--cors-allow-origin'
-        - 'https://s3-ui.zhaohai.li'
         - '--port'
         - ':7070'
-        - '--webui'
-        - ':7071'
-        - '--webui-no-tls'
         - 'posix'
         - '/data/s3'
         volumeMounts:
         - mountPath: /data/s3
           name: file-storage
-          subPath: s3
       volumes:
       - name: file-storage
         persistentVolumeClaim:
-          claimName: local-pvc
+          claimName: versitygw-data
 ---
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
 metadata:
-  name: cors-header
-  namespace: infra
+  name: 'versitygw-data'
+  namespace: 'infra'
 spec:
-  headers:
-    accessControlAllowMethods:
-    - 'GET'
-    - 'OPTIONS'
-    - 'PUT'
-    - 'HEAD'
-    - 'DELETE'
-    - 'POST'
-    accessControlAllowHeaders:
-    - '*'
-    accessControlAllowOriginList:
-    - 'https://s3-ui.zhaohai.li'
-    accessControlMaxAge: 100
-    addVaryHeader: true
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: versitygw-s3
-  namespace: infra
-spec:
-  parentRefs:
-  - name: entrypoints
-    namespace: infra
-    sectionName: lan-https
-  hostnames:
-  - 's3.zhaohai.li'
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    filters:
-    - type: ExtensionRef
-      extensionRef:
-        group: traefik.io
-        kind: Middleware
-        name: cors-header
-    backendRefs:
-    - name: versitygw
-      port: 7070
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: versitygw-s3-ui
-  namespace: infra
-spec:
-  parentRefs:
-  - name: entrypoints
-    namespace: infra
-    sectionName: lan-https
-  hostnames:
-  - 's3-ui.zhaohai.li'
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    filters:
-    - type: ExtensionRef
-      extensionRef:
-        group: traefik.io
-        kind: Middleware
-        name: cors-header
-    backendRefs:
-    - name: versitygw
-      port: 7071
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '10Gi'
