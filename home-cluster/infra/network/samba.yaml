@@ -84,9 +84,6 @@ spec:
       - name: avahi
         image: alpine:latest
         imagePullPolicy: Always
-        securityContext:
-          capabilities:
-            add: ['NET_ADMIN']
         command: ['/bin/sh', '-c']
         args:
         - |
@@ -131,6 +128,11 @@ data:
       log level = 1
       max log size = 0
       guest account = nobody
+
+      interfaces = enp2s0
+      bind interfaces only = yes
+      server smb transports = tcp
+      hosts allow = 192.168.10.0/24
 
       aio read size = 16384
       aio write size = 16384
