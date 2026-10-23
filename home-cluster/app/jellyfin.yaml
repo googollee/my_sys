@@ -7,6 +7,8 @@ metadata:
     app: media
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: media
@@ -16,10 +18,18 @@ spec:
         app: media
     spec:
       terminationGracePeriodSeconds: 3600
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        supplementalGroups: [105] # render，访问 /dev/dri/renderD128
       containers:
       - name: media
         image: jellyfin/jellyfin:latest
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         ports:
         - name: http
           containerPort: 8096
@@ -45,11 +55,22 @@ spec:
         hostPath:
           path: /mnt/data/media
       - name: config
-        hostPath:
-          path: /mnt/data/config/jellyfin/config
+        persistentVolumeClaim:
+          claimName: jellyfin-data
       - name: cache
-        hostPath:
-          path: /mnt/data/config/jellyfin/cache
+        emptyDir: {}
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'jellyfin-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '10Gi'
 ---
 apiVersion: v1
 kind: Service
