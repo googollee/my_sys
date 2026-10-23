@@ -37,10 +37,20 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: nas
       terminationGracePeriodSeconds: 3600
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        supplementalGroups: [18] # dialout，访问 /dev/ttyACM0
       containers:
       - name: iot
         image: ghcr.io/home-assistant/home-assistant:latest
         imagePullPolicy: Always
+        command: ['python3', '-P', '-m', 'homeassistant', '--config', '/config']
+        workingDir: /config
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         ports:
         - containerPort: 8123
           name: 'http'
@@ -51,6 +61,8 @@ spec:
         env:
         - name: 'TZ'
           value: 'Europe/Berlin'
+        - name: 'PYTHONMALLOC'
+          value: 'mimalloc'
         resources:
           limits:
             memory: 2Gi
