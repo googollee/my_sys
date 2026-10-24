@@ -71,6 +71,19 @@ spec:
       create: true
     rbac:
       create: true
+      rules:
+      - apiGroups: ['', 'discovery.k8s.io', 'networking.k8s.io']
+        resources: ['endpoints', 'endpointslices', 'ingresses', 'pods', 'services']
+        verbs: ['get', 'list', 'watch']
+      - apiGroups: ['']
+        resources: ['namespaces']
+        verbs: ['get', 'list', 'watch']
+      - apiGroups: ['monitoring.coreos.com']
+        resources: ['podmonitors']
+        verbs: ['get', 'list', 'watch']
+      - apiGroups: ['']
+        resources: ['events']
+        verbs: ['get', 'list', 'watch']
     serviceAccount:
       create: true
     configReloader:
