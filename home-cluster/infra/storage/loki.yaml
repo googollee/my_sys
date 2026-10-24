@@ -43,7 +43,6 @@ spec:
         volumeMounts:
         - name: 'storage'
           mountPath: '/loki'
-          subPath: 'loki'
         livenessProbe:
           failureThreshold: 10
           httpGet:
@@ -58,7 +57,7 @@ spec:
       volumes:
       - name: 'storage'
         persistentVolumeClaim:
-          claimName: 'local-pvc'
+          claimName: 'loki-data'
 ---
 apiVersion: 'v1'
 kind: 'Service'
@@ -74,3 +73,16 @@ spec:
     port: 3100
     protocol: 'TCP'
     targetPort: 'http'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'loki-data'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '20Gi'

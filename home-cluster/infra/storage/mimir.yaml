@@ -111,7 +111,6 @@ spec:
         volumeMounts:
         - name: 'storage'
           mountPath: '/mimir'
-          subPath: 'mimir'
         - name: 'config'
           mountPath: '/etc/mimir'
         livenessProbe:
@@ -128,7 +127,7 @@ spec:
       volumes:
       - name: 'storage'
         persistentVolumeClaim:
-          claimName: 'local-pvc'
+          claimName: 'mimir-data'
       - name: 'config'
         configMap:
           name: 'mimir'
@@ -148,3 +147,16 @@ spec:
     protocol: 'TCP'
     targetPort: 'http'
 
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'mimir-data'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '20Gi'
