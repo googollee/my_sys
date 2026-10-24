@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: avahi
+  namespace: network
+spec:
+  selector:
+    matchLabels:
+      app: avahi
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: avahi
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: nas
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+
+      volumes:
+      - name: config
+        configMap:
+          name: avahi-config
+      containers:
+      - name: avahi
+        image: alpine:latest
+        imagePullPolicy: Always
+        command: ['/bin/sh', '-c']
+        args:
+        - |
+          apk add --no-cache avahi
+          rm -rf /etc/avahi/services/*
+          cp /run/smb.service /etc/avahi/services/
+          cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
+
+          REAL_NIC=$(ip route show | grep default | awk '{print $5}')
+          echo "The real physical NIC is: ${REAL_NIC}"
+          if [ ! -z "${REAL_NIC}" ]; then
+            sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
+          fi
+
+          exec /usr/sbin/avahi-daemon
+        volumeMounts:
+        - name: config
+          mountPath: /run/avahi-daemon.conf
+          subPath: avahi-daemon.conf
+        - name: config
+          mountPath: /run/smb.service
+          subPath: avahi.smb.service
+        ports:
+        - containerPort: 5353
+          hostPort: 5353
+          protocol: UDP
+          name: mdns
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: avahi-config
+  namespace: network
+data:
+  avahi-daemon.conf: |
+    [server]
+    host-name=nas
+    domain-name=local
+    enable-dbus=no
+    use-ipv4=yes
+    use-ipv6=no
+    ratelimit-interval-usec=1000000
+    ratelimit-burst=1000
+
+    [wide-area]
+    enable-wide-area=yes
+
+    [publish]
+    publish-addresses=yes
+    publish-hinfo=no
+    publish-workstation=no
+    publish-domain=no
+  avahi.smb.service: |-
+    <?xml version="1.0" standalone='no'?>
+    <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+    <service-group>
+      <name replace-wildcards="yes">%h</name>
+      <service>
+        <type>_smb._tcp</type>
+        <port>445</port>
+      </service>
+      <service>
+        <type>_device-info._tcp</type>
+        <port>0</port>
+        <txt-record>model=Macmini</txt-record>
+      </service>
+    </service-group>

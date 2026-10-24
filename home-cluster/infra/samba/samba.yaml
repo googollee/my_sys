@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: samba
-  namespace: infra
+  namespace: samba
 spec:
   selector:
     matchLabels:
@@ -19,8 +19,6 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: nas
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
 
       volumes:
       - name: config
@@ -75,48 +73,15 @@ spec:
         ports:
         - containerPort: 445
           hostPort: 445
+          hostIP: 192.168.10.2
           protocol: TCP
           name: smb-tcp
-        - containerPort: 445
-          hostPort: 445
-          protocol: UDP
-          name: smb-udp
-      - name: avahi
-        image: alpine:latest
-        imagePullPolicy: Always
-        command: ['/bin/sh', '-c']
-        args:
-        - |
-          apk add --no-cache avahi tcpdump iptables
-          rm -rf /etc/avahi/services/*
-          cp /run/smb.service /etc/avahi/services/
-          cp /run/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
-
-          REAL_NIC=$(ip route show | grep default | awk '{print $5}')
-          echo "The real physical NIC is: ${REAL_NIC}"
-          if [ ! -z "${REAL_NIC}" ]; then
-            sed -i "/\[server\]/a allow-interfaces=${REAL_NIC}" /etc/avahi/avahi-daemon.conf
-          fi
-
-          exec /usr/sbin/avahi-daemon
-        volumeMounts:
-        - name: config
-          mountPath: /run/avahi-daemon.conf
-          subPath: avahi-daemon.conf
-        - name: config
-          mountPath: /run/smb.service
-          subPath: avahi.smb.service
-        ports:
-        - containerPort: 5353
-          hostPort: 5353
-          protocol: UDP
-          name: mdns
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: samba-config
-  namespace: infra
+  namespace: samba
 data:
   smb.conf.template: |
     [global]
@@ -129,8 +94,6 @@ data:
       max log size = 0
       guest account = nobody
 
-      interfaces = enp2s0
-      bind interfaces only = yes
       server smb transports = tcp
       hosts allow = 192.168.10.0/24
 
@@ -154,36 +117,31 @@ data:
       create mask = 0644
       directory mask = 0755
       valid users = @__SMB_GROUP__
-  avahi-daemon.conf: |
-    [server]
-    host-name=nas
-    domain-name=local
-    enable-dbus=no
-    use-ipv4=yes
-    use-ipv6=no
-    ratelimit-interval-usec=1000000
-    ratelimit-burst=1000
-
-    [wide-area]
-    enable-wide-area=yes
-
-    [publish]
-    publish-addresses=yes
-    publish-hinfo=no
-    publish-workstation=no
-    publish-domain=no
-  avahi.smb.service: |-
-    <?xml version="1.0" standalone='no'?>
-    <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-    <service-group>
-      <name replace-wildcards="yes">%h</name>
-      <service>
-        <type>_smb._tcp</type>
-        <port>445</port>
-      </service>
-      <service>
-        <type>_device-info._tcp</type>
-        <port>0</port>
-        <txt-record>model=Macmini</txt-record>
-      </service>
-    </service-group>
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: samba
+  namespace: samba
+spec:
+  podSelector:
+    matchLabels:
+      app: samba
+  policyTypes: ['Ingress', 'Egress']
+  ingress:
+  - from:
+    - ipBlock: {cidr: '192.168.10.0/24'}
+    ports:
+    - {protocol: 'TCP', port: 445}
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'kube-system'}
+      podSelector:
+        matchLabels: {k8s-app: 'kube-dns'}
+    ports:
+    - {protocol: 'UDP', port: 53}
+    - {protocol: 'TCP', port: 53}
+  # 启动时 apk add
+  - ports:
+    - {protocol: 'TCP', port: 443}

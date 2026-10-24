@@ -7,3 +7,4 @@ resources:
 - 'network'
 - 'dns'
 - 'gateway'
+- 'samba'
