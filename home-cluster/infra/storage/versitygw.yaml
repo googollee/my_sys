@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: versitygw
-  namespace: infra
+  namespace: versitygw
 spec:
   type: ClusterIP
   ports:
@@ -22,7 +22,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: versitygw
-  namespace: infra
+  namespace: versitygw
 spec:
   replicas: 1
   selector:
@@ -30,11 +30,14 @@ spec:
       app.kubernetes.io/name: versitygw
   template:
     metadata:
-      namespace: infra
+      namespace: versitygw
       labels:
         app.kubernetes.io/name: versitygw
     spec:
-      securityContext: {}
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
       containers:
       - name: versitygw
         env:
@@ -50,7 +53,10 @@ spec:
               key: 'secret-key'
         - name: 'VGW_REGION'
           value: 'us-east-1'
-        securityContext: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         image: 'versity/versitygw:latest'
         imagePullPolicy: Always
         ports:
@@ -91,7 +97,7 @@ apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
   name: 'versitygw-data'
-  namespace: 'infra'
+  namespace: 'versitygw'
 spec:
   storageClassName: 'local-path'
   accessModes:
@@ -107,7 +113,7 @@ metadata:
   namespace: app
 spec:
   type: ExternalName
-  externalName: 'versitygw.infra.svc.cluster.local'
+  externalName: 'versitygw.versitygw.svc.cluster.local'
   ports:
   - name: http
     port: 7070

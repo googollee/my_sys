@@ -207,6 +207,8 @@ spec:
         matchLabels: {kubernetes.io/metadata.name: 'default'}
     - namespaceSelector:
         matchLabels: {kubernetes.io/metadata.name: 'grafana'}
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'versitygw'}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
