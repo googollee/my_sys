@@ -66,7 +66,7 @@ spec:
     autoscaling:
       enabled: false
     rbac:
-      enabled: true
+      enabled: false
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -95,9 +95,11 @@ spec:
         enabled: false
       kubernetesCRD:
         enabled: true
+        namespaces: ['gateway', 'app', 'default']
         allowExternalNameServices: true
       kubernetesGateway:
         enabled: true
+        namespaces: ['gateway', 'app', 'default']
       file:
         enabled: false
 
@@ -203,3 +205,97 @@ spec:
         matchLabels: {kubernetes.io/metadata.name: 'infra'}
     - namespaceSelector:
         matchLabels: {kubernetes.io/metadata.name: 'default'}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: traefik
+rules:
+- apiGroups: ['']
+  resources: ['namespaces', 'nodes']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['gateway.networking.k8s.io']
+  resources: ['gatewayclasses']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['gateway.networking.k8s.io']
+  resources: ['gatewayclasses/status']
+  verbs: ['update']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: traefik
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik
+subjects:
+- kind: ServiceAccount
+  name: traefik
+  namespace: gateway
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: traefik-namespaced
+rules:
+- apiGroups: ['']
+  resources: ['configmaps', 'services', 'secrets']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['']
+  resources: ['pods']
+  verbs: ['get']
+- apiGroups: ['discovery.k8s.io']
+  resources: ['endpointslices']
+  verbs: ['list', 'watch']
+- apiGroups: ['traefik.io']
+  resources: ['ingressroutes', 'ingressroutetcps', 'ingressrouteudps', 'middlewares', 'middlewaretcps', 'serverstransports', 'serverstransporttcps', 'tlsoptions', 'tlsstores', 'traefikservices']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['gateway.networking.k8s.io']
+  resources: ['backendtlspolicies', 'gateways', 'grpcroutes', 'httproutes', 'referencegrants', 'tcproutes', 'tlsroutes']
+  verbs: ['get', 'list', 'watch']
+- apiGroups: ['gateway.networking.k8s.io']
+  resources: ['backendtlspolicies/status', 'gateways/status', 'grpcroutes/status', 'httproutes/status', 'tcproutes/status', 'tlsroutes/status']
+  verbs: ['update']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: traefik
+  namespace: gateway
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-namespaced
+subjects:
+- kind: ServiceAccount
+  name: traefik
+  namespace: gateway
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: traefik
+  namespace: app
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-namespaced
+subjects:
+- kind: ServiceAccount
+  name: traefik
+  namespace: gateway
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: traefik
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik-namespaced
+subjects:
+- kind: ServiceAccount
+  name: traefik
+  namespace: gateway
