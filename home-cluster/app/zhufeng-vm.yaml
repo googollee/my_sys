@@ -88,7 +88,7 @@ metadata:
 spec:
   parentRefs:
   - name: entrypoints
-    namespace: infra
+    namespace: gateway
     sectionName: lan-https
   hostnames:
   - 'zhufeng-vm-console-p.zhaohai.li'

@@ -99,7 +99,7 @@ metadata:
 spec:
   parentRefs:
   - name: entrypoints
-    namespace: infra
+    namespace: gateway
     sectionName: lan-https
   hostnames:
   - 'photos.zhaohai.li'

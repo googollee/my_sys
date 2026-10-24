@@ -62,7 +62,7 @@ metadata:
 spec:
   parentRefs:
   - name: entrypoints
-    namespace: infra
+    namespace: gateway
     sectionName: lan-https
   hostnames:
   - 'ollama-p.zhaohai.li'

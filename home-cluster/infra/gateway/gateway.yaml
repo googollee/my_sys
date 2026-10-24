@@ -3,7 +3,7 @@ apiVersion: 'gateway.networking.k8s.io/v1'
 kind: 'Gateway'
 metadata:
   name: 'entrypoints'
-  namespace: 'infra'
+  namespace: 'gateway'
 spec:
   gatewayClassName: 'traefik'
   listeners:
@@ -20,7 +20,7 @@ apiVersion: 'cert-manager.io/v1'
 kind: 'Certificate'
 metadata:
   name: 'lan-gateway-cert'
-  namespace: 'infra'
+  namespace: 'gateway'
 spec:
   secretName: 'lan-tls-secret'
   issuerRef:

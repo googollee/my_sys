@@ -6,3 +6,4 @@ resources:
 - 'monitor'
 - 'network'
 - 'dns'
+- 'gateway'

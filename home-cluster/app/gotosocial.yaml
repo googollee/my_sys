@@ -78,7 +78,7 @@ metadata:
 spec:
   parentRefs:
   - name: entrypoints
-    namespace: infra
+    namespace: gateway
     sectionName: lan-https
   hostnames:
   - 'mblog.zhaohai.li'
