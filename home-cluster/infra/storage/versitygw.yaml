@@ -11,6 +11,10 @@ spec:
     targetPort: http
     protocol: TCP
     name: http
+  - port: 7071
+    targetPort: ui
+    protocol: TCP
+    name: ui
   selector:
     app.kubernetes.io/name: versitygw
 ---
@@ -53,6 +57,9 @@ spec:
         - name: http
           containerPort: 7070
           protocol: TCP
+        - name: ui
+          containerPort: 7071
+          protocol: TCP
         livenessProbe:
           tcpSocket:
             port: http
@@ -63,6 +70,13 @@ spec:
         args:
         - '--port'
         - ':7070'
+        - '--webui'
+        - ':7071'
+        - '--webui-no-tls'
+        - '--webui-gateways'
+        - 'https://s3.zhaohai.li'
+        - '--cors-allow-origin'
+        - 'https://versitygw-p.zhaohai.li'
         - 'posix'
         - '/data/s3'
         volumeMounts:
@@ -85,3 +99,40 @@ spec:
   resources:
     requests:
       storage: '10Gi'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: versitygw-proxy
+  namespace: app
+spec:
+  type: ExternalName
+  externalName: 'versitygw.infra.svc.cluster.local'
+  ports:
+  - name: http
+    port: 7070
+    protocol: TCP
+  - name: ui
+    port: 7071
+    protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: versitygw-proxy
+  namespace: app
+spec:
+  entryPoints: [websecure]
+  routes:
+  - match: Host(`s3.zhaohai.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: versitygw-proxy
+      kind: Service
+      port: 7070
+  - match: Host(`versitygw-p.zhaohai.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: versitygw-proxy
+      kind: Service
+      port: 7071

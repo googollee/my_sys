@@ -1,25 +1,4 @@
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: grafana
-  namespace: infra
-spec:
-  parentRefs:
-  - name: entrypoints
-    namespace: infra
-    sectionName: lan-https
-  hostnames:
-  - 'monitor.zhaohai.li'
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: grafana
-      port: 80
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -103,3 +82,31 @@ spec:
   resources:
     requests:
       storage: '1Gi'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-proxy
+  namespace: app
+spec:
+  type: ExternalName
+  externalName: 'grafana.infra.svc.cluster.local'
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-proxy
+  namespace: app
+spec:
+  entryPoints: [websecure]
+  routes:
+  - match: Host(`monitor.zhaohai.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: grafana-proxy
+      kind: Service
+      port: 80
