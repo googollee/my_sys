@@ -14,6 +14,5 @@ spec:
   sourceRef:
     kind: 'GitRepository'
     name: 'flux-system'
-  targetNamespace: 'infra'
   timeout: '5m0s'
   wait: true

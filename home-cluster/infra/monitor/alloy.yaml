@@ -20,6 +20,34 @@ spec:
     - name: alloy
       port: 12345
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alloy-proxy
+  namespace: app
+spec:
+  type: ExternalName
+  externalName: 'alloy.infra.svc.cluster.local'
+  ports:
+  - name: http
+    port: 12345
+    protocol: TCP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: alloy-proxy
+  namespace: app
+spec:
+  entryPoints: [websecure]
+  routes:
+  - match: Host(`alloy-p.zhaohai.li`) && PathPrefix(`/`)
+    kind: Rule
+    services:
+    - name: alloy-proxy
+      kind: Service
+      port: 12345
+---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
