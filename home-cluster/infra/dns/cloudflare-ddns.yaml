@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflare-ddns
-  namespace: infra
+  namespace: dns
   labels:
     app: cloudflare-ddns
 spec:
