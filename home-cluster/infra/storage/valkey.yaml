@@ -38,5 +38,17 @@ spec:
       create: false
     dataStorage:
       enabled: true
-      persistentVolumeClaimName: 'local-pvc'
-      subPath: 'valkey'
+      persistentVolumeClaimName: 'valkey-data'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'valkey-data'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'

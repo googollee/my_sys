@@ -59,7 +59,7 @@ spec:
         - name: UPLOAD_LOCATION
           value: '/media/immich'
         - name: DB_HOSTNAME
-          value: 'postgres.infra.svc'
+          value: 'postgres.postgres.svc'
         - name: DB_PORT
           value: '5432'
         - name: DB_DATABASE_NAME
