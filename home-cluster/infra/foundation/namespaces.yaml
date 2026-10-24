@@ -28,3 +28,18 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: samba
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: postgres
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: versitygw
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana
