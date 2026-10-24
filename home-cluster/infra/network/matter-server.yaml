@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: matter-server
-  namespace: infra
+  namespace: network
   labels:
     app: matter-server
 spec:
@@ -30,6 +30,10 @@ spec:
       - name: matter-server
         image: ghcr.io/matter-js/matterjs-server:stable
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         env:
         - name: TZ
           value: 'Europe/Berlin'
@@ -49,19 +53,18 @@ spec:
           protocol: TCP
           name: ws
         volumeMounts:
-        - name: local-storage
+        - name: data
           mountPath: /data
-          subPath: matter-server
       volumes:
-      - name: local-storage
+      - name: data
         persistentVolumeClaim:
-          claimName: local-pvc
+          claimName: matter-data
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: matter-server
-  namespace: infra
+  namespace: network
 spec:
   type: ClusterIP
   selector:
@@ -71,3 +74,16 @@ spec:
     port: 5580
     protocol: TCP
     targetPort: 5580
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'matter-data'
+  namespace: 'network'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
