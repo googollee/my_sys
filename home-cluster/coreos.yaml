@@ -51,6 +51,10 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/raid-check.timer.override
+  - path: /etc/systemd/system/k0scontroller.service.d/10-data.conf
+    mode: 0644
+    contents:
+      local: coreos.files/k0s-data.conf
   # - path: /etc/modules-load.d/modules.conf
   #   mode: 0644
   #   contents:
