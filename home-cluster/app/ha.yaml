@@ -40,6 +40,8 @@ spec:
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [18] # dialout，访问 /dev/ttyACM0
       containers:
       - name: iot

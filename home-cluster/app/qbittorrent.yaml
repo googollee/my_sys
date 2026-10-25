@@ -21,6 +21,8 @@ spec:
       securityContext:
         runAsUser: 1001 # googol，与 media 属主一致
         runAsGroup: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: bt
         image: linuxserver/qbittorrent:latest

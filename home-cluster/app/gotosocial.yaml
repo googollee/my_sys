@@ -18,6 +18,9 @@ spec:
         app: mblog
     spec:
       terminationGracePeriodSeconds: 3600
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: mblog
         image: superseriousbusiness/gotosocial:latest
