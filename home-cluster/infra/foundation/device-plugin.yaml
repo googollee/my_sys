@@ -46,6 +46,13 @@ spec:
             - count: 4
               paths:
                 - path: /dev/kvm
+        - '--device'
+        - |
+          name: tun
+          groups:
+            - count: 4
+              paths:
+                - path: /dev/net/tun
         name: 'generic-device-plugin'
         resources:
           requests:
