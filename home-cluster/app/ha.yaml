@@ -15,6 +15,9 @@ spec:
     - sourceLabels: ['__name__']
       regex: 'hass_.*'
       action: 'keep'
+    - sourceLabels: ['__name__']
+      regex: 'hass_.*_created|hass_last_updated_time_seconds|hass_state_change_total|hass_entity_info|hass_area_info'
+      action: 'drop'
 ---
 apiVersion: apps/v1
 kind: Deployment
