@@ -26,6 +26,7 @@ spec:
         runAsUser: 65534
         runAsGroup: 65534
         fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: matter-server
         image: ghcr.io/matter-js/matterjs-server:stable

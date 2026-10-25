@@ -30,6 +30,7 @@ spec:
     replicaCount: 1
     podSecurityContext:
       fsGroup: 65534
+      fsGroupChangePolicy: 'OnRootMismatch'
       runAsUser: 65534
       runAsGroup: 65534
     securityContext:
