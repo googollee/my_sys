@@ -1,5 +1,5 @@
 # rancher/local-path-provisioner v0.0.37 deploy/local-path-storage.yaml
-# 改动：StorageClass 注解、pathPattern、reclaimPolicy；config.json 路径；teardown 不删数据；busybox 固定版本；命名空间改为 local-storage；provisioner 以 65534 运行（drop ALL、只读根文件系统）
+# 改动：StorageClass 注解、pathPattern、reclaimPolicy；config.json 路径；setup 建目录改为 0750；teardown 不删数据；busybox 固定版本；命名空间改为 local-storage；provisioner 以 65534 运行（drop ALL、只读根文件系统）
 ---
 apiVersion: v1
 kind: Namespace
@@ -177,7 +177,7 @@ data:
   setup: |-
     #!/bin/sh
     set -eu
-    mkdir -m 0777 -p "$VOL_DIR"
+    mkdir -m 0750 -p "$VOL_DIR"
   teardown: |-
     #!/bin/sh
     echo "keep $VOL_DIR"
