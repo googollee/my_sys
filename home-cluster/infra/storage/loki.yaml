@@ -34,6 +34,8 @@ spec:
           readOnlyRootFilesystem: true
         args:
         - '--compactor.compaction-interval=120m'
+        - '--compactor.retention-enabled=true'
+        - '--compactor.delete-request-store=filesystem'
         - '--config.file=/etc/loki/local-config.yaml'
         - '--store.retention=7d'
         ports:
