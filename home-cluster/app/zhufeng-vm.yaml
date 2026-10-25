@@ -29,10 +29,6 @@ spec:
           value: '512M'
         - name: CPU_CORES
           value: '1'
-        - name: NETWORK
-          value: 'passt'
-        - name: USER_PORTS
-          value: '22,6666'
         ports:
         - containerPort: 22
           name: ssh
@@ -50,17 +46,40 @@ spec:
         - containerPort: 5900
           name: vnc
           protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+            # NET_ADMIN 建 bridge/tap 和 iptables NAT；NET_BIND_SERVICE、SETUID、SETGID 给 dnsmasq（DHCP、降权）
+            add: ['NET_ADMIN', 'NET_BIND_SERVICE', 'SETGID', 'SETUID']
         resources:
           limits:
             devic.es/kvm: 1
+            devic.es/tun: 1
         volumeMounts:
         - mountPath: /storage
           name: storage
+        - mountPath: /var/log/nginx # 镜像中日志文件属 www-data，没有 DAC_OVERRIDE 的 root 写不了
+          name: nginx-log
       terminationGracePeriodSeconds: 120
       volumes:
       - name: storage
-        hostPath:
-          path: /mnt/data/config/zhufeng-vm
+        persistentVolumeClaim:
+          claimName: zhufeng-vm-data
+      - name: nginx-log
+        emptyDir: {}
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'zhufeng-vm-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '50Gi'
 ---
 apiVersion: v1
 kind: Service
