@@ -7,6 +7,8 @@ metadata:
     app: photos
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: photos
@@ -17,15 +19,22 @@ spec:
     spec:
       terminationGracePeriodSeconds: 3600
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
+        runAsUser: 65534
+        runAsGroup: 65534
         supplementalGroups:
+        - 1001 # googol, media
         - 105 # render
       containers:
       - name: photos
         image: photoview/photoview:master
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         env:
+        - name: TZ
+          value: Europe/Berlin
         - name: PHOTOVIEW_LISTEN_IP
           value: 0.0.0.0
         - name: PHOTOVIEW_LISTEN_PORT
@@ -50,12 +59,6 @@ spec:
           containerPort: 8000
           protocol: TCP
         volumeMounts:
-        - mountPath: /etc/localtime
-          name: localtime
-          readOnly: true
-        - mountPath: /usr/share/zoneinfo
-          name: zoneinfo
-          readOnly: true
         - mountPath: /media/photos/Googol图库
           name: photos
           readOnly: true
@@ -66,17 +69,23 @@ spec:
             devic.es/dri: 1
       volumes:
       - name: data
-        hostPath:
-          path: /mnt/data/config/photoview
+        persistentVolumeClaim:
+          claimName: photos-data
       - name: photos
         hostPath:
           path: /mnt/data/media/photos/Googol图库
-      - name: zoneinfo
-        hostPath:
-          path: /usr/share/zoneinfo
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'photos-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '100Gi'
 ---
 apiVersion: v1
 kind: Service
