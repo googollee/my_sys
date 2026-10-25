@@ -18,6 +18,8 @@ spec:
   releaseName: grafana
   values:
     replicas: 1
+    deploymentStrategy:
+      type: 'Recreate'
     admin:
       existingSecret: service-admin
     smtp:

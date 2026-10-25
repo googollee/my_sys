@@ -28,6 +28,7 @@ spec:
   releaseName: 'valkey'
   values:
     replicaCount: 1
+    deploymentStrategy: 'Recreate'
     podSecurityContext:
       fsGroup: 65534
       fsGroupChangePolicy: 'OnRootMismatch'
