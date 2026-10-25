@@ -12,6 +12,10 @@
     ],
     "users": [
       {
+        "name": "core",
+        "shouldExist": false
+      },
+      {
         "groups": [
           "docker",
           "wheel",
@@ -128,6 +132,10 @@
         "contents": "[Unit]\nDescription=Restrict IoT VLAN access to host\nWants=network-pre.target\nBefore=network-pre.target shutdown.target\nConflicts=shutdown.target\nDefaultDependencies=no\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/nft -f /etc/nftables/iot-guard.nft\nExecStop=/usr/sbin/nft delete table inet iot_guard\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "iot-guard.service"
+      },
+      {
+        "mask": true,
+        "name": "afterburn-sshkeys@core.service"
       }
     ]
   }

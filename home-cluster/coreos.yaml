@@ -8,6 +8,8 @@ passwd:
     should_exist: true
     system: true
   users:
+  - name: core
+    should_exist: false
   - name: googol
     system: false
     ssh_authorized_keys:
@@ -37,6 +39,8 @@ systemd:
   - name: iot-guard.service
     enabled: true
     contents_local: coreos.files/iot-guard.service
+  - name: afterburn-sshkeys@core.service
+    mask: true
 storage:
   files:
   - path: /etc/hostname
