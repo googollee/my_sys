@@ -16,6 +16,10 @@ spec:
       labels:
         app: cloudflare-ddns
     spec:
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
       containers:
       - name: cloudflare-ddns
         image: favonia/cloudflare-ddns:1
