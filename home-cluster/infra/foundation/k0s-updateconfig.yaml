@@ -14,3 +14,11 @@ spec:
       days: [Saturday]
       startTime: '1:00'
       length: 1h
+  # 不写 planSpec 时 autopilot 加 finalizer 会因 commands 缺失被 CRD 拒绝
+  planSpec:
+    commands:
+    - k0supdate:
+        targets:
+          controllers:
+            discovery:
+              selector: {}
