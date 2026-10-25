@@ -157,10 +157,6 @@ spec:
             role = "pod"
           }
 
-          discovery.kubernetes "endpoints" {
-            role = "endpoints"
-          }
-
           discovery.kubernetes "endpointslices" {
             role = "endpointslice"
           }
