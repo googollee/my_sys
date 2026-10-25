@@ -9,3 +9,6 @@ spec:
     - nas
     - nas.local
     - nas.zhaohai.li
+  controllerManager:
+    extraArgs:
+      terminated-pod-gc-threshold: "1"
