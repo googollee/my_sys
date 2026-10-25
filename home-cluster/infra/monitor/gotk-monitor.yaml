@@ -16,4 +16,8 @@ spec:
   - port: 'http-prom'
     path: '/metrics'
     interval: '30s'
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'controller_runtime_reconcile_(total|errors_total|time_seconds_(sum|count))'
+      action: 'keep'
 

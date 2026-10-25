@@ -6,3 +6,4 @@ resources:
 - 'alloy.yaml'
 - 'gotk-monitor.yaml'
 - 'exporters.yaml'
+- 'kube-state-metrics.yaml'

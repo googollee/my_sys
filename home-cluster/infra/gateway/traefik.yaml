@@ -303,3 +303,21 @@ subjects:
 - kind: ServiceAccount
   name: traefik
   namespace: gateway
+---
+apiVersion: 'monitoring.coreos.com/v1'
+kind: 'PodMonitor'
+metadata:
+  name: 'traefik'
+  namespace: 'gateway'
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: 'traefik'
+  podMetricsEndpoints:
+  - port: 'metrics'
+    path: '/metrics'
+    interval: '30s'
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'traefik_(entrypoint|service)_(requests_total|request_duration_seconds_(sum|count))|traefik_open_connections|traefik_config_last_reload_success|traefik_tls_certs_not_after'
+      action: 'keep'
