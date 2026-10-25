@@ -45,6 +45,8 @@ spec:
         volumeMounts:
         - name: 'storage'
           mountPath: '/loki'
+        - name: 'tmp'
+          mountPath: '/tmp'
         livenessProbe:
           failureThreshold: 10
           httpGet:
@@ -60,6 +62,8 @@ spec:
       - name: 'storage'
         persistentVolumeClaim:
           claimName: 'loki-data'
+      - name: 'tmp'
+        emptyDir: {}
 ---
 apiVersion: 'v1'
 kind: 'Service'
