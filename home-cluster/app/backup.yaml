@@ -13,29 +13,55 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [1001] # googol，读 media
           containers:
           - name: rclone
             image: rclone/rclone:latest
             imagePullPolicy: Always
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ['ALL']
             command: ['/bin/sh']
             args:
             - -c
             - |
+              rc=0
               echo syncing book...
-              rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**"
+              rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**" || rc=1
               echo syncing photos...
-              rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**"
-              echo rlone done
+              rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**" || rc=1
+              echo rclone done, rc=$rc
+              exit $rc
             volumeMounts:
             - mountPath: /config/rclone
               name: config
             - mountPath: /mnt/data/media
               name: media
+              readOnly: true
           volumes:
           - name: config
-            hostPath:
-              path: /mnt/data/config/rclone
+            persistentVolumeClaim:
+              claimName: rclone-data
           - name: media
             hostPath:
               path: /mnt/data/media
           restartPolicy: Never
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'rclone-data'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
