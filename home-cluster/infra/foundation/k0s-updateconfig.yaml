@@ -10,6 +10,6 @@ spec:
   upgradeStrategy:
     type: periodic
     periodic:
-      days: [Saturdays]
+      days: [Saturday]
       startTime: '1:00'
       length: 1h
