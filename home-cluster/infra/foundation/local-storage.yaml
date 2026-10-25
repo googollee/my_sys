@@ -1,5 +1,5 @@
 # rancher/local-path-provisioner v0.0.37 deploy/local-path-storage.yaml
-# 改动：StorageClass 注解、pathPattern、reclaimPolicy；config.json 路径；setup 建目录改为 0750；teardown 不删数据；busybox 固定版本；命名空间改为 local-storage；provisioner 以 65534 运行（drop ALL、只读根文件系统）
+# 改动：命名空间改为 local-storage；reclaimPolicy、pathPattern；teardown 不删数据；provisioner 非 root、只读根文件系统
 ---
 apiVersion: v1
 kind: Namespace
@@ -130,7 +130,8 @@ spec:
               path: /ready
               port: health
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config/
@@ -194,5 +195,5 @@ data:
           effect: NoSchedule
       containers:
       - name: helper-pod
-        image: docker.io/library/busybox:1.37.0
-        imagePullPolicy: IfNotPresent
+        image: docker.io/library/busybox:stable
+        imagePullPolicy: Always
