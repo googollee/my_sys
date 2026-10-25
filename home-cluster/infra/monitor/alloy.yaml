@@ -57,7 +57,7 @@ spec:
       chart: alloy
       sourceRef:
         kind: HelmRepository
-        name: grafana
+        name: grafana-http
         namespace: infra
   interval: 30m
   install:
@@ -343,7 +343,7 @@ spec:
               source_labels = ["__meta_kubernetes_pod_controller_kind", "__meta_kubernetes_pod_controller_name"]
               separator     = ";"
               regex         = "(.*);(.*)"
-              target_label  = to_lower("k8s_${1}_name")
+              target_label  = string.to_lower("k8s_${1}_name")
               replacement   = "${2}"
             }
 

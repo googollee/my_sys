@@ -8,3 +8,12 @@ spec:
   type: 'oci'
   interval: '24h'
   url: 'oci://ghcr.io/grafana/helm-charts'
+---
+apiVersion: 'source.toolkit.fluxcd.io/v1'
+kind: 'HelmRepository'
+metadata:
+  name: 'grafana-http'
+  namespace: 'infra'
+spec:
+  interval: '24h'
+  url: 'https://grafana.github.io/helm-charts'
