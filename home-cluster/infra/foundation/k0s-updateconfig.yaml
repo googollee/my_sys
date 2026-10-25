@@ -6,7 +6,8 @@ metadata:
   namespace: default
 spec:
   channel: stable
-  updateServer: https://updates.k0sproject.io/
+  # k0sproject/update 的 stable 已停更，改用持续维护的 fork
+  updateServer: https://raw.githubusercontent.com/flokoe/update/main/
   upgradeStrategy:
     type: periodic
     periodic:
