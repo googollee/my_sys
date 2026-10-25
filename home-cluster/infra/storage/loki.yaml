@@ -43,6 +43,11 @@ spec:
         - name: 'http'
           containerPort: 3100
           protocol: 'TCP'
+        resources:
+          limits:
+            memory: '1Gi'
+          requests:
+            memory: '256Mi'
         volumeMounts:
         - name: 'storage'
           mountPath: '/loki'

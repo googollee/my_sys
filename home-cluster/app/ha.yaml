@@ -36,7 +36,7 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: nas
-      terminationGracePeriodSeconds: 3600
+      terminationGracePeriodSeconds: 120
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
@@ -57,6 +57,19 @@ spec:
         - containerPort: 8123
           name: 'http'
           protocol: TCP
+        startupProbe:
+          httpGet:
+            path: /manifest.json
+            port: http
+          periodSeconds: 10
+          failureThreshold: 60 # 最长 10 分钟（升级后的数据库迁移）
+        livenessProbe:
+          httpGet:
+            path: /manifest.json
+            port: http
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
         volumeMounts:
         - mountPath: /config
           name: config

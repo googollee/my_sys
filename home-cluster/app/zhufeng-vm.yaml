@@ -56,6 +56,8 @@ spec:
           limits:
             devic.es/kvm: 1
             devic.es/tun: 1
+          requests:
+            memory: 768Mi # RAM_SIZE 512M + QEMU 开销；不设 limit，避免 OOM 杀掉 VM
         volumeMounts:
         - mountPath: /storage
           name: storage

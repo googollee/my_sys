@@ -109,6 +109,11 @@ spec:
         - name: 'http'
           containerPort: 9009
           protocol: 'TCP'
+        resources:
+          limits:
+            memory: '1536Mi'
+          requests:
+            memory: '384Mi'
         volumeMounts:
         - name: 'storage'
           mountPath: '/mimir'

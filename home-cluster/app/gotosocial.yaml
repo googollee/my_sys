@@ -17,7 +17,7 @@ spec:
       labels:
         app: mblog
     spec:
-      terminationGracePeriodSeconds: 3600
+      terminationGracePeriodSeconds: 60
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: OnRootMismatch

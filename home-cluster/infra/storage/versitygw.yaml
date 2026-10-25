@@ -143,3 +143,29 @@ spec:
     - name: versitygw-proxy
       kind: Service
       port: 7071
+---
+apiVersion: 'networking.k8s.io/v1'
+kind: 'NetworkPolicy'
+metadata:
+  name: 'versitygw'
+  namespace: 'versitygw'
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: 'versitygw'
+  policyTypes: ['Ingress']
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'app'}
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'default'}
+    ports:
+    - {protocol: 'TCP', port: 7070}
+  # traefik：s3.zhaohai.li、versitygw-p.zhaohai.li
+  - from:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: 'gateway'}
+    ports:
+    - {protocol: 'TCP', port: 7070}
+    - {protocol: 'TCP', port: 7071}

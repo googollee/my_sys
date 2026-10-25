@@ -17,7 +17,7 @@ spec:
       labels:
         app: bt
     spec:
-      terminationGracePeriodSeconds: 3600
+      terminationGracePeriodSeconds: 120
       securityContext:
         runAsUser: 1001 # googol，与 media 属主一致
         runAsGroup: 1001

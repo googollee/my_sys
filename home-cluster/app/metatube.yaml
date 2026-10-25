@@ -15,7 +15,7 @@ spec:
       labels:
         app: metatube
     spec:
-      terminationGracePeriodSeconds: 3600
+      terminationGracePeriodSeconds: 30
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534

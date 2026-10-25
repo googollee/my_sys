@@ -17,7 +17,7 @@ spec:
       labels:
         app: photos
     spec:
-      terminationGracePeriodSeconds: 3600
+      terminationGracePeriodSeconds: 60
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
@@ -68,7 +68,10 @@ spec:
           name: data
         resources:
           limits:
+            memory: 2Gi
             devic.es/dri: 1
+          requests:
+            memory: 256Mi
       volumes:
       - name: data
         persistentVolumeClaim:
