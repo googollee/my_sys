@@ -17,20 +17,19 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       securityContext:
-        fsGroup: 1001
-        runAsUser: 1001
-        runAsGroup: 1001
+        fsGroup: 65534
+        runAsUser: 65534
+        runAsGroup: 65534
         supplementalGroups:
-        - 0 # root
-        - 39 # video
+        - 1001 # googol, media
         - 105 # render
       volumes:
       - name: media
         hostPath:
           path: /mnt/data/media
       - name: models
-        hostPath:
-          path: /mnt/data/config/immich/models
+        persistentVolumeClaim:
+          claimName: immich-models
       - name: ml-config
         emptyDir: {}
       - name: ml-cache
@@ -117,6 +116,18 @@ spec:
             memory: 1Gi
           limits:
             memory: 4Gi
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'immich-models'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '5Gi'
 ---
 apiVersion: v1
 kind: Service
