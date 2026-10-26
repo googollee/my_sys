@@ -30,6 +30,11 @@ spec:
       - name: avahi
         image: alpine:latest
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+            add: ['CHOWN', 'SETGID', 'SETUID', 'SYS_CHROOT']
         command: ['/bin/sh', '-c']
         args:
         - |

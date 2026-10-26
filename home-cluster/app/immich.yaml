@@ -39,6 +39,10 @@ spec:
       - name: immich
         image: ghcr.io/immich-app/immich-server:v3
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         volumeMounts:
         - mountPath: /media
           name: media
@@ -98,6 +102,10 @@ spec:
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3 # -rocm
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
         # env:
         # - name: HSA_OVERRIDE_GFX_VERSION
         #   value: '10.3.0'

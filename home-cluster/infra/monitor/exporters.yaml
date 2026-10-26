@@ -26,6 +26,11 @@ spec:
       runAsGroup: 9100
       fsGroup: 9100
       runAsNonRoot: true
+    containerSecurityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ['ALL']
     service:
       port: 9110
       targetPort: 9110
