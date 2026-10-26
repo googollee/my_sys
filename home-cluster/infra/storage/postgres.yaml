@@ -43,6 +43,10 @@ spec:
         app.kubernetes.io/name: 'postgresql'
     spec:
       automountServiceAccountToken: false
+      # 不设 fsGroup：PostgreSQL 要求数据目录权限为 0700/0750，fsGroup 会加上组写权限
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
       initContainers:
       - name: 'install-extensions'
         image: 'postgres:17'
@@ -77,9 +81,10 @@ spec:
         - '-c'
         - 'shared_preload_libraries=vchord'
         securityContext:
+          allowPrivilegeEscalation: false
           capabilities:
-            add:
-            - 'SYS_NICE'
+            drop:
+            - 'ALL'
         env:
         - name: 'POSTGRES_PASSWORD'
           valueFrom:
