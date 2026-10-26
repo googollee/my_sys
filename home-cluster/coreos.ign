@@ -96,7 +96,7 @@
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/0yMsU4EMQxE+3yFdX2W23Y7dDUtvUlMYjZrR7ZBiK9HxyJBNW9GmpdzTjj5mcxZZYP96st+9Wn6RiUW1oeP9YUC17Sz1A1u492D7Kbyyi0dFFgxcEsAggf9/JNPKvcFJ98DwFH8pAyC/kfL0ILjX//qqB15GZwAikqYjkH2hIKN7HTQZxg+WvtVAgTZwYJBNU+tuZUc3ci7jrrBZb2k7wAAAP//gs7squUAAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/0zOsU7DQAwG4P2ewup+oVkQylZlYKrExG5yzsXk7nzyOaXi6VHTCpj829L/yd57h5XfSRtLGWA9tm49tqrySZN1LE+X/oMMe7dyCQOMaWtGOkqZObpMhgENBwdQMNPed63SdLtg5dsAaFjaPXko2P5Sl2TC9G//XlAW5C6xA5ikmEpKpGcsGEnvBl1N8aTxQQIYaeaCRsFXCT5O3haltkgKAxz6gwP4El1J31RmTrQX/ePhQDNuyXbqgmmjX5YzRjrjlfOWX8dTpAH655fF/QQAAP//nd2UuDMBAAA="
         },
         "mode": 420
       },

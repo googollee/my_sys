@@ -12,3 +12,7 @@ spec:
   controllerManager:
     extraArgs:
       terminated-pod-gc-threshold: "1"
+  workerProfiles:
+  - name: default
+    values:
+      imageMaximumGCAge: 168h
