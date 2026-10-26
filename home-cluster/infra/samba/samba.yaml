@@ -33,6 +33,11 @@ spec:
       - name: samba
         image: alpine:latest
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ['ALL']
+            add: ['CHOWN', 'NET_BIND_SERVICE', 'SETGID', 'SETUID']
         env:
         - name: SMB_USER
           valueFrom:

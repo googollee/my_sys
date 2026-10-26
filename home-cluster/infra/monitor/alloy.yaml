@@ -116,6 +116,10 @@ spec:
 
     alloy:
       storagePath: '/var/lib/alloy'
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ['ALL']
       mounts:
         varlog: true
         extra:

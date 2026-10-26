@@ -186,10 +186,18 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
           containers:
           - name: immich-stacker
             image: mattdavis90/immich-stacker:latest
             imagePullPolicy: Always
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ['ALL']
             env:
             - name: IMMICH_ENDPOINT
               value: 'http://immich:2283/api'
@@ -221,10 +229,18 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
           containers:
           - name: album-creator
             image: salvoxia/immich-folder-album-creator:latest
             imagePullPolicy: Always
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ['ALL']
             env:
             - name: API_URL
               value: 'http://immich:2283/api'
