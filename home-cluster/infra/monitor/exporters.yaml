@@ -19,6 +19,13 @@ spec:
   releaseName: 'node-exporter'
   values:
     nameOverride: 'node-exporter'
+    hostPID: false
+    # 宿主 /proc 挂在容器内，专用 UID 防止读取其他 65534 容器的 environ 和 rootfs
+    securityContext:
+      runAsUser: 9100
+      runAsGroup: 9100
+      fsGroup: 9100
+      runAsNonRoot: true
     service:
       port: 9110
       targetPort: 9110
