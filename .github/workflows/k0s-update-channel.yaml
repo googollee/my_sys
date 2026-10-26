@@ -1,0 +1,36 @@
+name: k0s update channel
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: k0s-update-channel
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Generate channels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: home-cluster/scripts/k0s-update-channel.sh home-cluster/k0s-update
+      - name: Commit changed channels
+        run: |
+          git add -A home-cluster/k0s-update
+          if git diff --cached --quiet; then
+            echo 'Channels are already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions-bot@users.noreply.github.com'
+          git commit -m 'update k0s channels'
+          git pull --rebase origin main
+          git push origin HEAD:main

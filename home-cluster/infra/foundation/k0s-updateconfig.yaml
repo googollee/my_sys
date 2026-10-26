@@ -6,8 +6,8 @@ metadata:
   namespace: default
 spec:
   channel: stable
-  # k0sproject/update 的 stable 已停更，改用持续维护的 fork
-  updateServer: https://raw.githubusercontent.com/flokoe/update/main/
+  # k0sproject/update 的 stable 已停更，由 k0s-update-channel workflow 生成
+  updateServer: https://raw.githubusercontent.com/googollee/my_sys/main/home-cluster/k0s-update/
   upgradeStrategy:
     type: periodic
     periodic:
