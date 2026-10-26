@@ -96,7 +96,7 @@
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/0zOsU7DQAwG4P2ewup+oVkQylZlYKrExG5yzsXk7nzyOaXi6VHTCpj829L/yd57h5XfSRtLGWA9tm49tqrySZN1LE+X/oMMe7dyCQOMaWtGOkqZObpMhgENBwdQMNPed63SdLtg5dsAaFjaPXko2P5Sl2TC9G//XlAW5C6xA5ikmEpKpGcsGEnvBl1N8aTxQQIYaeaCRsFXCT5O3haltkgKAxz6gwP4El1J31RmTrQX/ePhQDNuyXbqgmmjX5YzRjrjlfOWX8dTpAH655fF/QQAAP//nd2UuDMBAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/0yOsW7rMAxFd30FkV1+8fJQeAtSoFOATt1ZiZFZS6JA0WnQry+SGG0nXpI4B9d777DxG2lnqRMs+z4s+95UPijYwPLvMr6T4egWrnGCY167kR6lnjm5QoYRDScHULHQnXe9UbhdsPFtAHSs/ZE8VOy/acgSMP/Zv2aUGXnI7ACCVFPJmfSEFRPpw0FXUzxo2pQARlq4olH0TaJPwdus1GfJcYLduHMAn6IL6avKmTPdQb8VjnTGNdtddcG80o+WCyY64ZXLWl6Oh0QTjP+f5u3bKQQp7fmBT2C6kvsOAAD//xelOLZOAQAA"
         },
         "mode": 420
       },

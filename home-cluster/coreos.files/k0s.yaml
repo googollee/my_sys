@@ -16,3 +16,4 @@ spec:
   - name: default
     values:
       imageMaximumGCAge: 168h
+      seccompDefault: true
