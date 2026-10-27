@@ -27,8 +27,8 @@ spec:
           value: '64G'
         - name: DISK_TYPE
           value: 'blk'
-        - name: DISK_IO
-          value: 'io_uring'
+        # - name: DISK_IO
+        #   value: 'io_uring'
         - name: DISK_CACHE
           value: 'none'
         - name: RAM_SIZE
