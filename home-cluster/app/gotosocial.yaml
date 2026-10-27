@@ -38,6 +38,12 @@ spec:
         volumeMounts:
         - mountPath: /gotosocial/storage
           name: config
+        - mountPath: /etc/ssl/certs
+          name: host-certs
+          readOnly: true
+        - mountPath: /etc/pki/ca-trust/extracted
+          name: host-ca-trust
+          readOnly: true
         env:
         - name: GTS_HOST
           value: mblog.zhaohai.li
@@ -64,6 +70,14 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: gotosocial-data
+      - name: host-certs
+        hostPath:
+          path: /etc/ssl/certs
+          type: Directory
+      - name: host-ca-trust
+        hostPath:
+          path: /etc/pki/ca-trust/extracted
+          type: Directory
 ---
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
