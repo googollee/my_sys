@@ -45,6 +45,11 @@ spec:
           protocol: TCP
           hostPort: 30025
           hostIP: '192.168.10.2'
+        - containerPort: 30025
+          name: port-30025-udp
+          protocol: UDP
+          hostPort: 30025
+          hostIP: '192.168.10.2'
         - containerPort: 8006
           name: http
           protocol: TCP
