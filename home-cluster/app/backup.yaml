@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: rclone
 spec:
-  schedule: '30 2 * * *'
+  schedule: '0 3 * * *'
   concurrencyPolicy: Forbid
   startingDeadlineSeconds: 300 # 5min
   successfulJobsHistoryLimit: 1
