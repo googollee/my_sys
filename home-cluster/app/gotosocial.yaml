@@ -23,7 +23,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: mblog
-        image: superseriousbusiness/gotosocial:latest
+        image: codeberg.org/googollee/gotosocial:feat-account-multiple-ids-5070
         imagePullPolicy: Always
         securityContext:
           runAsUser: 65534
