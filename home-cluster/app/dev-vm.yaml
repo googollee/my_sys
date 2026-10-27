@@ -27,6 +27,7 @@ spec:
           value: '64G'
         - name: DISK_TYPE
           value: 'blk'
+        # conflict with seccomp
         # - name: DISK_IO
         #   value: 'io_uring'
         - name: DISK_CACHE
