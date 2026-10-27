@@ -39,8 +39,6 @@ systemd:
   - name: iot-guard.service
     enabled: true
     contents_local: coreos.files/iot-guard.service
-  - name: afterburn-sshkeys@core.service
-    mask: true
 storage:
   files:
   - path: /etc/hostname
