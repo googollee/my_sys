@@ -56,7 +56,7 @@
         "path": "/etc/zincati/config.d/55-updates-strategy.toml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/2TNMQrDMAyF4V2nED5AGjp0KGQp9AQdgzGmFqkgsY0sE9LTFw2ZuopP/5t7TVGpeWgqUWk5cEJXSbgkfjuAEwznzYPyRuFbMhl9dimVLg+SlbP5v4dh55zK7j2keDSccEb3iurQNqNosJ6lrvdxdLBSXvQTNs5dyfhthF8AAAD//zfliSemAAAA"
+          "source": "data:;base64,H4sIAAAAAAAC/2TNMQrDMAyF4V2nED5AGtqtkKXQE3QMxphapILENrJMSE9fNGTqKj79b+41RaXmoalEpeXACV0l4ZL47QBOMJw3D8obhW/JZPTZpVS6PEhWzub/Hoadcyq795Di0XDCGd0rqkPbjKLBepa63sfRwUp50U/YOHcl47cRfgEAAP//3CdCIaYAAAA="
         },
         "mode": 420
       },
