@@ -40,7 +40,7 @@ spec:
       create: false
     dataStorage:
       enabled: true
-      persistentVolumeClaimName: 'valkey-data'
+      persistentVolumeClaimName: 'valkey-data-ssd'
 ---
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
@@ -49,6 +49,19 @@ metadata:
   namespace: 'infra'
 spec:
   storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'valkey-data-ssd'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path-ssd'
   accessModes:
   - 'ReadWriteOnce'
   resources:
