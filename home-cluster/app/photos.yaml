@@ -17,6 +17,7 @@ spec:
       labels:
         app: photos
     spec:
+      hostUsers: false
       terminationGracePeriodSeconds: 60
       securityContext:
         runAsUser: 65534

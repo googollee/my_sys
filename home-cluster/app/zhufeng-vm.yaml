@@ -17,6 +17,7 @@ spec:
       labels:
         app: zhufeng-vm
     spec:
+      hostUsers: false
       containers:
       - name: zhufeng-vm
         image: qemux/qemu

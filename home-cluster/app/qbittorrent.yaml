@@ -17,6 +17,7 @@ spec:
       labels:
         app: bt
     spec:
+      hostUsers: false
       terminationGracePeriodSeconds: 120
       securityContext:
         runAsUser: 1001 # googol，与 media 属主一致

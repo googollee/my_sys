@@ -13,6 +13,7 @@ spec:
     spec:
       template:
         spec:
+          hostUsers: false
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534

@@ -17,6 +17,7 @@ spec:
       labels:
         app: media
     spec:
+      hostUsers: false
       terminationGracePeriodSeconds: 60
       securityContext:
         runAsUser: 1001

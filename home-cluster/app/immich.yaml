@@ -15,6 +15,7 @@ spec:
       labels:
         app: immich
     spec:
+      hostUsers: false
       terminationGracePeriodSeconds: 60
       securityContext:
         fsGroup: 65534
@@ -186,6 +187,7 @@ spec:
     spec:
       template:
         spec:
+          hostUsers: false
           securityContext:
             runAsUser: 65534
             runAsGroup: 65534
@@ -228,6 +230,7 @@ spec:
     spec:
       template:
         spec:
+          hostUsers: false
           restartPolicy: Never
           securityContext:
             runAsUser: 65534

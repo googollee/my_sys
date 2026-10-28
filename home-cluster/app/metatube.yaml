@@ -15,6 +15,7 @@ spec:
       labels:
         app: metatube
     spec:
+      hostUsers: false
       terminationGracePeriodSeconds: 30
       securityContext:
         runAsUser: 65534
