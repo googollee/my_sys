@@ -34,6 +34,7 @@ spec:
       labels:
         app.kubernetes.io/name: versitygw
     spec:
+      hostUsers: false
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534

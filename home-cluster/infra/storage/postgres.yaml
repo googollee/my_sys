@@ -43,6 +43,7 @@ spec:
         app.kubernetes.io/name: 'postgresql'
     spec:
       automountServiceAccountToken: false
+      hostUsers: false
       # 不设 fsGroup：PostgreSQL 要求数据目录权限为 0700/0750，fsGroup 会加上组写权限
       securityContext:
         runAsUser: 65534

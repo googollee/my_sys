@@ -87,6 +87,7 @@ spec:
       labels:
         app: 'mimir'
     spec:
+      hostUsers: false
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: 'OnRootMismatch'

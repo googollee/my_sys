@@ -18,6 +18,7 @@ spec:
       labels:
         app: 'loki'
     spec:
+      hostUsers: false
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: 'OnRootMismatch'

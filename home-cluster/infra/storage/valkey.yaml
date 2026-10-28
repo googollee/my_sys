@@ -26,6 +26,16 @@ spec:
     createNamespace: true
   targetNamespace: 'infra'
   releaseName: 'valkey'
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: 'Deployment'
+          name: 'valkey'
+        patch: |
+          - op: 'add'
+            path: '/spec/template/spec/hostUsers'
+            value: false
   values:
     replicaCount: 1
     deploymentStrategy: 'Recreate'
