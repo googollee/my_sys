@@ -30,19 +30,6 @@ spec:
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
-  name: 'alloy-data'
-  namespace: 'infra'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '1Gi'
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
   name: 'alloy-data-ssd'
   namespace: 'infra'
 spec:
