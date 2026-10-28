@@ -40,6 +40,19 @@ spec:
     requests:
       storage: '1Gi'
 ---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'alloy-data-ssd'
+  namespace: 'infra'
+spec:
+  storageClassName: 'local-path-ssd'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '1Gi'
+---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -108,7 +121,7 @@ spec:
         extra:
         - name: 'data'
           persistentVolumeClaim:
-            claimName: 'alloy-data'
+            claimName: 'alloy-data-ssd'
     service:
       enabled: true
     serviceMonitor:
