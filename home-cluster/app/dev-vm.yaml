@@ -17,6 +17,7 @@ spec:
       labels:
         app: dev-vm
     spec:
+      hostUsers: false
       containers:
       - name: dev-vm
         image: qemux/qemu
