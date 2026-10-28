@@ -54,6 +54,7 @@ spec:
     hostNetwork: false
     deployment:
       enabled: true
+      hostUsers: false
       kind: Deployment
       replicas: 1
     service:

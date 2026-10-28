@@ -77,6 +77,16 @@ spec:
     createNamespace: true
   targetNamespace: infra
   releaseName: alloy
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: DaemonSet
+          name: alloy
+        patch: |
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   values:
     ingress:
       enabled: false

@@ -16,6 +16,7 @@ spec:
   targetNamespace: 'infra'
   releaseName: 'kube-state-metrics'
   values:
+    hostUsers: false
     collectors:
     - 'cronjobs'
     - 'daemonsets'

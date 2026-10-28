@@ -17,6 +17,7 @@ spec:
     createNamespace: true
   releaseName: grafana
   values:
+    hostUsers: false
     replicas: 1
     deploymentStrategy:
       type: 'Recreate'
