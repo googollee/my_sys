@@ -75,7 +75,7 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: photos-data
+          claimName: photos-data-ssd
       - name: photos
         hostPath:
           path: /mnt/data/media/photos/Googol图库
@@ -86,6 +86,18 @@ metadata:
   name: 'photos-data'
 spec:
   storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '100Gi'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'photos-data-ssd'
+spec:
+  storageClassName: 'local-path-ssd'
   accessModes:
   - 'ReadWriteOnce'
   resources:

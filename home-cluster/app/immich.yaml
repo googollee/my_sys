@@ -30,7 +30,7 @@ spec:
           path: /mnt/data/media
       - name: models
         persistentVolumeClaim:
-          claimName: immich-models
+          claimName: immich-models-ssd
       - name: ml-config
         emptyDir: {}
       - name: ml-cache
@@ -132,6 +132,18 @@ metadata:
   name: 'immich-models'
 spec:
   storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '5Gi'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'immich-models-ssd'
+spec:
+  storageClassName: 'local-path-ssd'
   accessModes:
   - 'ReadWriteOnce'
   resources:
