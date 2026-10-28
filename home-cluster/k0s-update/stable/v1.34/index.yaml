@@ -1,7 +1,0 @@
-channel: v1.34
-version: v1.34.12+k0s.0
-downloadURLs:
-- os: linux
-  arch: amd64
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.34.12%2Bk0s.0/k0s-v1.34.12%2Bk0s.0-amd64
-  k0sSha256: 8536acf929fc7cd6f687c9a63d84606525fde6fc216a1a081b4a016e0b3dc21e
