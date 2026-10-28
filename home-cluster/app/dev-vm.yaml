@@ -69,7 +69,7 @@ spec:
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: dev-vm-data
+          claimName: dev-vm-data-ssd
       - name: nginx-log
         emptyDir: {}
 ---
@@ -79,6 +79,18 @@ metadata:
   name: 'dev-vm-data'
 spec:
   storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '100Gi'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'dev-vm-data-ssd'
+spec:
+  storageClassName: 'local-path-ssd'
   accessModes:
   - 'ReadWriteOnce'
   resources:
