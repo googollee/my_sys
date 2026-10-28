@@ -23,9 +23,9 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       securityContext:
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
+        runAsUser: 5580
+        runAsGroup: 5580
+        fsGroup: 5580
         fsGroupChangePolicy: OnRootMismatch
       containers:
       - name: matter-server
