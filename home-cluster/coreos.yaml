@@ -32,6 +32,9 @@ systemd:
     enabled: true
     contents_local: coreos.files/xfs-quota.path
 storage:
+  directories:
+  - path: /var/lib/ssd-volumes
+    mode: 0755
   files:
   - path: /etc/hostname
     mode: 0644

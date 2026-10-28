@@ -4,5 +4,5 @@ Description=Apply XFS project quotas
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/xfs_quota -x -c "project -s qbittorrent-downloads" /var
-ExecStart=/usr/bin/xfs_quota -x -c "limit -p bhard=200g qbittorrent-downloads" /var
+ExecStart=/usr/bin/xfs_quota -x -c "project -s ssd-volumes" /var
+ExecStart=/usr/bin/xfs_quota -x -c "limit -p bhard=400g ssd-volumes" /var

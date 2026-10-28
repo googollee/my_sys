@@ -24,6 +24,12 @@
     ]
   },
   "storage": {
+    "directories": [
+      {
+        "path": "/var/lib/ssd-volumes",
+        "mode": 493
+      }
+    ],
     "files": [
       {
         "path": "/etc/hostname",
@@ -85,7 +91,7 @@
         "path": "/etc/projects",
         "contents": {
           "compression": "",
-          "source": "data:,5001%3A%2Fvar%2Flib%2Fssd-volumes%2Fapp%2Fqbittorrent-downloads-ssd%0A"
+          "source": "data:,5001%3A%2Fvar%2Flib%2Fssd-volumes%0A"
         },
         "mode": 420
       },
@@ -93,7 +99,7 @@
         "path": "/etc/projid",
         "contents": {
           "compression": "",
-          "source": "data:,qbittorrent-downloads%3A5001%0A"
+          "source": "data:,ssd-volumes%3A5001%0A"
         },
         "mode": 420
       },
@@ -139,11 +145,11 @@
         "name": "iot-guard.service"
       },
       {
-        "contents": "[Unit]\nDescription=Apply XFS project quotas\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/xfs_quota -x -c \"project -s qbittorrent-downloads\" /var\nExecStart=/usr/bin/xfs_quota -x -c \"limit -p bhard=200g qbittorrent-downloads\" /var\n",
+        "contents": "[Unit]\nDescription=Apply XFS project quotas\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/xfs_quota -x -c \"project -s ssd-volumes\" /var\nExecStart=/usr/bin/xfs_quota -x -c \"limit -p bhard=400g ssd-volumes\" /var\n",
         "name": "xfs-quota.service"
       },
       {
-        "contents": "[Unit]\nDescription=Apply XFS project quotas when volume directories exist\n\n[Path]\nPathExists=/var/lib/ssd-volumes/app/qbittorrent-downloads-ssd\n\n[Install]\nWantedBy=paths.target\n",
+        "contents": "[Unit]\nDescription=Apply XFS project quotas when volume directories exist\n\n[Path]\nPathExists=/var/lib/ssd-volumes\n\n[Install]\nWantedBy=paths.target\n",
         "enabled": true,
         "name": "xfs-quota.path"
       }

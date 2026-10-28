@@ -317,7 +317,7 @@ spec:
 
             rule {
               source_labels = ["__name__"]
-              regex         = "^(kubelet_.*_pods.*)$"
+              regex         = "^(kubelet_.*_pods.*|kubelet_volume_stats_(capacity|used|available)_bytes)$"
               action        = "keep"
             }
 
