@@ -89,19 +89,6 @@ spec:
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
-  name: 'loki-data'
-  namespace: 'infra'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '20Gi'
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
   name: 'loki-data-ssd'
   namespace: 'infra'
 spec:

@@ -157,19 +157,6 @@ spec:
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
-  name: 'mimir-data'
-  namespace: 'infra'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '20Gi'
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
   name: 'mimir-data-ssd'
   namespace: 'infra'
 spec:
