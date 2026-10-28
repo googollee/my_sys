@@ -18,6 +18,8 @@ spec:
     remediation:
       retries: 3
   values:
+    global:
+      hostUsers: false
     installCRDs: false
     extraArgs:
     - '--dns01-recursive-nameservers-only'

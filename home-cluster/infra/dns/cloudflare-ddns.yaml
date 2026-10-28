@@ -16,6 +16,7 @@ spec:
       labels:
         app: cloudflare-ddns
     spec:
+      hostUsers: false
       securityContext:
         runAsUser: 65534
         runAsGroup: 65534
