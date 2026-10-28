@@ -60,6 +60,10 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/iot-guard.nft
+  - path: /etc/udev/rules.d/99-zigbee.rules
+    mode: 0644
+    contents:
+      local: coreos.files/99-zigbee.rules
   - path: /etc/k0s/config.yaml
     mode: 0644
     contents:

@@ -74,6 +74,14 @@
         "mode": 420
       },
       {
+        "path": "/etc/udev/rules.d/99-zigbee.rules",
+        "contents": {
+          "compression": "",
+          "source": "data:;base64,U1VCU1lTVEVNPT0idHR5IiwgQVRUUlN7aWRWZW5kb3J9PT0iMWE4NiIsIEFUVFJTe2lkUHJvZHVjdH09PSI1NWQ0IiwgQVRUUlN7c2VyaWFsfT09IjIwMjMxMjE5MTM0MjE1IiwgTU9ERT0iMDY2NiIK"
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",

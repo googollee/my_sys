@@ -37,6 +37,7 @@ spec:
       labels:
         app: iot
     spec:
+      hostUsers: false
       nodeSelector:
         kubernetes.io/hostname: nas
       terminationGracePeriodSeconds: 120
@@ -45,7 +46,6 @@ spec:
         runAsGroup: 65534
         fsGroup: 65534
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [18] # dialout，访问 /dev/ttyACM0
       containers:
       - name: iot
         image: ghcr.io/home-assistant/home-assistant:latest
