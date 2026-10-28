@@ -129,18 +129,6 @@ spec:
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
-  name: 'immich-models'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '5Gi'
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
   name: 'immich-models-ssd'
 spec:
   storageClassName: 'local-path-ssd'
