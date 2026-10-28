@@ -26,6 +26,11 @@ systemd:
   - name: iot-guard.service
     enabled: true
     contents_local: coreos.files/iot-guard.service
+  - name: xfs-quota.service
+    contents_local: coreos.files/xfs-quota.service
+  - name: xfs-quota.path
+    enabled: true
+    contents_local: coreos.files/xfs-quota.path
 storage:
   files:
   - path: /etc/hostname
@@ -64,6 +69,14 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/99-zigbee.rules
+  - path: /etc/projects
+    mode: 0644
+    contents:
+      local: coreos.files/projects
+  - path: /etc/projid
+    mode: 0644
+    contents:
+      local: coreos.files/projid
   - path: /etc/k0s/config.yaml
     mode: 0644
     contents:

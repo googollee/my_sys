@@ -1,0 +1,8 @@
+[Unit]
+Description=Apply XFS project quotas when volume directories exist
+
+[Path]
+PathExists=/var/lib/ssd-volumes/app/qbittorrent-downloads-ssd
+
+[Install]
+WantedBy=paths.target
