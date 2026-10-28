@@ -88,6 +88,7 @@ spec:
       labels:
         app: local-path-provisioner
     spec:
+      hostUsers: false
       serviceAccountName: local-path-provisioner-service-account
       securityContext:
         runAsUser: 65534
@@ -211,6 +212,7 @@ data:
     metadata:
       name: helper-pod
     spec:
+      hostUsers: false
       priorityClassName: system-node-critical
       tolerations:
         - key: node.kubernetes.io/disk-pressure

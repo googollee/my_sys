@@ -4,3 +4,11 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+patches:
+- patch: |
+    - op: add
+      path: /spec/template/spec/hostUsers
+      value: false
+  target:
+    kind: Deployment
+    labelSelector: app.kubernetes.io/part-of=flux
