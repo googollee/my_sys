@@ -11,8 +11,12 @@ parent=enp2s0
 [ipv4]
 method=auto
 never-default=true
+dhcp-send-hostname=0
+ignore-auto-dns=true
 
 [ipv6]
 addr-gen-mode=default
 method=auto
 never-default=true
+dhcp-send-hostname=0
+ignore-auto-dns=true
