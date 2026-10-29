@@ -67,8 +67,6 @@ fi
 
 # Google Env
 if which lsb_release >/dev/null && [ $(lsb_release -cs) = "rodete" ]; then
-  alias txa='tmx2 attach'
-
   if [ "$(which gcert)" != "" ]; then
     gcertstatus -check_remaining=6h >/dev/null 2>&1
     if [ "$?" != "0" ]; then
