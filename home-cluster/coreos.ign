@@ -67,7 +67,7 @@
         "path": "/etc/NetworkManager/system-connections/enp2s0.3.nmconnection",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/6yNQW6FMAxE976LK1qq7nISlIUVDxAJnCgxSL19BUX6F/jrefPelIoZkudikbIGWP3qw8dI/lsRzk2MsjnaLAlssuNF0HTNkeZNlh4+r/dIVRrMH4hoyvX8jrTD16JBDi9kONFYMcuxefB2gHRNlTtMeS3d78pAebHSwNeH1fo/eQt/Iolq4wXGe1GER/a+zF8AAAD//5Vv6VQWAQAA"
+          "source": "data:;base64,H4sIAAAAAAAC/7SOQWrEMAxF97qLSqdTuvNJgheq9ZMYHNnYSqC3L5kJ7QlmKSG996ZUzZA8V4uUNcDax3h/u5P/NISjiFE2R58lgU02/F/QBF/RDR4plWpQ3iSxqHaMEYbLdwHRdEIizUWWEW6n405NOswvFNGU2/EZaYOvVYPsXslwoLNilr148L6DdE2NB0x5rcMfLbfn8m82GZyrU16sdvBJYrXx/H9oviKdgbzAeKuKcCleLf8NAAD//9FIWLhoAQAA"
         },
         "mode": 384
       },
