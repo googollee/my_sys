@@ -68,8 +68,6 @@ fi
 # Google Env
 if which lsb_release >/dev/null && [ $(lsb_release -cs) = "rodete" ]; then
   alias txa='tmx2 attach'
-  alias sandman='/google/data/ro/projects/sandman/sandman'
-  alias gemini='/google/bin/releases/gemini-cli/tools/gemini'
 
   if [ "$(which gcert)" != "" ]; then
     gcertstatus -check_remaining=6h >/dev/null 2>&1
@@ -80,6 +78,10 @@ if which lsb_release >/dev/null && [ $(lsb_release -cs) = "rodete" ]; then
 
   if [ -r /google/data/ro/teams/dmgi/configs/google_xm_bashrc ] ; then
     source /google/data/ro/teams/dmgi/configs/google_xm_bashrc
+  fi
+
+  if [ -r ~/.profile_g ] ; then
+    source ~/.profile_g
   fi
 fi
 
