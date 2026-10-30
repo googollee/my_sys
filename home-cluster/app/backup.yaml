@@ -38,8 +38,15 @@ spec:
               rclone sync /mnt/data/media/book dropbox:书籍 --exclude ".**" || rc=1
               echo syncing photos...
               rclone sync /mnt/data/media/photos dropbox:照片 --exclude ".**" || rc=1
+              echo archiving book...
+              rclone sync /mnt/data/media/book aws:googol-nas-backup/book --exclude ".**" --size-only --fast-list || rc=1
+              echo archiving photos...
+              rclone sync /mnt/data/media/photos aws:googol-nas-backup/photos --exclude ".**" --size-only --fast-list || rc=1
               echo rclone done, rc=$rc
               exit $rc
+            envFrom:
+            - secretRef:
+                name: rclone-aws
             volumeMounts:
             - mountPath: /config/rclone
               name: config
