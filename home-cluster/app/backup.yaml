@@ -35,9 +35,9 @@ spec:
             - |
               rc=0
               echo archiving book...
-              rclone sync /mnt/data/media/book aws:googol-nas-backup/book --exclude ".**" --size-only --fast-list || rc=1
+              rclone sync /mnt/data/media/book aws:googol-nas-backup/book --exclude ".**" --update --use-server-modtime --fast-list || rc=1
               echo archiving photos...
-              rclone sync /mnt/data/media/photos aws:googol-nas-backup/photos --exclude ".**" --size-only --fast-list || rc=1
+              rclone sync /mnt/data/media/photos aws:googol-nas-backup/photos --exclude ".**" --update --use-server-modtime --fast-list || rc=1
               echo rclone done, rc=$rc
               exit $rc
             envFrom:
