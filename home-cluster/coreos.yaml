@@ -72,6 +72,10 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/99-zigbee.rules
+  - path: /etc/udev/rules.d/99-usb-disk-shutdown.rules
+    mode: 0644
+    contents:
+      local: coreos.files/99-usb-disk-shutdown.rules
   - path: /etc/projects
     mode: 0644
     contents:

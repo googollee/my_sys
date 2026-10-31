@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="scsi_disk", ATTRS{idVendor}=="152d", ATTRS{idProduct}=="a580", ATTR{manage_shutdown}="1"

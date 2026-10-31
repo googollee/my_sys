@@ -88,6 +88,14 @@
         "mode": 420
       },
       {
+        "path": "/etc/udev/rules.d/99-usb-disk-shutdown.rules",
+        "contents": {
+          "compression": "",
+          "source": "data:;base64,QUNUSU9OPT0iYWRkIiwgU1VCU1lTVEVNPT0ic2NzaV9kaXNrIiwgQVRUUlN7aWRWZW5kb3J9PT0iMTUyZCIsIEFUVFJTe2lkUHJvZHVjdH09PSJhNTgwIiwgQVRUUnttYW5hZ2Vfc2h1dGRvd259PSIxIgo="
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/projects",
         "contents": {
           "compression": "",
