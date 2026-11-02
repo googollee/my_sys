@@ -56,6 +56,22 @@
         "mode": 420
       },
       {
+        "path": "/etc/modules-load.d/it87.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,it87"
+        },
+        "mode": 420
+      },
+      {
+        "path": "/etc/modprobe.d/it87.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,options%20it87%20force_id%3D0x8622%20ignore_resource_conflict%3D1"
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/NetworkManager/system-connections/enp2s0.3.nmconnection",
         "contents": {
           "compression": "gzip",
