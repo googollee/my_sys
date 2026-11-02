@@ -23,6 +23,13 @@ systemd:
   - name: var-mnt-data.mount
     enabled: false
     contents_local: coreos.files/var-mnt-data.mount
+  - name: btrfs-scrub.service
+    contents_local: coreos.files/btrfs-scrub.service
+  - name: btrfs-scrub.timer
+    enabled: true
+    contents_local: coreos.files/btrfs-scrub.timer
+  - name: raid-check.timer
+    enabled: false
   - name: iot-guard.service
     enabled: true
     contents_local: coreos.files/iot-guard.service
@@ -44,10 +51,6 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/updates-strategy.toml
-  - path: /etc/systemd/system/raid-check.timer.d/override.conf
-    mode: 0644
-    contents:
-      local: coreos.files/raid-check.timer.override
   - path: /etc/systemd/system/k0scontroller.service.d/10-data.conf
     mode: 0644
     contents:

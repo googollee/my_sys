@@ -1,11 +1,11 @@
 [Unit]
-Requires=systemd-fsck@dev-md-data.service
-After=systemd-fsck@dev-md-data.service
+Description=Data volume (btrfs raid1)
 
 [Mount]
+What=/dev/disk/by-uuid/80f614c7-8f25-4f30-9d25-073d401a2cdc
 Where=/var/mnt/data
-What=/dev/md/data
-Type=none
+Type=btrfs
+Options=noatime
 
 [Install]
-RequiredBy=local-fs.target
+WantedBy=multi-user.target

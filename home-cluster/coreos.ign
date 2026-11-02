@@ -48,14 +48,6 @@
         "mode": 420
       },
       {
-        "path": "/etc/systemd/system/raid-check.timer.d/override.conf",
-        "contents": {
-          "compression": "",
-          "source": "data:,%5BTimer%5D%0AOnCalendar%3D%0AOnCalendar%3DMon..Sun%20*-*-01%2002%3A45%3A00%20Europe%2FBerlin%0AAccuracySec%3D1min%0A"
-        },
-        "mode": 420
-      },
-      {
         "path": "/etc/systemd/system/k0scontroller.service.d/10-data.conf",
         "contents": {
           "compression": "",
@@ -143,9 +135,22 @@
         "name": "cpu-governor.service"
       },
       {
-        "contents": "[Unit]\nRequires=systemd-fsck@dev-md-data.service\nAfter=systemd-fsck@dev-md-data.service\n\n[Mount]\nWhere=/var/mnt/data\nWhat=/dev/md/data\nType=none\n\n[Install]\nRequiredBy=local-fs.target\n",
+        "contents": "[Unit]\nDescription=Data volume (btrfs raid1)\n\n[Mount]\nWhat=/dev/disk/by-uuid/80f614c7-8f25-4f30-9d25-073d401a2cdc\nWhere=/var/mnt/data\nType=btrfs\nOptions=noatime\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": false,
         "name": "var-mnt-data.mount"
+      },
+      {
+        "contents": "[Unit]\nDescription=btrfs scrub /var/mnt/data\nAfter=var-mnt-data.mount\nConditionPathIsMountPoint=/var/mnt/data\n\n[Service]\nType=oneshot\nExecStart=/usr/sbin/btrfs scrub start -B /var/mnt/data\n",
+        "name": "btrfs-scrub.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Monthly btrfs scrub of /var/mnt/data\n\n[Timer]\nOnCalendar=*-*-01 02:30:00\nPersistent=true\n\n[Install]\nWantedBy=timers.target\n",
+        "enabled": true,
+        "name": "btrfs-scrub.timer"
+      },
+      {
+        "enabled": false,
+        "name": "raid-check.timer"
       },
       {
         "contents": "[Unit]\nDescription=Restrict IoT VLAN access to host\nWants=network-pre.target\nBefore=network-pre.target shutdown.target\nConflicts=shutdown.target\nDefaultDependencies=no\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/sbin/nft -f /etc/nftables/iot-guard.nft\nExecStop=/usr/sbin/nft delete table inet iot_guard\n\n[Install]\nWantedBy=multi-user.target\n",

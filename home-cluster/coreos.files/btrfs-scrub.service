@@ -1,0 +1,8 @@
+[Unit]
+Description=btrfs scrub /var/mnt/data
+After=var-mnt-data.mount
+ConditionPathIsMountPoint=/var/mnt/data
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/btrfs scrub start -B /var/mnt/data
