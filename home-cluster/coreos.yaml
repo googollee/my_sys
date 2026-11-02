@@ -53,14 +53,14 @@ storage:
     mode: 0644
     contents:
       local: coreos.files/k0s-data.conf
-  # - path: /etc/modules-load.d/modules.conf
-  #   mode: 0644
-  #   contents:
-  #     inline: nct6775
-  # - path: /etc/modprobe.d/nct6775.conf
-  #   mode: 0644
-  #   contents:
-  #     inline: options nct6775 force_id=0xd801
+  - path: /etc/modules-load.d/it87.conf
+    mode: 0644
+    contents:
+      inline: it87
+  - path: /etc/modprobe.d/it87.conf
+    mode: 0644
+    contents:
+      inline: options it87 force_id=0x8622 ignore_resource_conflict=1
   - path: /etc/NetworkManager/system-connections/enp2s0.3.nmconnection
     mode: 0600
     contents:
