@@ -28,8 +28,6 @@ systemd:
   - name: btrfs-scrub.timer
     enabled: true
     contents_local: coreos.files/btrfs-scrub.timer
-  - name: raid-check.timer
-    enabled: false
   - name: iot-guard.service
     enabled: true
     contents_local: coreos.files/iot-guard.service
