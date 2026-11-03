@@ -177,6 +177,11 @@
         "contents": "[Unit]\nDescription=Apply XFS project quotas when volume directories exist\n\n[Path]\nPathExists=/var/lib/ssd-volumes\n\n[Install]\nWantedBy=paths.target\n",
         "enabled": true,
         "name": "xfs-quota.path"
+      },
+      {
+        "contents": "[Unit]\nDescription=Bind mount ssd-volumes for quota metrics\nBefore=k0scontroller.service\n\n[Mount]\nWhat=/var/lib/ssd-volumes\nWhere=/var/lib/ssd-volumes\nType=none\nOptions=bind\n\n[Install]\nWantedBy=multi-user.target\n",
+        "enabled": true,
+        "name": "var-lib-ssd\\x2dvolumes.mount"
       }
     ]
   }

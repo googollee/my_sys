@@ -36,6 +36,9 @@ systemd:
   - name: xfs-quota.path
     enabled: true
     contents_local: coreos.files/xfs-quota.path
+  - name: var-lib-ssd\x2dvolumes.mount
+    enabled: true
+    contents_local: coreos.files/var-lib-ssd\x2dvolumes.mount
 storage:
   directories:
   - path: /var/lib/ssd-volumes
