@@ -2,6 +2,11 @@
   "ignition": {
     "version": "3.5.0"
   },
+  "kernelArguments": {
+    "shouldExist": [
+      "rootflags=prjquota"
+    ]
+  },
   "passwd": {
     "users": [
       {

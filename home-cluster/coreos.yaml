@@ -99,3 +99,6 @@ storage:
   links:
   - path: /etc/localtime
     target: ../usr/share/zoneinfo/Europe/Berlin
+kernel_arguments:
+  should_exist:
+  - rootflags=prjquota
