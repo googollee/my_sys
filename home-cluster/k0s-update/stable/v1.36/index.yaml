@@ -1,7 +1,7 @@
 channel: v1.36
-version: v1.36.5+k0s.0
+version: v1.36.6+k0s.0
 downloadURLs:
 - os: linux
   arch: amd64
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.5%2Bk0s.0/k0s-v1.36.5%2Bk0s.0-amd64
-  k0sSha256: 377cdb372f37a3c23f1f6072e4f11838b45b463b458f2afdd0c2607157fbe04f
+  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.6%2Bk0s.0/k0s-v1.36.6%2Bk0s.0-amd64
+  k0sSha256: 60bac39d4ed8292adb8576a55866389cde4700f9be7d152587e15f8aa67c12fc
