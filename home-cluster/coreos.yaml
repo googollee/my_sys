@@ -36,12 +36,12 @@ systemd:
   - name: xfs-quota.path
     enabled: true
     contents_local: coreos.files/xfs-quota.path
-  - name: var-lib-ssd\x2dvolumes.mount
+  - name: var-lib-volumes.mount
     enabled: true
-    contents_local: coreos.files/var-lib-ssd\x2dvolumes.mount
+    contents_local: coreos.files/var-lib-volumes.mount
 storage:
   directories:
-  - path: /var/lib/ssd-volumes
+  - path: /var/lib/volumes
     mode: 0755
   files:
   - path: /etc/hostname

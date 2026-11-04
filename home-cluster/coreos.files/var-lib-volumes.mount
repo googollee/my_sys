@@ -1,10 +1,10 @@
 [Unit]
-Description=Bind mount ssd-volumes for quota metrics
+Description=Bind mount volumes for quota metrics
 Before=k0scontroller.service
 
 [Mount]
-What=/var/lib/ssd-volumes
-Where=/var/lib/ssd-volumes
+What=/var/lib/volumes
+Where=/var/lib/volumes
 Type=none
 Options=bind
 

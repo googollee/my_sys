@@ -26,7 +26,7 @@
   "storage": {
     "directories": [
       {
-        "path": "/var/lib/ssd-volumes",
+        "path": "/var/lib/volumes",
         "mode": 493
       }
     ],
@@ -107,7 +107,7 @@
         "path": "/etc/projects",
         "contents": {
           "compression": "",
-          "source": "data:,5001%3A%2Fvar%2Flib%2Fssd-volumes%0A"
+          "source": "data:,5001%3A%2Fvar%2Flib%2Fvolumes%0A"
         },
         "mode": 420
       },
@@ -115,7 +115,7 @@
         "path": "/etc/projid",
         "contents": {
           "compression": "",
-          "source": "data:,ssd-volumes%3A5001%0A"
+          "source": "data:,volumes%3A5001%0A"
         },
         "mode": 420
       },
@@ -170,18 +170,18 @@
         "name": "iot-guard.service"
       },
       {
-        "contents": "[Unit]\nDescription=Apply XFS project quotas\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/xfs_quota -x -c \"project -s ssd-volumes\" /var\nExecStart=/usr/bin/xfs_quota -x -c \"limit -p bhard=400g ssd-volumes\" /var\n",
+        "contents": "[Unit]\nDescription=Apply XFS project quotas\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/xfs_quota -x -c \"project -s volumes\" /var\nExecStart=/usr/bin/xfs_quota -x -c \"limit -p bhard=400g volumes\" /var\n",
         "name": "xfs-quota.service"
       },
       {
-        "contents": "[Unit]\nDescription=Apply XFS project quotas when volume directories exist\n\n[Path]\nPathExists=/var/lib/ssd-volumes\n\n[Install]\nWantedBy=paths.target\n",
+        "contents": "[Unit]\nDescription=Apply XFS project quotas when volume directories exist\n\n[Path]\nPathExists=/var/lib/volumes\n\n[Install]\nWantedBy=paths.target\n",
         "enabled": true,
         "name": "xfs-quota.path"
       },
       {
-        "contents": "[Unit]\nDescription=Bind mount ssd-volumes for quota metrics\nBefore=k0scontroller.service\n\n[Mount]\nWhat=/var/lib/ssd-volumes\nWhere=/var/lib/ssd-volumes\nType=none\nOptions=bind\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Bind mount volumes for quota metrics\nBefore=k0scontroller.service\n\n[Mount]\nWhat=/var/lib/volumes\nWhere=/var/lib/volumes\nType=none\nOptions=bind\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
-        "name": "var-lib-ssd\\x2dvolumes.mount"
+        "name": "var-lib-volumes.mount"
       }
     ]
   }

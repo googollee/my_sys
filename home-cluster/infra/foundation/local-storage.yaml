@@ -194,7 +194,7 @@ data:
         },
         "local-path-ssd": {
           "nodePathMap": [
-            {"node": "DEFAULT_PATH_FOR_NON_LISTED_NODES", "paths": ["/var/lib/ssd-volumes"]}
+            {"node": "DEFAULT_PATH_FOR_NON_LISTED_NODES", "paths": ["/var/lib/volumes"]}
           ]
         }
       }
