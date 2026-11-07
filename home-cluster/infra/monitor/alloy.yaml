@@ -448,7 +448,7 @@ spec:
           loki.process "syslog" {
             stage.template {
               source   = "msg"
-              template = "{{ TrimSpace .Entry }}"
+              template = "{{`{{ TrimSpace .Entry }}`}}"
             }
 
             stage.output {
