@@ -128,7 +128,7 @@
         "path": "/etc/k0s/config.yaml",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/0yOsW7rMAxFd30FkV1+8fJQeAtSoFOATt1ZiZFZS6JA0WnQry+SGG0nXpI4B9d777DxG2lnqRMs+z4s+95UPijYwPLvMr6T4egWrnGCY167kR6lnjm5QoYRDScHULHQnXe9UbhdsPFtAHSs/ZE8VOy/acgSMP/Zv2aUGXnI7ACCVFPJmfSEFRPpw0FXUzxo2pQARlq4olH0TaJPwdus1GfJcYLduHMAn6IL6avKmTPdQb8VjnTGNdtddcG80o+WCyY64ZXLWl6Oh0QTjP+f5u3bKQQp7fmBT2C6kvsOAAD//xelOLZOAQAA"
+          "source": "data:;base64,H4sIAAAAAAAC/0yOvWpzMQyGd1+FyO7zJctH8RZS6BTo1F21FR/12JaRddLQqy/5oe2kVxLPw+u9d9j5jXSwtADLdkzLdnSVD4o2sfw7797JcOcWbinAoazDSA/STpxdJcOEhsEBNKx0493oFK8X7HwdAAPbuCcPDcdvmopELH/2rxllRp4KO4AozVRKIT1iw0x6d9DFFPeaH0oAI63c0Cj5Lsnn6G1WGrOUFGCz3TiAT9GF9FXlxIVuoH8UTnTCtdhNdcay0o+WK2Y64oXrWl8O+0wBdv+f5sd3UIxS+/MdD2C6kvsOAAD//69lcnBOAQAA"
         },
         "mode": 420
       },

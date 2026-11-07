@@ -185,6 +185,7 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 604800
       template:
         spec:
           hostUsers: false
@@ -228,6 +229,7 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: 604800
       template:
         spec:
           hostUsers: false

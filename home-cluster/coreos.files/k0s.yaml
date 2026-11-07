@@ -11,7 +11,7 @@ spec:
     - nas.zhaohai.li
   controllerManager:
     extraArgs:
-      terminated-pod-gc-threshold: "1"
+      terminated-pod-gc-threshold: "0"
   workerProfiles:
   - name: default
     values:
