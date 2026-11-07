@@ -455,6 +455,33 @@ spec:
             stage.output {
               source = "msg"
             }
+
+            stage.match {
+              selector = "{job=\"unifi\"}"
+
+              stage.regex {
+                expression = "^\\S+ +\\d+ [\\d:]+ (?P<host>\\S+) CEF:\\d+\\|[^|]*\\|[^|]*\\|[^|]*\\|(?P<cef_event_id>[^|]*)\\|(?P<cef_name>[^|]*)\\|(?P<cef_severity>[^|]*)\\|"
+              }
+
+              stage.regex {
+                expression = "UNIFIcategory=(?P<category>.+?) UNIFI"
+              }
+
+              stage.labels {
+                values = {
+                  host     = "",
+                  event    = "cef_name",
+                  severity = "cef_severity",
+                  category = "",
+                }
+              }
+
+              stage.structured_metadata {
+                values = {
+                  event_id = "cef_event_id",
+                }
+              }
+            }
             forward_to = [loki.write.local.receiver]
           }
 
