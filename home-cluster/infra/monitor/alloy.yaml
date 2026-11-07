@@ -476,6 +476,34 @@ spec:
                 }
               }
 
+              stage.match {
+                selector = "{job=\"unifi\", severity=~\"[0-3]\"}"
+                stage.static_labels {
+                  values = { level = "informational" }
+                }
+              }
+
+              stage.match {
+                selector = "{job=\"unifi\", severity=~\"[4-6]\"}"
+                stage.static_labels {
+                  values = { level = "warning" }
+                }
+              }
+
+              stage.match {
+                selector = "{job=\"unifi\", severity=~\"[78]\"}"
+                stage.static_labels {
+                  values = { level = "err" }
+                }
+              }
+
+              stage.match {
+                selector = "{job=\"unifi\", severity=~\"9|10\"}"
+                stage.static_labels {
+                  values = { level = "crit" }
+                }
+              }
+
               stage.structured_metadata {
                 values = {
                   event_id = "cef_event_id",
