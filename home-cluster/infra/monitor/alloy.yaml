@@ -442,7 +442,19 @@ spec:
             }
 
             relabel_rules = loki.relabel.syslog.rules
-            forward_to    = [loki.write.local.receiver]
+            forward_to    = [loki.process.syslog.receiver]
+          }
+
+          loki.process "syslog" {
+            stage.template {
+              source   = "msg"
+              template = "{{ TrimSpace .Entry }}"
+            }
+
+            stage.output {
+              source = "msg"
+            }
+            forward_to = [loki.write.local.receiver]
           }
 
           loki.relabel "syslog" {
