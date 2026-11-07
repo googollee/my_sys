@@ -350,6 +350,22 @@ spec:
             }
           }
 
+          // snmp
+          prometheus.exporter.snmp "gateway" {
+            target "gateway" {
+              address = "192.168.10.1"
+              module  = "system,if_mib"
+              auth    = "public_v2"
+            }
+          }
+
+          prometheus.scrape "snmp" {
+            targets         = prometheus.exporter.snmp.gateway.targets
+            scrape_interval = "60s"
+            scrape_timeout  = "50s"
+            forward_to      = [prometheus.remote_write.default.receiver]
+          }
+
           // logging
           discovery.relabel "logs" {
             targets = discovery.kubernetes.pods.targets
