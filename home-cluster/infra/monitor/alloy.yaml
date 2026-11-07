@@ -87,6 +87,12 @@ spec:
           - op: add
             path: /spec/template/spec/hostUsers
             value: false
+          - op: test
+            path: /spec/template/spec/containers/0/ports/1/name
+            value: syslog-udp
+          - op: add
+            path: /spec/template/spec/containers/0/ports/1/hostIP
+            value: '192.168.10.2'
   values:
     ingress:
       enabled: false
@@ -135,6 +141,16 @@ spec:
         extra:
         - name: 'data'
           mountPath: '/var/lib/alloy'
+      extraPorts:
+      - name: 'syslog-udp'
+        port: 1514
+        targetPort: 1514
+        protocol: 'UDP'
+        hostPort: 1514
+      - name: 'syslog-tcp'
+        port: 1514
+        targetPort: 1514
+        protocol: 'TCP'
       extraEnv:
       - name: NODE_NAME
         valueFrom:
@@ -407,6 +423,50 @@ spec:
           loki.source.kubernetes_events "events" {
             log_format = "json"
             forward_to = [loki.write.local.receiver]
+          }
+
+          loki.source.syslog "syslog" {
+            listener {
+              address       = "0.0.0.0:1514"
+              protocol      = "udp"
+              syslog_format = "rfc3164"
+              labels        = { job = "unifi" }
+            }
+
+            listener {
+              address                = "0.0.0.0:1514"
+              protocol               = "tcp"
+              syslog_format          = "rfc5424"
+              use_incoming_timestamp = true
+              labels                 = { job = "syslog" }
+            }
+
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.write.local.receiver]
+          }
+
+          loki.relabel "syslog" {
+            forward_to = []
+
+            rule {
+              source_labels = ["__syslog_message_hostname"]
+              target_label  = "host"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_severity"]
+              target_label  = "level"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_facility"]
+              target_label  = "facility"
+            }
+
+            rule {
+              source_labels = ["__syslog_message_app_name"]
+              target_label  = "app"
+            }
           }
 
           loki.write "local" {
