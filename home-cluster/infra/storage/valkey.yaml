@@ -37,7 +37,6 @@ spec:
             path: '/spec/template/spec/hostUsers'
             value: false
   values:
-    replicaCount: 1
     deploymentStrategy: 'Recreate'
     podSecurityContext:
       fsGroup: 65534
@@ -48,9 +47,9 @@ spec:
       runAsUser: 65534
     serviceAccount:
       create: false
-    dataStorage:
+    persistence:
       enabled: true
-      persistentVolumeClaimName: 'valkey-data-ssd'
+      existingClaim: 'valkey-data-ssd'
 ---
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
