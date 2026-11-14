@@ -212,7 +212,9 @@ spec:
             - name: IMMICH_MATCH_RAW
               value: '\.[^.]*$'
             - name: IMMICH_PARENT_RAW
-              value: '\.(jpe?g|heic|heif)$'
+              value: '(?i)\.(jpe?g|heic|heif|hif)$'
+            - name: IMMICH_COMPARE_CREATED
+              value: 'true'
             - name: IMMICH_LOG_LEVEL
               value: 'DEBUG'
           restartPolicy: Never
