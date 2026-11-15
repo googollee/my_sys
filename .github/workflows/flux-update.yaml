@@ -1,0 +1,35 @@
+name: flux update
+
+on:
+  schedule:
+    - cron: '37 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: flux-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fluxcd/flux2/action@main
+      - name: Generate components
+        run: flux install --export > home-cluster/flux/flux-system/gotk-components.yaml
+      - name: Commit changed components
+        run: |
+          git add home-cluster/flux/flux-system/gotk-components.yaml
+          if git diff --cached --quiet; then
+            echo 'Flux is already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions-bot@users.noreply.github.com'
+          git commit -m "update flux to $(flux version --client | awk '{print $2}')"
+          git pull --rebase origin main
+          git push origin HEAD:main
