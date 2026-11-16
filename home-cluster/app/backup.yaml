@@ -45,28 +45,11 @@ spec:
             - secretRef:
                 name: rclone-aws
             volumeMounts:
-            - mountPath: /config/rclone
-              name: config
             - mountPath: /mnt/data/media
               name: media
               readOnly: true
           volumes:
-          - name: config
-            persistentVolumeClaim:
-              claimName: rclone-data
           - name: media
             hostPath:
               path: /mnt/data/media
           restartPolicy: Never
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
-  name: 'rclone-data'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '1Gi'
