@@ -53,6 +53,16 @@ spec:
           hostPort: 5580
           protocol: TCP
           name: ws
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'cat /sys/class/net/enp2s0.3/ifindex > /tmp/ifindex']
+        livenessProbe:
+          exec:
+            command: ['sh', '-c', 'test "$(cat /sys/class/net/enp2s0.3/ifindex)" = "$(cat /tmp/ifindex)"']
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          failureThreshold: 2
         volumeMounts:
         - name: data
           mountPath: /data
