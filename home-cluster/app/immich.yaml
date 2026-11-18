@@ -96,9 +96,9 @@ spec:
           protocol: TCP
         resources:
           requests:
-            memory: 1Gi
+            memory: 0
           limits:
-            memory: 2Gi
+            memory: 8Gi
             devic.es/dri: 1
       - name: immich-ml
         image: ghcr.io/immich-app/immich-machine-learning:v3 # -rocm
@@ -123,7 +123,7 @@ spec:
           value: '3003'
         resources:
           requests:
-            memory: 1Gi
+            memory: 0
           limits:
             memory: 4Gi
 ---
