@@ -162,19 +162,6 @@ spec:
 apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
-  name: 'postgres-data'
-  namespace: 'postgres'
-spec:
-  storageClassName: 'local-path'
-  accessModes:
-  - 'ReadWriteOnce'
-  resources:
-    requests:
-      storage: '20Gi'
----
-apiVersion: 'v1'
-kind: 'PersistentVolumeClaim'
-metadata:
   name: 'postgres-data-18'
   namespace: 'postgres'
 spec:
