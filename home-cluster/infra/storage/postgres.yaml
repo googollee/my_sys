@@ -62,6 +62,8 @@ spec:
         - '-c'
         - |
           set -eu
+          chown 65534:65534 /mnt/pgdata
+          chmod 0750 /mnt/pgdata
           cp -a /usr/lib/postgresql/18/lib/. /mnt/pglib/
           cp -a /usr/share/postgresql/18/extension/. /mnt/pgext/
           apt-get update
@@ -84,6 +86,8 @@ spec:
           test -f /mnt/pglib/vector.so
           test -f /mnt/pglib/vchord.so
         volumeMounts:
+        - name: 'data'
+          mountPath: '/mnt/pgdata'
         - name: 'pg-lib'
           mountPath: '/mnt/pglib'
         - name: 'pg-share-extension'
