@@ -51,6 +51,7 @@ spec:
       initContainers:
       - name: 'install-extensions'
         image: 'postgres:17'
+        imagePullPolicy: 'Always'
         securityContext:
           runAsUser: 0
         env:
@@ -61,13 +62,27 @@ spec:
         - '-c'
         - |
           set -eu
+          cp -a /usr/lib/postgresql/17/lib/. /mnt/pglib/
+          cp -a /usr/share/postgresql/17/extension/. /mnt/pgext/
           apt-get update
           apt-get install -y --no-install-recommends curl ca-certificates postgresql-17-pgvector
           curl -fsSL -o /tmp/vchord.deb \
             "https://github.com/supervc-stack/VectorChord/releases/download/${VCHORD_VERSION}/postgresql-17-vchord_${VCHORD_VERSION}-1_amd64.deb"
           apt-get install -y --no-install-recommends /tmp/vchord.deb
-          cp -a /usr/lib/postgresql/17/lib/. /mnt/pglib/
-          cp -a /usr/share/postgresql/17/extension/. /mnt/pgext/
+          vchord_pkg=$(dpkg-deb -f /tmp/vchord.deb Package)
+          dpkg -L postgresql-17-pgvector "$vchord_pkg" > /tmp/ext-files
+          while read -r f; do
+            [ -f "$f" ] || continue
+            case "$f" in
+              /usr/lib/postgresql/17/lib/*) dst=/mnt/pglib/${f#/usr/lib/postgresql/17/lib/} ;;
+              /usr/share/postgresql/17/extension/*) dst=/mnt/pgext/${f#/usr/share/postgresql/17/extension/} ;;
+              *) continue ;;
+            esac
+            mkdir -p "$(dirname "$dst")"
+            cp -a "$f" "$dst"
+          done < /tmp/ext-files
+          test -f /mnt/pglib/vector.so
+          test -f /mnt/pglib/vchord.so
         volumeMounts:
         - name: 'pg-lib'
           mountPath: '/mnt/pglib'
@@ -76,6 +91,7 @@ spec:
       containers:
       - name: 'postgres'
         image: 'postgres:17'
+        imagePullPolicy: 'Always'
         args:
         - '-c'
         - 'hba_file=/etc/postgresql-custom/pg_hba.conf'
