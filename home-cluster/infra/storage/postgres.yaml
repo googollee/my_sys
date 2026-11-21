@@ -50,7 +50,7 @@ spec:
         runAsGroup: 65534
       initContainers:
       - name: 'install-extensions'
-        image: 'postgres:17'
+        image: 'postgres:18'
         imagePullPolicy: 'Always'
         securityContext:
           runAsUser: 0
@@ -62,20 +62,20 @@ spec:
         - '-c'
         - |
           set -eu
-          cp -a /usr/lib/postgresql/17/lib/. /mnt/pglib/
-          cp -a /usr/share/postgresql/17/extension/. /mnt/pgext/
+          cp -a /usr/lib/postgresql/18/lib/. /mnt/pglib/
+          cp -a /usr/share/postgresql/18/extension/. /mnt/pgext/
           apt-get update
-          apt-get install -y --no-install-recommends curl ca-certificates postgresql-17-pgvector
+          apt-get install -y --no-install-recommends curl ca-certificates postgresql-18-pgvector
           curl -fsSL -o /tmp/vchord.deb \
-            "https://github.com/supervc-stack/VectorChord/releases/download/${VCHORD_VERSION}/postgresql-17-vchord_${VCHORD_VERSION}-1_amd64.deb"
+            "https://github.com/supervc-stack/VectorChord/releases/download/${VCHORD_VERSION}/postgresql-18-vchord_${VCHORD_VERSION}-1_amd64.deb"
           apt-get install -y --no-install-recommends /tmp/vchord.deb
           vchord_pkg=$(dpkg-deb -f /tmp/vchord.deb Package)
-          dpkg -L postgresql-17-pgvector "$vchord_pkg" > /tmp/ext-files
+          dpkg -L postgresql-18-pgvector "$vchord_pkg" > /tmp/ext-files
           while read -r f; do
             [ -f "$f" ] || continue
             case "$f" in
-              /usr/lib/postgresql/17/lib/*) dst=/mnt/pglib/${f#/usr/lib/postgresql/17/lib/} ;;
-              /usr/share/postgresql/17/extension/*) dst=/mnt/pgext/${f#/usr/share/postgresql/17/extension/} ;;
+              /usr/lib/postgresql/18/lib/*) dst=/mnt/pglib/${f#/usr/lib/postgresql/18/lib/} ;;
+              /usr/share/postgresql/18/extension/*) dst=/mnt/pgext/${f#/usr/share/postgresql/18/extension/} ;;
               *) continue ;;
             esac
             mkdir -p "$(dirname "$dst")"
@@ -90,7 +90,7 @@ spec:
           mountPath: '/mnt/pgext'
       containers:
       - name: 'postgres'
-        image: 'postgres:17'
+        image: 'postgres:18'
         imagePullPolicy: 'Always'
         args:
         - '-c'
@@ -133,20 +133,20 @@ spec:
           periodSeconds: 10
         volumeMounts:
         - name: 'data'
-          mountPath: '/var/lib/postgresql/data'
+          mountPath: '/var/lib/postgresql'
         - name: 'pg-hba'
           mountPath: '/etc/postgresql-custom'
           readOnly: true
         - name: 'pg-lib'
-          mountPath: '/usr/lib/postgresql/17/lib'
+          mountPath: '/usr/lib/postgresql/18/lib'
           readOnly: true
         - name: 'pg-share-extension'
-          mountPath: '/usr/share/postgresql/17/extension'
+          mountPath: '/usr/share/postgresql/18/extension'
           readOnly: true
       volumes:
       - name: 'data'
         persistentVolumeClaim:
-          claimName: 'postgres-data'
+          claimName: 'postgres-data-18'
       - name: 'pg-hba'
         configMap:
           name: 'postgres-hba'
@@ -159,6 +159,19 @@ apiVersion: 'v1'
 kind: 'PersistentVolumeClaim'
 metadata:
   name: 'postgres-data'
+  namespace: 'postgres'
+spec:
+  storageClassName: 'local-path'
+  accessModes:
+  - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: '20Gi'
+---
+apiVersion: 'v1'
+kind: 'PersistentVolumeClaim'
+metadata:
+  name: 'postgres-data-18'
   namespace: 'postgres'
 spec:
   storageClassName: 'local-path'
