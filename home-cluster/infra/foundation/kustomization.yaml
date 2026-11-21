@@ -13,3 +13,4 @@ resources:
 - 'local-storage.yaml'
 - 'k0s-updateconfig.yaml'
 - 'device-plugin.yaml'
+- 'failed-pod-cleaner.yaml'
