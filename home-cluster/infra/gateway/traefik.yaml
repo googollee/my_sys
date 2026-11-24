@@ -49,6 +49,15 @@ spec:
                   - containerPort: 8443
                     protocol: TCP
                     hostIP: 192.168.10.2
+      - target:
+          kind: ClusterRoleBinding
+          name: traefik-gateway
+        patch: |
+          $patch: delete
+          apiVersion: rbac.authorization.k8s.io/v1
+          kind: ClusterRoleBinding
+          metadata:
+            name: traefik-gateway
 
   values:
     hostNetwork: false
@@ -67,7 +76,7 @@ spec:
     autoscaling:
       enabled: false
     rbac:
-      enabled: false
+      enabled: true
     securityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -219,6 +228,9 @@ rules:
 - apiGroups: ['']
   resources: ['namespaces', 'nodes']
   verbs: ['get', 'list', 'watch']
+- apiGroups: ['certificates.k8s.io']
+  resources: ['clustertrustbundles']
+  verbs: ['list', 'watch']
 - apiGroups: ['gateway.networking.k8s.io']
   resources: ['gatewayclasses']
   verbs: ['get', 'list', 'watch']
@@ -240,38 +252,14 @@ subjects:
   namespace: gateway
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: traefik-namespaced
-rules:
-- apiGroups: ['']
-  resources: ['configmaps', 'services', 'secrets']
-  verbs: ['get', 'list', 'watch']
-- apiGroups: ['']
-  resources: ['pods']
-  verbs: ['get']
-- apiGroups: ['discovery.k8s.io']
-  resources: ['endpointslices']
-  verbs: ['list', 'watch']
-- apiGroups: ['traefik.io']
-  resources: ['ingressroutes', 'ingressroutetcps', 'ingressrouteudps', 'middlewares', 'middlewaretcps', 'serverstransports', 'serverstransporttcps', 'tlsoptions', 'tlsstores', 'traefikservices']
-  verbs: ['get', 'list', 'watch']
-- apiGroups: ['gateway.networking.k8s.io']
-  resources: ['backendtlspolicies', 'gateways', 'grpcroutes', 'httproutes', 'referencegrants', 'tcproutes', 'tlsroutes']
-  verbs: ['get', 'list', 'watch']
-- apiGroups: ['gateway.networking.k8s.io']
-  resources: ['backendtlspolicies/status', 'gateways/status', 'grpcroutes/status', 'httproutes/status', 'tcproutes/status', 'tlsroutes/status']
-  verbs: ['update']
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: traefik
+  name: traefik-gateway
   namespace: gateway
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-namespaced
+  name: traefik-gateway
 subjects:
 - kind: ServiceAccount
   name: traefik
@@ -280,12 +268,12 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: traefik
+  name: traefik-gateway
   namespace: app
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-namespaced
+  name: traefik-gateway
 subjects:
 - kind: ServiceAccount
   name: traefik
@@ -294,12 +282,12 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: traefik
+  name: traefik-gateway
   namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: traefik-namespaced
+  name: traefik-gateway
 subjects:
 - kind: ServiceAccount
   name: traefik
