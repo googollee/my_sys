@@ -1,0 +1,36 @@
+name: ZigbeeTLc OTA index
+
+on:
+  schedule:
+    - cron: '43 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zigbeetlc-ota-index
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Generate index
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: home-cluster/scripts/zigbeetlc-ota-index.sh home-cluster/zigbee-ota/zigbeetlc.json
+      - name: Commit changed index
+        run: |
+          git add -A home-cluster/zigbee-ota
+          if git diff --cached --quiet; then
+            echo 'Index is already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions-bot@users.noreply.github.com'
+          git commit -m 'update zigbeetlc ota index'
+          git pull --rebase origin main
+          git push origin HEAD:main
