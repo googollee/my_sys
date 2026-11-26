@@ -33,6 +33,11 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ['ALL']
+        resources:
+          limits:
+            cpu: 100m
+          requests:
+            cpu: '0'
         ports:
         - name: http
           containerPort: 8080
